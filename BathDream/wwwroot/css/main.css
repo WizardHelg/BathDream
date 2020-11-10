@@ -1,0 +1,52 @@
+body {
+  padding-top: 30px;
+  font-family: 'Roboto', sans-serif;
+}
+.order {
+  padding: 40px 15px;
+}
+
+.order h1 {
+	text-align: center;
+}
+
+.order h2 {
+	text-align: center;
+	font-size: 15pt;
+}
+
+.install {
+	text-align: center;
+	padding-bottom: 5px;
+
+}
+
+.install input {
+	width: 50px;
+	display:block;
+	margin:0 auto;
+}
+
+.install-title {
+	height: 35px;
+}
+
+.install-title span {
+	height: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.install img {
+ background-size: cover;  
+  background-repeat: no-repeat;
+  display: block;
+  height: auto;
+  max-width: 100%;  
+  
+  margin: 3px auto;
+}
+

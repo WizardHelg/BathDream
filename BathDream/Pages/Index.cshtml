@@ -1,0 +1,156 @@
+﻿@page
+@model IndexModel
+@{
+    ViewBag.Title = "Формирование заказа";
+}
+
+<div class="order">
+    <form method="post">
+        <h1>Калькулятор стоимости ремонта</h1>
+        <n2>@Model.Title</n2>
+        <hr />
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Выберите объект</label>
+            <div class="col-sm-8">
+                <select class="form-control" name="ObjectType">
+                    <option>Новостройка</option>
+                    <option>Вторичка</option>
+                    <option>Дом</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Санузен совмещенный?</label>
+            <div class="col-sm-8">
+                <label class="radio-inline">
+                    <input type="radio" name="CombinedBathroom" value="true" />
+                    Да
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="CombinedBathroom" value="false" checked />
+                    нет
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Требуется демонтаж?</label>
+            <div class="col-sm-8">
+                <label class="radio-inline">
+                    <input type="radio" name="RequiredRemoval" value="true" />
+                    Да
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="RequiredRemoval" value="false" checked />
+                    нет
+                </label>
+            </div>
+        </div>
+
+        <h2>Размеры помещений</h2>
+        <hr />
+        <h2>Что требуется установить?</h2>
+
+        <div class="container-fluid">
+            <div class="row">
+                @foreach (var item in Model.BathroomEquipments)
+                {
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 install">
+                        <div class="install-title"><span>@item.DisplyName</span></div>
+                        <img alt="Brand" src=@item.Image />
+                        <input type="number" name=@item.BindedProperty class="form-control" id="InputAmount" min="0" placeholder="0" />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <hr />
+        <h2>Электромонтажные работы</h2>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Колличество розеток и выключателей</label>
+            <div class="col-sm-2">
+                <input type="number" class="form-control" name="SwitchAmount" min="0" placeholder="0" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Теплые полы</label>
+            <div class="col-sm-8">
+                <label class="radio-inline">
+                    <input type="radio" name="WarmFloor" value="true" />
+                    Да
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="WarmFloor" value="false" checked />
+                    Нет
+                </label>
+            </div>
+        </div>
+
+        <hr />
+        <h2>Отделка</h2>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Полы:</label>
+            <div class="col-sm-3">
+                <select class="form-control" name="FloorType">
+                    <option>Плитка</option>
+                    <option selected>Нет</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Требуется возведение стен?</label>
+            <div class="col-sm-8">
+                <label class="radio-inline">
+                    <input type="radio" name="NeedMakeWalls" value="true" />
+                    Да
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="NeedMakeWalls" value="false" checked />
+                    Нет
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Стены:</label>
+            <div class="col-sm-3">
+                <select class="form-control" name="WallCoverType">
+                    <option>Плитка</option>
+                    <option>Окраска</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Потолок:</label>
+            <div class="col-sm-3">
+                <select class="form-control" name="CeilingCoverType">
+                    <option>Реечный</option>
+                    <option>Натяжной</option>
+                    <option>Окраска</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Установка двери</label>
+            <div class="col-sm-8">
+                <label class="radio-inline">
+                    <input type="radio" name="InstallDoor" value="true" />
+                    Да
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="InstallDoor" value="false" checked />
+                    Нет
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету</button>
+    </form>
+</div>
