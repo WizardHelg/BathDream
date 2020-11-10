@@ -1,52 +1,180 @@
 body {
-  padding-top: 30px;
-  font-family: 'Roboto', sans-serif;
+	padding-top: 30px;
+	font-family: 'Roboto', sans-serif;
 }
+
+.nav {
+	margin: 7px 0 15px -10px;
+	color: #1C1C1C;
+}
+
+.navbar-default {
+	background-color: #FAFAFA;
+	border: none;
+}
+
+.nav li {
+	color: #1C1C1C;
+}
+
+.navbar-brand {
+	padding-top: 10px;
+}
+
+
+.navbar-nav > li > a {
+	padding-top: 10px;
+	line-height: 20px;
+	padding-bottom: 0;
+	color: #1C1C1C;
+	font-size: 15px;
+	text-decoration: none;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+	color: #9A9A9A;
+}
+
+.navbar-default .navbar-nav > li > a.hover {
+	color: #9A9A9A;
+	border-bottom: 1px solid #9AFF4F;
+	display: table;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+	background-color: unset;
+}
+
+.navbar-default .navbar-nav > li > a {
+	color: #1C1C1C;
+}
+
+.navbar-header a:hover, .footer a:hover {
+	border: 0px;
+}
+
+
+@media (min-width:768px) {
+	.logo {
+		margin: 10px -10px 10px 10px;
+	}
+
+	li > a:hover {
+		color: #9A9A9A;
+		border-bottom: 1px solid #9AFF4F;
+	}
+
+	.nav > li > a {
+		position: relative;
+		display: block;
+		margin: 7px 10px;
+		text-decoration: none;
+	}
+}
+
+
+.nav {
+	margin: 7px 0 15px -10px;
+	color: #1C1C1C;
+}
+
+.navbar-default {
+	background-color: #FAFAFA;
+	border: none;
+}
+
+.nav li {
+	color: #1C1C1C;
+}
+
+.navbar-nav > li > a {
+	padding-top: 10px;
+	line-height: 20px;
+	padding-bottom: 0;
+	color: #1C1C1C;
+	font-size: 15px;
+	text-decoration: none;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+	color: #9A9A9A;
+}
+
+.navbar-default .navbar-nav > li > a.hover {
+	color: #9A9A9A;
+	border-bottom: 1px solid #9AFF4F;
+	display: table;
+}
+
+.navbar-default .navbar-nav > li > a {
+	color: #1C1C1C;
+}
+
+.navbar-header a:hover, .footer a:hover {
+	border: 0px;
+}
+
+
+
 .order {
-  padding: 40px 15px;
+	padding: 40px 15px;
 }
 
-.order h1 {
-	text-align: center;
-}
+	.order h1 {
+		text-align: center;
+	}
 
-.order h2 {
-	text-align: center;
-	font-size: 15pt;
-}
+	.order h2 {
+		text-align: center;
+		font-size: 15pt;
+	}
 
 .install {
 	text-align: center;
 	padding-bottom: 5px;
-
 }
 
-.install input {
-	width: 50px;
-	display:block;
-	margin:0 auto;
+	.install input {
+		width: 50px;
+		display: block;
+		margin: 0 auto;
+	}
+
+.door {
+	max-width: 300px;
+	min-width: 100px;
+	text-align: center;
 }
+
+
 
 .install-title {
 	height: 35px;
 }
 
-.install-title span {
-	height: 100%;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
-
-}
+	.install-title span {
+		height: 100%;
+		display: flex;
+		flex-flow: column;
+		align-items: center;
+		justify-content: center;
+	}
 
 .install img {
- background-size: cover;  
-  background-repeat: no-repeat;
-  display: block;
-  height: auto;
-  max-width: 100%;  
-  
-  margin: 3px auto;
+	background-size: cover;
+	background-repeat: no-repeat;
+	display: block;
+	height: auto;
+	max-width: 100%;
+	margin: 3px auto;
 }
 
+.input-inline {
+	width: 40%;
+	display: inline;
+}
+
+.deleteRow {
+	color: red;
+	cursor: pointer;
+}

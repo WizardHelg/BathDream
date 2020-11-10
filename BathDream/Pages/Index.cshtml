@@ -7,7 +7,6 @@
 <div class="order">
     <form method="post">
         <h1>Калькулятор стоимости ремонта</h1>
-        <n2>@Model.Title</n2>
         <hr />
         <div class="form-group row">
             <label class="col-sm-3 control-label">Выберите объект</label>
@@ -49,6 +48,46 @@
         </div>
 
         <h2>Размеры помещений</h2>
+        <table id="rooms" class="table table-hover table-condensed table-responsive">
+            <tr>
+                <th style="text-align: center;">Помещение</th>
+                <th style="text-align: center;">Длина, м</th>
+                <th style="text-align: center;">Ширина, м</th>
+                <th style="text-align: center;">Высота, м</th>
+                <th class="door">Дверь Ш x B, м</th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <td><input type="text" class="form-control" name="room_1_name" value="Ванная" /></td>
+                <td><input type="number" class="form-control" name="room_1_length" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_1_width" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_1_height" min="0" placeholder="0" /></td>
+
+                <td class="door">
+                    <input type="number" class="form-control input-inline" name="door_1_width" min="0" placeholder="0" /> X
+                    <input type="number" class="form-control input-inline" name="door_1_height" min="0" placeholder="0" />
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td><input type="text" class="form-control" name="room_2_name" value="Санузел" /></td>
+                <td><input type="number" class="form-control" name="room_2_length" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_2_width" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_2_height" min="0" placeholder="0" /></td>
+
+                <td class="door">
+                    <input type="number" class="form-control input-inline" name="door_2_width" min="0" placeholder="0" /> X
+                    <input type="number" class="form-control input-inline" name="door_2_height" min="0" placeholder="0" />
+                </td>
+                <td class="deleteRow"><img src="img/delete.png"></td>
+            </tr>
+        </table>
+
+        <div class="text-right">
+            <button type="button" class="btn btn-success add-row">Добавить помещение</button>
+        </div>
         <hr />
         <h2>Что требуется установить?</h2>
 
@@ -152,5 +191,60 @@
         </div>
 
         <button type="submit" class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету</button>
+        <button type="submit" class="btn btn-success btn-lg btn-block">Test</button>
     </form>
+
+    <script type="text/javascript">
+	    rooms.addEventListener('click', function(evt){
+		    if(evt.target.closest('.deleteRow')) {
+			    evt.target.closest('tr').remove();
+			    renameRooms();
+		    }
+	    })
+
+        function addTableRow()
+        {
+	        var rowNewText = '<td><input type="text" class="form-control" name="SwitchAmount" placeholder="Название" /></td><td><input type="number" class="form-control" name="SwitchAmount" min="0" placeholder="0" /></td><td><input type="number" class="form-control" name="SwitchAmount" min="0" placeholder="0" /></td><td><input type="number" class="form-control" name="SwitchAmount" min="0" placeholder="0" /></td><td class="door"><input type="number" class="form-control input-inline" name="SwitchAmount" min="0" placeholder="0" /> X <input type="number" class="form-control input-inline" name="SwitchAmount" min="0" placeholder="0" /></td><td class="deleteRow"><img src="img/delete.png"></td>';
+
+            var table = document.getElementById("rooms"),
+                rowsCount = table.rows.length,
+                newRowNumber = rowsCount + 1,
+                newRow = table.insertRow();
+                newRow.innerHTML =rowNewText;
+
+	        renameRooms();
+        }
+
+        function renameRooms() {
+	        var tbl = document.getElementById("rooms");
+
+	        for (var r=1; r < tbl.rows.length; r++) {
+		        for (var j = 0; j < 5; j++) {
+			        var inpt = tbl.rows[r].cells[j].getElementsByTagName("input");
+			        var name;
+			        switch(j) {
+			          case 0:
+				        name = "room_name_";
+				        break;
+			          case 1:
+				        name = "room_length_";
+				        break;
+			          case 2:
+				        name = "room_width_";
+				        break;
+			          case 3:
+				        name = "room_height_";
+				        break;
+			        }
+
+			        inpt[0].setAttribute("name", name+r);
+		        }
+		        inpt = tbl.rows[r].cells[4].getElementsByTagName("input");
+		        inpt[0].setAttribute("name", "door_width_"+r);
+		        inpt[1].setAttribute("name", "door_height_"+r);
+            }
+        }
+
+        document.querySelector('.add-row').addEventListener('click', addTableRow);
+    </script>
 </div>

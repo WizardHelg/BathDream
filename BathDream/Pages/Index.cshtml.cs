@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,112 +21,112 @@ namespace BathDream.Pages
         {
             new BathroomItem()
             {
-                DisplyName ="Ванная",
+                DisplyName ="Р’Р°РЅРЅР°СЏ",
                 BindedProperty = "BathAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Душевая кабина",
+                DisplyName ="Р”СѓС€РµРІР°СЏ РєР°Р±РёРЅР°",
                 BindedProperty = "ShowerAmount",
-                Image ="img/bath.png"
+                Image ="img/2.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Душевой уголок",
+                DisplyName ="Р”СѓС€РµРІРѕР№ СѓРіРѕР»РѕРє",
                 BindedProperty = "BathAmShowerConerAmountount",
-                Image ="img/bath.png"
+                Image ="img/3.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Джакузи",
+                DisplyName ="Р”Р¶Р°РєСѓР·Рё",
                 BindedProperty = "JacuzziAmount",
-                Image ="img/bath.png"
+                Image ="img/4.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Ванна с функцией гидромассажа",
+                DisplyName ="Р’Р°РЅРЅР° СЃ С„СѓРЅРєС†РёРµР№ РіРёРґСЂРѕРјР°СЃСЃР°Р¶Р°",
                 BindedProperty = "HydroBathAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Унитаз",
+                DisplyName ="РЈРЅРёС‚Р°Р·",
                 BindedProperty = "ToiletAmount",
-                Image ="img/bath.png"
+                Image ="img/5.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Инсталляция + подвесной унитаз",
+                DisplyName ="РРЅСЃС‚Р°Р»Р»СЏС†РёСЏ + РїРѕРґРІРµСЃРЅРѕР№ СѓРЅРёС‚Р°Р·",
                 BindedProperty = "InstallationAndToiletAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Инсталляция биде + подвесное биде",
+                DisplyName ="РРЅСЃС‚Р°Р»Р»СЏС†РёСЏ Р±РёРґРµ + РїРѕРґРІРµСЃРЅРѕРµ Р±РёРґРµ",
                 BindedProperty = "InstallationAndBidetAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Гигиенический душ",
+                DisplyName ="Р“РёРіРёРµРЅРёС‡РµСЃРєРёР№ РґСѓС€",
                 BindedProperty = "HygienicShowerAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Биде",
+                DisplyName ="Р‘РёРґРµ",
                 BindedProperty = "BidetAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Раковина",
+                DisplyName ="Р Р°РєРѕРІРёРЅР°",
                 BindedProperty = "SinkAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Тумба",
+                DisplyName ="РўСѓРјР±Р°",
                 BindedProperty = "BedsideAmount",
                 Image ="img/bath.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Зеркало",
+                DisplyName ="Р—РµСЂРєР°Р»Рѕ",
                 BindedProperty = "MirrorAmount",
-                Image ="img/bath.png"
+                Image ="img/7.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Полотенцесушитель",
+                DisplyName ="РџРѕР»РѕС‚РµРЅС†РµСЃСѓС€РёС‚РµР»СЊ",
                 BindedProperty = "TowelDryerAmount",
-                Image ="img/bath.png"
+                Image ="img/6.png"
             },
 
             new BathroomItem()
             {
-                DisplyName ="Ванные принадлежности",
+                DisplyName ="Р’Р°РЅРЅС‹Рµ РїСЂРёРЅР°РґР»РµР¶РЅРѕСЃС‚Рё",
                 BindedProperty = "BathroomAccessoriesAmount",
                 Image ="img/bath.png"
             }
         };
 
         IWebHostEnvironment _env;
-        public string Title { get; set; } = "Тестируем";
+        public string Title { get; set; } = "РўРµСЃС‚РёСЂСѓРµРј";
 
         [BindProperty]
         public Order Order { get; set; }
@@ -134,11 +134,13 @@ namespace BathDream.Pages
         public IndexModel(IWebHostEnvironment env) => _env = env;
         public void OnGet()
         {
+            
         }
 
         public void OnPost()
         {
-            Title = "Кликнули";
+
+            
         }
 
         public IActionResult OnPostSubmit()
@@ -158,7 +160,7 @@ namespace BathDream.Pages
 
             if (string.IsNullOrEmpty(path)) return null;
 
-            return PhysicalFile(path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Заказ.xlsx");
+            return PhysicalFile(path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Р—Р°РєР°Р·.xlsx");
         }
 
         private XLWorkbook FillWorkBook(XLWorkbook wb, Order order)
@@ -174,7 +176,7 @@ namespace BathDream.Pages
             else
                 del_rows.Add("17:18");
 
-            if (order.FloorType.ToLower() == "плитка")
+            if (order.FloorType.ToLower() == "РїР»РёС‚РєР°")
             {
                 var value = ws.Cell("H11").Value;
                 for (int row = 20; row < 26; row++)
@@ -183,7 +185,7 @@ namespace BathDream.Pages
             else
                 del_rows.Add("19:27");
 
-            if(order.WallCoverType.ToLower() == "плитка")
+            if(order.WallCoverType.ToLower() == "РїР»РёС‚РєР°")
             {
                 var value = ws.Cell("H12").Value;
                 for (int row = 29; row < 35; row++)
@@ -347,16 +349,16 @@ namespace BathDream.Pages
 
             switch (order.CeilingCoverType.ToLower())
             {
-                case "реечный":
+                case "СЂРµРµС‡РЅС‹Р№":
                     del_rows.Add("60:61");
                     ws.Cell("G59").Value = ws.Cell("H13").Value;
                     break;
-                case "натяжной":
+                case "РЅР°С‚СЏР¶РЅРѕР№":
                     del_rows.Add("59");
                     del_rows.Add("61");
                     ws.Cell("G60").Value = ws.Cell("H13").Value;
                     break;
-                case "окраска":
+                case "РѕРєСЂР°СЃРєР°":
                     del_rows.Add("59:60");
                     ws.Cell("G61").Value = ws.Cell("H13").Value;
                     break;
@@ -373,10 +375,10 @@ namespace BathDream.Pages
             string temp = String.Join(',', quere);
             ws.Rows(temp).Delete();
 
-            //нумерация
+            //РЅСѓРјРµСЂР°С†РёСЏ
             int ptr = 17;
             int index = 1;
-            while(ws.Cell(ptr, 4).Value.ToString().ToLower() != "итог")
+            while(ws.Cell(ptr, 4).Value.ToString().ToLower() != "РёС‚РѕРі")
             {
                 ptr++;
                 if(ws.Cell(ptr, 3).Value.ToString().ToLower() == "")
