@@ -131,6 +131,9 @@ namespace BathDream.Pages
         [BindProperty]
         public Order Order { get; set; }
 
+        [BindProperty]
+        public Rooms Rooms { get; set; }
+
         public IndexModel(IWebHostEnvironment env) => _env = env;
         public void OnGet()
         {
@@ -139,7 +142,10 @@ namespace BathDream.Pages
 
         public void OnPost()
         {
-
+            foreach(Room item in Rooms)
+            {
+                string name = item.Name;
+            }
             
         }
 
@@ -170,6 +176,8 @@ namespace BathDream.Pages
             bool del_section_flag;
 
             ws.Range("G3").Value = DateTime.Now.ToShortDateString();
+
+
 
             if (order.RequiredRemoval)
                 ws.Cell("G18").Value = ws.Cell("H11").Value;

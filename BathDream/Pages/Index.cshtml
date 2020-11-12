@@ -59,27 +59,27 @@
             </tr>
 
             <tr>
-                <td><input type="text" class="form-control" name="room_1_name" value="Ванная" /></td>
-                <td><input type="number" class="form-control" name="room_1_length" min="0" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_1_width" min="0" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_1_height" min="0" placeholder="0" /></td>
+                <td><input type="text" class="form-control" name="room_name" value="Ванная" /></td>
+                <td><input type="number" class="form-control" name="room_length" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_width" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_height" min="0" placeholder="0" /></td>
 
                 <td class="door">
-                    <input type="number" class="form-control input-inline" name="door_1_width" min="0" placeholder="0" /> X
-                    <input type="number" class="form-control input-inline" name="door_1_height" min="0" placeholder="0" />
+                    <input type="number" class="form-control input-inline" name="door_width" min="0" placeholder="0" /> X
+                    <input type="number" class="form-control input-inline" name="door_height" min="0" placeholder="0" />
                 </td>
                 <td></td>
             </tr>
 
             <tr>
-                <td><input type="text" class="form-control" name="room_2_name" value="Санузел" /></td>
-                <td><input type="number" class="form-control" name="room_2_length" min="0" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_2_width" min="0" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_2_height" min="0" placeholder="0" /></td>
+                <td><input type="text" class="form-control" name="room_name" value="Санузел" /></td>
+                <td><input type="number" class="form-control" name="room_length" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_width" min="0" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_height" min="0" placeholder="0" /></td>
 
                 <td class="door">
-                    <input type="number" class="form-control input-inline" name="door_2_width" min="0" placeholder="0" /> X
-                    <input type="number" class="form-control input-inline" name="door_2_height" min="0" placeholder="0" />
+                    <input type="number" class="form-control input-inline" name="door_width" min="0" placeholder="0" /> X
+                    <input type="number" class="form-control input-inline" name="door_height" min="0" placeholder="0" />
                 </td>
                 <td class="deleteRow"><img src="img/delete.png"></td>
             </tr>
@@ -191,14 +191,14 @@
         </div>
 
         <button type="submit" class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету</button>
-        <button type="submit" class="btn btn-success btn-lg btn-block">Test</button>
+        <button type="submit" class="btn btn-success btn-lg btn-block">Тест</button>
     </form>
 
     <script type="text/javascript">
 	    rooms.addEventListener('click', function(evt){
 		    if(evt.target.closest('.deleteRow')) {
 			    evt.target.closest('tr').remove();
-			    renameRooms();
+			    //renameRooms();
 		    }
 	    })
 
@@ -224,24 +224,24 @@
 			        var name;
 			        switch(j) {
 			          case 0:
-				        name = "room_name_";
+				        name = "room_name";
 				        break;
 			          case 1:
-				        name = "room_length_";
+				        name = "room_length";
 				        break;
 			          case 2:
-				        name = "room_width_";
+				        name = "room_width";
 				        break;
 			          case 3:
-				        name = "room_height_";
+				        name = "room_height";
 				        break;
 			        }
 
-			        inpt[0].setAttribute("name", name+r);
+			        inpt[0].setAttribute("name", name);
 		        }
 		        inpt = tbl.rows[r].cells[4].getElementsByTagName("input");
-		        inpt[0].setAttribute("name", "door_width_"+r);
-		        inpt[1].setAttribute("name", "door_height_"+r);
+		        inpt[0].setAttribute("name", "door_width");
+		        inpt[1].setAttribute("name", "door_height");
             }
         }
 
