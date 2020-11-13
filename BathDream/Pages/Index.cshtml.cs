@@ -210,6 +210,7 @@ namespace BathDream.Pages
             var ws = wb.Worksheet(1);
             List<string> del_rows = new List<string>();
             bool del_section_flag;
+            int dots = 0;
 
             ws.Range("G3").Value = DateTime.Now.ToShortDateString();
 
@@ -264,6 +265,7 @@ namespace BathDream.Pages
             del_section_flag = true;
             if(order.BathAmount > 0)
             {
+                dots += 2 * order.BathAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.BathAmount;
             }
@@ -273,6 +275,7 @@ namespace BathDream.Pages
             cursor_row++; //43
             if (order.ShowerAmount > 0)
             {
+                dots += 2 * order.ShowerAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.ShowerAmount;
             }
@@ -282,6 +285,7 @@ namespace BathDream.Pages
             cursor_row++; //44
             if (order.ShowerConerAmount > 0)
             {
+                dots += 2 * order.ShowerConerAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.ShowerConerAmount;
             }
@@ -291,6 +295,7 @@ namespace BathDream.Pages
             cursor_row++; //45
             if (order.JacuzziAmount > 0)
             {
+                dots += 2 * order.JacuzziAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.JacuzziAmount;
             }
@@ -300,6 +305,7 @@ namespace BathDream.Pages
             cursor_row++; //46
             if (order.HydroBathAmount > 0)
             {
+                dots += 2 * order.HydroBathAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.HydroBathAmount;
             }
@@ -309,6 +315,7 @@ namespace BathDream.Pages
             cursor_row++; //47
             if (order.ToiletAmount > 0)
             {
+                dots += 1 * order.ToiletAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.ToiletAmount;
             }
@@ -318,6 +325,7 @@ namespace BathDream.Pages
             cursor_row++; //48
             if (order.InstallationAndToiletAmount > 0 || order.InstallationAndBidetAmount > 0)
             {
+                dots += 1 * (order.InstallationAndToiletAmount + order.InstallationAndBidetAmount);
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.InstallationAndToiletAmount + order.InstallationAndBidetAmount;
             }
@@ -327,6 +335,7 @@ namespace BathDream.Pages
             cursor_row++; //49
             if (order.InstallationAndToiletAmount > 0)
             {
+                dots += 1 * order.InstallationAndToiletAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.InstallationAndToiletAmount;
             }
@@ -336,6 +345,7 @@ namespace BathDream.Pages
             cursor_row++; //50
             if (order.BidetAmount > 0)
             {
+                dots += 1 * order.BidetAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.BidetAmount;
             }
@@ -345,6 +355,7 @@ namespace BathDream.Pages
             cursor_row++; //51
             if (order.InstallationAndBidetAmount > 0)
             {
+                dots += 1 * order.InstallationAndBidetAmount;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.InstallationAndBidetAmount;
             }
@@ -354,6 +365,7 @@ namespace BathDream.Pages
             cursor_row++; //52
             if (order.HygienicShowerAmount > 0)
             {
+                dots += 2;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.HygienicShowerAmount;
             }
@@ -363,6 +375,7 @@ namespace BathDream.Pages
             cursor_row++; //53
             if (order.SinkAmount > 0)
             {
+                dots += 2;
                 del_section_flag = false;
                 ws.Cell($"G{cursor_row}").Value = order.SinkAmount;
             }
@@ -405,10 +418,29 @@ namespace BathDream.Pages
             else
                 del_rows.Add($"{cursor_row}");
 
+            //Тут вставить херню с трубами
+            cursor_row++; //58
+            if (order.RequiredReplacePipeline)
+            {
+                del_section_flag = false;
+                ws.Cell($"G{cursor_row}").Value = dots;
+            }
+            else
+                del_rows.Add($"{cursor_row}");
+
+            cursor_row++; //59
+            if (order.RequiredReplacePipeline)
+            {
+                del_section_flag = false;
+                ws.Cell($"G{cursor_row}").Value = Rooms.Count();
+            }
+            else
+                del_rows.Add($"{cursor_row}");
+
             if (del_section_flag)
                 del_rows.Add($"{cursor_row - 16}"); //57 => 41;
 
-            cursor_row += 2; //59
+            cursor_row += 2; //61
             switch (order.CeilingCoverType.ToLower())
             {
                 case "реечный":

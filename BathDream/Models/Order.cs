@@ -29,6 +29,11 @@ namespace BathDream.Models
         public bool RequiredRemoval { get; set; }
 
         /// <summary>
+        /// Требуется ли замена труб
+        /// </summary>
+        public bool RequiredReplacePipeline { get; set; }
+
+        /// <summary>
         /// Теплый пол
         /// </summary>
         public bool WarmFloor { get; set; }
