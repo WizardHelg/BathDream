@@ -17,6 +17,7 @@ namespace BathDream.Pages
 {
     public class IndexModel : PageModel
     {
+        #region BathroomEquipments
         public List<BathroomItem> BathroomEquipments = new List<BathroomItem>()
         {
             new BathroomItem()
@@ -124,6 +125,7 @@ namespace BathDream.Pages
                 Image ="img/bath.png"
             }
         };
+        #endregion
 
         IWebHostEnvironment _env;
         public string Title { get; set; } = "Тестируем";
@@ -142,10 +144,6 @@ namespace BathDream.Pages
 
         public void OnPost()
         {
-            foreach(Room item in Rooms)
-            {
-                string name = item.Name;
-            }
             
         }
 
@@ -154,7 +152,8 @@ namespace BathDream.Pages
             string path;
             using (var wb = new XLWorkbook(Path.Combine(_env.WebRootPath, "templates", "BDTemplate.xlsx")))
             {
-                FillWorkBook(wb, Order);
+                int fill_start_row = SetRoomsTable(wb, Rooms); //по дефолту должен вернуть 17 строку
+                FillWorkBook(wb, Order, Rooms, fill_start_row); //Переисать, что бы можно было начинать со любой строки
                 
                 do
                 {
@@ -169,7 +168,44 @@ namespace BathDream.Pages
             return PhysicalFile(path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Заказ.xlsx");
         }
 
-        private XLWorkbook FillWorkBook(XLWorkbook wb, Order order)
+        private int SetRoomsTable(XLWorkbook wb, Rooms rooms)
+        {
+            var ws = wb.Worksheet(1);
+
+            int insert_row = 15;
+
+            for(int i = 1; i < rooms.Count(); i++)
+            {
+                ws.Row(insert_row).InsertRowsBelow(6);
+                ws.Range($"B{insert_row - 6}:H{insert_row - 1}").CopyTo(ws.Range($"B{insert_row}:H{insert_row + 5}"));
+                insert_row += 6;
+            }
+
+            int pointer = 10;
+            int index = 1;
+            ISumAreas sumAreas = rooms;
+            foreach(Room room in rooms)
+            {
+                ws.Range($"B{pointer - 1}").Value = index++;
+                ws.Range($"C{pointer - 1}").Value = room.Name;
+                ws.Range($"E{pointer}").Value = room.Width;
+                ws.Range($"F{pointer}").Value = room.Length;
+                ws.Range($"G{pointer}").Value = room.Height;
+
+                ws.Range($"E{pointer + 4}").Value = room.Door.Width;
+                ws.Range($"G{pointer + 4}").Value = room.Door.Height;
+
+                sumAreas.SumCeilingArea += room.CeilingArea();
+                sumAreas.SumFloorArea += room.FloorArea();
+                sumAreas.SumWallsArea += room.WallsArea();
+
+                pointer += 6;
+            }
+
+            return insert_row + 2;
+        }
+
+        private XLWorkbook FillWorkBook(XLWorkbook wb, Order order, ISumAreas sum_areas, int fill_start_row)
         {
             var ws = wb.Worksheet(1);
             List<string> del_rows = new List<string>();
@@ -177,201 +213,219 @@ namespace BathDream.Pages
 
             ws.Range("G3").Value = DateTime.Now.ToShortDateString();
 
-
-
+            int cursor_row = fill_start_row + 1; //18
             if (order.RequiredRemoval)
-                ws.Cell("G18").Value = ws.Cell("H11").Value;
+                ws.Cell($"G{cursor_row}").Value = sum_areas.SumFloorArea;
             else
-                del_rows.Add("17:18");
+                del_rows.Add($"{cursor_row - 1}:{cursor_row}");
 
+            cursor_row += 2; //20
             if (order.FloorType.ToLower() == "плитка")
             {
-                var value = ws.Cell("H11").Value;
-                for (int row = 20; row < 26; row++)
-                    ws.Cell($"G{row}").Value = value;
+                for (int row = cursor_row; row < cursor_row + 6; row++)
+                    ws.Cell($"G{row}").Value = sum_areas.SumFloorArea;
             }
             else
-                del_rows.Add("19:27");
+                del_rows.Add($"{cursor_row - 1}:{cursor_row + 7}");
 
-            if(order.WallCoverType.ToLower() == "плитка")
+            cursor_row += 9; //29
+            if (order.WallCoverType.ToLower() == "плитка")
             {
-                var value = ws.Cell("H12").Value;
-                for (int row = 29; row < 35; row++)
-                    ws.Cell($"G{row}").Value = value;
+                for (int row = cursor_row; row < cursor_row + 6; row++)
+                    ws.Cell($"G{row}").Value = sum_areas.SumWallsArea;
             }
             else
-                del_rows.Add("28:36");
+                del_rows.Add($"{cursor_row - 1}:{cursor_row + 7}");
 
+            cursor_row += 9; //38
             del_section_flag = true;
             if (order.SwitchAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G38").Value = order.SwitchAmount;
+                ws.Cell($"G{cursor_row}").Value = order.SwitchAmount;
             }                   
             else
-                del_rows.Add("38");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //39
             if (order.WarmFloor)
             {
                 del_section_flag = false;
-                ws.Cell("G39").Value = 2;
-                ws.Cell("G40").Value = ws.Cell("H12").Value;
+                ws.Cell($"G{cursor_row}").Value = 2;
+                ws.Cell($"G{cursor_row + 1}").Value = sum_areas.SumFloorArea;
             }
             else
-                del_rows.Add("39:40");
+                del_rows.Add($"{cursor_row}:{cursor_row + 1}");
 
             if (del_section_flag)
-                del_rows.Add("37");
+                del_rows.Add($"{cursor_row - 2}");
 
+            cursor_row += 3; //42
             del_section_flag = true;
             if(order.BathAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G42").Value = order.BathAmount;
+                ws.Cell($"G{cursor_row}").Value = order.BathAmount;
             }
             else
-                del_rows.Add("42");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //43
             if (order.ShowerAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G43").Value = order.ShowerAmount;
+                ws.Cell($"G{cursor_row}").Value = order.ShowerAmount;
             }
             else
-                del_rows.Add("43");
+                del_rows.Add($"{cursor_row}");
 
-            if(order.ShowerConerAmount > 0)
+            cursor_row++; //44
+            if (order.ShowerConerAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G44").Value = order.ShowerConerAmount;
+                ws.Cell($"G{cursor_row}").Value = order.ShowerConerAmount;
             }
             else
-                del_rows.Add("44");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //45
             if (order.JacuzziAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G45").Value = order.JacuzziAmount;
+                ws.Cell($"G{cursor_row}").Value = order.JacuzziAmount;
             }
             else
-                del_rows.Add("45");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //46
             if (order.HydroBathAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G46").Value = order.HydroBathAmount;
+                ws.Cell($"G{cursor_row}").Value = order.HydroBathAmount;
             }
             else
-                del_rows.Add("46");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //47
             if (order.ToiletAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G47").Value = order.ToiletAmount;
+                ws.Cell($"G{cursor_row}").Value = order.ToiletAmount;
             }
             else
-                del_rows.Add("47");
+                del_rows.Add($"{cursor_row}");
 
-            if(order.InstallationAndToiletAmount > 0 || order.InstallationAndBidetAmount > 0)
+            cursor_row++; //48
+            if (order.InstallationAndToiletAmount > 0 || order.InstallationAndBidetAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G48").Value = order.InstallationAndToiletAmount + order.InstallationAndBidetAmount;
+                ws.Cell($"G{cursor_row}").Value = order.InstallationAndToiletAmount + order.InstallationAndBidetAmount;
             }
             else
-                del_rows.Add("48");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //49
             if (order.InstallationAndToiletAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G49").Value = order.InstallationAndToiletAmount;
+                ws.Cell($"G{cursor_row}").Value = order.InstallationAndToiletAmount;
             }
             else
-                del_rows.Add("49");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //50
             if (order.BidetAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G50").Value = order.BidetAmount;
+                ws.Cell($"G{cursor_row}").Value = order.BidetAmount;
             }
             else
-                del_rows.Add("50");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //51
             if (order.InstallationAndBidetAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G51").Value = order.InstallationAndBidetAmount;
+                ws.Cell($"G{cursor_row}").Value = order.InstallationAndBidetAmount;
             }
             else
-                del_rows.Add("51");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //52
             if (order.HygienicShowerAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G52").Value = order.HygienicShowerAmount;
+                ws.Cell($"G{cursor_row}").Value = order.HygienicShowerAmount;
             }
             else
-                del_rows.Add("52");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //53
             if (order.SinkAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G53").Value = order.SinkAmount;
+                ws.Cell($"G{cursor_row}").Value = order.SinkAmount;
             }
             else
-                del_rows.Add("53");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //54
             if (order.BedsideAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G54").Value = order.BedsideAmount;
+                ws.Cell($"G{cursor_row}").Value = order.BedsideAmount;
             }
             else
-                del_rows.Add("54");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //55
             if (order.MirrorAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G55").Value = order.MirrorAmount;
+                ws.Cell($"G{cursor_row}").Value = order.MirrorAmount;
             }
             else
-                del_rows.Add("55");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //56
             if (order.TowelDryerAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G56").Value = order.TowelDryerAmount;
+                ws.Cell($"G{cursor_row}").Value = order.TowelDryerAmount;
             }
             else
-                del_rows.Add("56");
+                del_rows.Add($"{cursor_row}");
 
+            cursor_row++; //57
             if (order.BathroomAccessoriesAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell("G57").Value = order.BathroomAccessoriesAmount;
+                ws.Cell($"G{cursor_row}").Value = order.BathroomAccessoriesAmount;
             }
             else
-                del_rows.Add("57");
+                del_rows.Add($"{cursor_row}");
 
             if (del_section_flag)
-                del_rows.Add("41");
+                del_rows.Add($"{cursor_row - 16}"); //57 => 41;
 
+            cursor_row += 2; //59
             switch (order.CeilingCoverType.ToLower())
             {
                 case "реечный":
-                    del_rows.Add("60:61");
-                    ws.Cell("G59").Value = ws.Cell("H13").Value;
+                    del_rows.Add($"{cursor_row + 1}:{cursor_row + 2}");
+                    ws.Cell($"G{cursor_row}").Value = sum_areas.SumCeilingArea;
                     break;
                 case "натяжной":
-                    del_rows.Add("59");
-                    del_rows.Add("61");
-                    ws.Cell("G60").Value = ws.Cell("H13").Value;
+                    del_rows.Add($"{cursor_row}");
+                    del_rows.Add($"{cursor_row + 2}");
+                    ws.Cell($"G{cursor_row + 1}").Value = sum_areas.SumCeilingArea;
                     break;
                 case "окраска":
-                    del_rows.Add("59:60");
-                    ws.Cell("G61").Value = ws.Cell("H13").Value;
+                    del_rows.Add($"{cursor_row}:{cursor_row + 1}");
+                    ws.Cell($"G{cursor_row + 2}").Value = sum_areas.SumCeilingArea;
                     break;
                 default:
-                    del_rows.Add("58:61");
+                    del_rows.Add($"{cursor_row - 1}:{cursor_row + 2}");
                     break;
             }
 
@@ -384,11 +438,12 @@ namespace BathDream.Pages
             ws.Rows(temp).Delete();
 
             //нумерация
-            int ptr = 17;
+            int ptr = fill_start_row;
             int index = 1;
             while(ws.Cell(ptr, 4).Value.ToString().ToLower() != "итог")
             {
                 ptr++;
+                if (ptr == 1000) break;
                 if(ws.Cell(ptr, 3).Value.ToString().ToLower() == "")
                     continue;
                 ws.Cell(ptr, 2).Value = index++;
