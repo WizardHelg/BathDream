@@ -211,14 +211,31 @@ namespace BathDream.Pages
             }
 
             if (string.IsNullOrEmpty(path)) return null;
-            
-            await SendEmail(Customer.Email, "Заказ", "Вы заказали заказ", new List<string>()
-            {
-                path,
-                Path.Combine(_env.WebRootPath, "templates", "contract.docx")
-            });
+
+            string order_number = Path.GetFileNameWithoutExtension(path);
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"<h2>{PartOfDay()}, {Customer.Name}.</h2>");
+            builder.Append($"<p>Ваш заказ {order_number} уже в обработке. Наши операторы свяжутся с Вами по номеру {Customer.Phone} для уточнения заказа.</p>");
+            builder.Append($"<p>Спасибо, что воспользовались услугами нашей компании!</P>");
+
+            await SendEmail(Customer.Email,
+                $"Документы по заказу {order_number}",
+                builder.ToString(),
+                new List<string>()
+                {
+                    path,
+                    Path.Combine(_env.WebRootPath, "templates", "contract.docx")
+                });
 
             return RedirectToPagePreserveMethod("OrderResult"); //PhysicalFile(path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Заказ.xlsx");
+        }
+
+        private static string PartOfDay()
+        {
+            int h = DateTime.Now.Hour;
+            if (h >= 6 && h < 12) return "Доброе утро";
+            else if (h >= 12 && h < 18) return "Добрый день";
+            else return "Добрый вечер";
         }
 
         private static async Task SendEmail(string email, string subject, string message, List<string> attachments)
