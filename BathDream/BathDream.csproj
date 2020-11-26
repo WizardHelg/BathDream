@@ -3,14 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>91f06266-9689-4afe-92a4-9ed805e50b15</UserSecretsId>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.95.3" />
+    <PackageReference Include="MailKit" Version="2.10.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\files\" />
+    <Folder Include="Controls\" />
   </ItemGroup>
 
 </Project>
