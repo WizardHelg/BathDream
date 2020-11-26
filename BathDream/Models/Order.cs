@@ -34,14 +34,14 @@ namespace BathDream.Models
         public bool RequiredReplacePipeline { get; set; }
 
         /// <summary>
-        /// Теплый пол
-        /// </summary>
-        public bool WarmFloor { get; set; }
-
-        /// <summary>
         /// Количество розеток и выключателей
         /// </summary>
         public int SwitchAmount { get; set; }
+
+        /// <summary>
+        /// Теплый пол
+        /// </summary>
+        public bool WarmFloor { get; set; }
 
         /// <summary>
         /// Полы
@@ -144,90 +144,36 @@ namespace BathDream.Models
         /// </summary>
         public int BathroomAccessoriesAmount { get; set; }
         #endregion
-    }
+        #region PipelineEquipment
+        /// <summary>
+        /// Кран перекрытия
+        /// </summary>
+        public int PLOverheadCrane { get; set; }
 
-    public class Rooms : ISumAreas
-    {
-        public double SumFloorArea { get; set; }
-        public double SumCeilingArea { get; set; }
-        public double SumWallsArea { get; set; }
+        /// <summary>
+        /// Фильр грубой очистки
+        /// </summary>
+        public int PLCoarseFilter { get; set; }
 
-        [BindProperty(Name = "room_name")]
-        public string[] Names { get; set; }
+        /// <summary>
+        /// Обратный клапан
+        /// </summary>
+        public int PLCheckValve { get; set; }
 
-        [BindProperty(Name = "room_length")]
-        public string[] Lengths { get; set; }
+        /// <summary>
+        /// Счётчик
+        /// </summary>
+        public int PLCounter { get; set; }
 
-        [BindProperty(Name = "room_width")]
-        public string[] Widths { get; set; }
+        /// <summary>
+        /// Водяной коллектор ХВ
+        /// </summary>
+        public int PLWaterCollectorCW { get; set; }
 
-        [BindProperty(Name = "room_height")]
-        public string[] Heights { get; set; }
-
-        [BindProperty(Name = "door_width")]
-        public string[] DoorWidths { get; set; }
-
-        [BindProperty(Name = "door_height")]
-        public string[] DoorHeights { get; set; }
-
-        public int Count() => Names.GetLength(0);
-
-        public IEnumerator GetEnumerator()
-        {
-            for (int i = 0; i < Names.GetLength(0); i++)
-                yield return new Room
-                {
-                    Name = Names[i],
-                    Width = double.TryParse(Widths[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double resW) ? resW : 0.0,
-                    Height = double.TryParse(Heights[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double resH) ? resH : 0.0,
-                    Length = double.TryParse(Lengths[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double resL) ? resL : 0.0,
-                    Door = new Door()
-                    {
-                        Width = double.TryParse(DoorWidths[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double resDW) ? resDW : 0.0,
-                        Height = double.TryParse(DoorHeights[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double resDH) ? resDH : 0.0
-                    }
-                };
-        }
-
-        public Room this[int i] => new Room
-        {
-            Name = Names[i],
-            Width = double.TryParse(Widths[i], out double resW) ? resW : 0.0,
-            Height = double.TryParse(Heights[i], out double resH) ? resH : 0.0,
-            Length = double.TryParse(Heights[i], out double resL) ? resL : 0.0,
-            Door = new Door()
-            {
-                Width = double.TryParse(DoorWidths[i], out double resDW) ? resDW : 0.0,
-                Height = double.TryParse(DoorHeights[i], out double resDH) ? resDH : 0.0
-            }
-        };
-    }
-
-    interface ISumAreas
-    {
-        public double SumFloorArea { get; set; }
-        public double SumCeilingArea { get; set; }
-        public double SumWallsArea { get; set; }
-    }
-
-    public struct Room
-    {
-        public string Name { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public double Length { get; set; }
-        public Door Door { get; set; }
-
-        public double FloorArea() => Width * Length;
-        public double CeilingArea() => Width * Length;
-        public double WallsArea() => 2 * (Width + Length) * Height - Door.Area();
-    }
-
-    public struct Door
-    {
-        public double Width { get; set; }
-        public double Height { get; set; }
-
-        public double Area() => Width * Height;
+        /// <summary>
+        /// Водяной коллектор ГВ
+        /// </summary>
+        public int PLWaterCollectorHW { get; set; }
+        #endregion
     }
 }

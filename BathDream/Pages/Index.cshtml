@@ -2,106 +2,193 @@
 @model IndexModel
 @{
     ViewBag.Title = "Формирование заказа";
+
+    List<SelectListItem> ObjectTypeList = new List<SelectListItem>()
+    {
+        new SelectListItem()
+        {
+            Text = "Новостройка",
+            Value = "Новостройка"
+        },
+        new SelectListItem()
+        {
+            Text = "Вторичка",
+            Value = "Вторичка"
+        },
+        new SelectListItem()
+        {
+            Text = "Дом",
+            Value = "Дом"
+        }
+    };
+
+    List<SelectListItem> FloorTypeList = new List<SelectListItem>()
+    {
+        new SelectListItem()
+        {
+            Text = "Плитка",
+            Value = "Плитка"
+        },
+        new SelectListItem()
+        {
+            Text = "Нет",
+            Value = "Нет",
+            Selected = true
+        },
+    };
+
+    List<SelectListItem> WallCoverTypeList = new List<SelectListItem>()
+    {
+        new SelectListItem()
+        {
+            Text = "Плитка",
+            Value = "Плитка"
+        },
+        new SelectListItem()
+        {
+            Text = "Окраска",
+            Value = "Окраска"
+        },
+        new SelectListItem()
+        {
+            Text = "Панели ПВХ",
+            Value = "Панели ПВХ"
+        }
+    };
+
+    List<SelectListItem> CeilingCoverType = new List<SelectListItem>()
+    {
+        new SelectListItem()
+        {
+            Text = "Реечный",
+            Value = "Реечный"
+        },
+        new SelectListItem()
+        {
+            Text = "Натяжной",
+            Value = "Натяжной"
+        },
+        new SelectListItem()
+        {
+            Text = "Окраска",
+            Value = "Окраска"
+        }
+    };
+
+    List<(string Name, string Text)> ModalFields = new List<(string, string)>
+    {
+        ("Surname", "Фамилия"),
+        ("Name", "Имя"),
+        ("Phone", "Телефон"),
+        ("Email", "Email")
+    };
 }
 
 <div class="order">
+
     <form method="post">
         <h1>Калькулятор стоимости ремонта</h1>
         <hr />
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Выберите объект</label>
-            <div class="col-sm-8">
-                <select class="form-control" name="ObjectType">
-                    <option>Новостройка</option>
-                    <option>Вторичка</option>
-                    <option>Дом</option>
-                </select>
-            </div>
-        </div>
 
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Санузен совмещенный?</label>
-            <div class="col-sm-8">
-                <label class="radio-inline">
-                    <input type="radio" name="CombinedBathroom" value="true" />
-                    Да
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="CombinedBathroom" value="false" checked />
-                    нет
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Требуется демонтаж?</label>
-            <div class="col-sm-8">
-                <label class="radio-inline">
-                    <input type="radio" name="RequiredRemoval" value="true" />
-                    Да
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="RequiredRemoval" value="false" checked />
-                    нет
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Требуется замена труб?</label>
-            <div class="col-sm-8">
-                <label class="radio-inline">
-                    <input type="radio" name="RequiredReplacePipeline" value="true" />
-                    Да
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="RequiredReplacePipeline" value="false" checked />
-                    нет
-                </label>
-            </div>
-        </div>
+        <simple-form-container label="Выберите объект" col-sm-width="8">
+            <select class="form-control" name="ObjectType" asp-items="ObjectTypeList"></select>
+        </simple-form-container>
 
         <h2>Размеры помещений</h2>
         <table id="rooms" class="table table-hover table-condensed table-responsive">
             <tr>
                 <th style="text-align: center;">Помещение</th>
-                <th style="text-align: center;">Длина, м</th>
-                <th style="text-align: center;">Ширина, м</th>
-                <th style="text-align: center;">Высота, м</th>
-                <th class="door">Дверь Ш x B, м</th>
+                <th style="text-align: center;">Длина, мм</th>
+                <th style="text-align: center;">Ширина, мм</th>
+                <th style="text-align: center;">Высота, мм</th>
+                <th class="door">Дверь Ш x B, мм</th>
                 <th></th>
             </tr>
 
             <tr>
                 <td><input type="text" class="form-control" name="room_name" value="Ванная" /></td>
-                <td><input type="number" class="form-control" name="room_length" min="0" step="0.1" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_width" min="0" step="0.1" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_height" min="0" step="0.1" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_length" min="0" step="1" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_width" min="0" step="1" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_height" min="0" step="1" placeholder="0" /></td>
 
                 <td class="door">
-                    <input type="number" class="form-control input-inline" name="door_width" min="0" step="0.1" placeholder="0" /> X
-                    <input type="number" class="form-control input-inline" name="door_height" min="0" step="0.1" placeholder="0" />
+                    <select class="form-control input-inline" name="door_width">
+                        <option>600</option>
+                        <option>700</option>
+                        <option>800</option>
+                        <option>900</option>
+                        <option>1000</option>
+                    </select>
+                    X
+                    <select class="form-control input-inline" name="door_height">
+                        <option>1900</option>
+                        <option>2000</option>
+                        <option>2200</option>
+                    </select>
                 </td>
                 <td></td>
             </tr>
 
             <tr>
                 <td><input type="text" class="form-control" name="room_name" value="Санузел" /></td>
-                <td><input type="number" class="form-control" name="room_length" min="0" step="0.1" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_width" min="0" step="0.1" placeholder="0" /></td>
-                <td><input type="number" class="form-control" name="room_height" min="0" step="0.1" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_length" min="0" step="1" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_width" min="0" step="1" placeholder="0" /></td>
+                <td><input type="number" class="form-control" name="room_height" min="0" step="1" placeholder="0" /></td>
 
                 <td class="door">
-                    <input type="number" class="form-control input-inline" name="door_width" min="0" step="0.1" placeholder="0" /> X
-                    <input type="number" class="form-control input-inline" name="door_height" min="0" step="0.1" placeholder="0" />
+                    <select class="form-control input-inline" name="door_width">
+                        <option>600</option>
+                        <option>700</option>
+                        <option>800</option>
+                        <option>900</option>
+                        <option>1000</option>
+                    </select>
+                    X
+                    <select class="form-control input-inline" name="door_height">
+                        <option>1900</option>
+                        <option>2000</option>
+                        <option>2200</option>
+                    </select>
                 </td>
                 <td class="deleteRow"><img src="img/delete.png"></td>
             </tr>
         </table>
-
         <div class="text-right">
             <button type="button" class="btn btn-success add-row">Добавить помещение</button>
         </div>
+
+        <hr />
+
+        <simple-form-container label="Санузен совмещенный?" col-sm-width="8">
+            <radio-form-element element-name="Order.CombinedBathroom" element-value="true">Да</radio-form-element>
+            <radio-form-element element-name="Order.CombinedBathroom" element-value="false" element-checked="true">Нет</radio-form-element>
+        </simple-form-container>
+
+        <simple-form-container label="Требуется демонтаж?" col-sm-width="8">
+            <radio-form-element element-name="Order.RequiredRemoval" element-value="true">Да</radio-form-element>
+            <radio-form-element element-name="Order.RequiredRemoval" element-value="false" element-checked="true">Нет</radio-form-element>
+        </simple-form-container>
+
+        <simple-form-container label="Требуется замена труб?" col-sm-width="8">
+            <radio-form-element element-name="Order.RequiredReplacePipeline" element-value="true">Да</radio-form-element>
+            <radio-form-element element-name="Order.RequiredReplacePipeline" element-value="false" element-checked="true">Нет</radio-form-element>
+        </simple-form-container>
+
+        <hr />
+        <h2>Что требуется по замене труб?</h2>
+        <div class="container-fluid">
+            <div class="row">
+                @foreach (var item in Model.PipeLineEquipment)
+                {
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 install panel panel-success">
+                        <div class="install-title"><span>@item.DisplyName</span></div>
+                        <img alt="Brand" src=@item.Image />
+                        <input type="number" name=@item.BindedProperty class="form-control" id="InputAmount" min="0" placeholder="0" />
+                    </div>
+                }
+            </div>
+        </div>
+
         <hr />
         <h2>Что требуется установить?</h2>
 
@@ -109,7 +196,7 @@
             <div class="row">
                 @foreach (var item in Model.BathroomEquipments)
                 {
-                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 install">
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 install panel panel-success">
                         <div class="install-title"><span>@item.DisplyName</span></div>
                         <img alt="Brand" src=@item.Image />
                         <input type="number" name=@item.BindedProperty class="form-control" id="InputAmount" min="0" placeholder="0" />
@@ -121,140 +208,126 @@
         <hr />
         <h2>Электромонтажные работы</h2>
 
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Колличество розеток и выключателей</label>
-            <div class="col-sm-2">
-                <input type="number" class="form-control" name="SwitchAmount" min="0" placeholder="0" />
-            </div>
-        </div>
+        <simple-form-container label="Колличество розеток и выключателей" col-sm-width="2">
+            <input type="number" class="form-control" name="SwitchAmount" min="0" placeholder="0" />
+        </simple-form-container>
 
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Теплые полы</label>
-            <div class="col-sm-8">
-                <label class="radio-inline">
-                    <input type="radio" name="WarmFloor" value="true" />
-                    Да
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="WarmFloor" value="false" checked />
-                    Нет
-                </label>
-            </div>
-        </div>
+        <simple-form-container label="Теплые полы" col-sm-width="8">
+            <radio-form-element element-name="Order.WarmFloor" element-value="true">Да</radio-form-element>
+            <radio-form-element element-name="Order.WarmFloor" element-value="false" element-checked="true">Нет</radio-form-element>
+        </simple-form-container>
 
         <hr />
         <h2>Отделка</h2>
 
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Полы:</label>
-            <div class="col-sm-3">
-                <select class="form-control" name="FloorType">
-                    <option>Плитка</option>
-                    <option selected>Нет</option>
-                </select>
+
+        <simple-form-container label="Полы:" col-sm-width="3">
+            <select class="form-control" name="Order.FloorType" asp-items="FloorTypeList"></select>
+        </simple-form-container>
+
+        <simple-form-container label="Требуется возведение стен?" col-sm-width="8">
+            <radio-form-element element-name="Order.NeedMakeWalls" element-value="true">Да</radio-form-element>
+            <radio-form-element element-name="Order.NeedMakeWalls" element-value="false" element-checked="true">Нет</radio-form-element>
+        </simple-form-container>
+
+
+        <simple-form-container label="Стены:" col-sm-width="3">
+            <select class="form-control" name="Order.WallCoverType" asp-items="WallCoverTypeList"></select>
+        </simple-form-container>
+
+        <simple-form-container label="Потолок:" col-sm-width="3">
+            <select class="form-control" name="Order.CeilingCoverType" asp-items="CeilingCoverType"></select>
+        </simple-form-container>
+
+        <simple-form-container label="Установка двери" col-sm-width="8">
+            <radio-form-element element-name="Order.InstallDoor" element-value="true">Да</radio-form-element>
+            <radio-form-element element-name="Order.InstallDoor" element-value="false" element-checked="true">Нет</radio-form-element>
+        </simple-form-container>
+
+        @*<button type="submit" class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету1</button>*@
+        <button type="button" class="btn btn-success btn-lg btn-block" formaction="/?handler=submit" data-target="#modal-order" data-toggle="modal">Расчитать смету</button>
+
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modal-order" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">
+                                &times;
+                            </span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">На какой адрес отправить смету?</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        @foreach (var item in ModalFields)
+                        {
+                            <div class="form-group row">
+                                <label class="col-sm-3" for="@item.Name" style="font-size: unset;">@item.Text:*</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="@item.Name" name="@($"Customer.{item.Name}")" placeholder="@item.Text" type="text" required />
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Закрыть</button>
+                        <button type="submit" class="btn btn-success" name="send" id="send_order" asp-page-handler="submit">Отправить смету</button>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Требуется возведение стен?</label>
-            <div class="col-sm-8">
-                <label class="radio-inline">
-                    <input type="radio" name="NeedMakeWalls" value="true" />
-                    Да
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="NeedMakeWalls" value="false" checked />
-                    Нет
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Стены:</label>
-            <div class="col-sm-3">
-                <select class="form-control" name="WallCoverType">
-                    <option>Плитка</option>
-                    <option>Окраска</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Потолок:</label>
-            <div class="col-sm-3">
-                <select class="form-control" name="CeilingCoverType">
-                    <option>Реечный</option>
-                    <option>Натяжной</option>
-                    <option>Окраска</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 control-label">Установка двери</label>
-            <div class="col-sm-8">
-                <label class="radio-inline">
-                    <input type="radio" name="InstallDoor" value="true" />
-                    Да
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="InstallDoor" value="false" checked />
-                    Нет
-                </label>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету</button>
     </form>
 
     <script type="text/javascript">
-	    rooms.addEventListener('click', function(evt){
-		    if(evt.target.closest('.deleteRow')) {
-			    evt.target.closest('tr').remove();
-			    //renameRooms();
-		    }
-	    })
+        
+        rooms.addEventListener('click', function (evt) {
+            if (evt.target.closest('.deleteRow')) {
+                evt.target.closest('tr').remove();
+                //renameRooms();
+            }
+        })
 
-        function addTableRow()
-        {
-            var rowNewText = '<td><input type="text" class="form-control" name="SwitchAmount" placeholder="Название" /></td><td><input type="number" class="form-control" name="SwitchAmount" min="0" step="0.1" placeholder="0" /></td><td><input type="number" class="form-control" name="SwitchAmount" min="0" step="0.1" placeholder="0" /></td><td><input type="number" class="form-control" name="SwitchAmount" min="0" step="0.1" placeholder="0" /></td><td class="door"><input type="number" class="form-control input-inline" name="SwitchAmount" min="0" step="0.1" placeholder="0" /> X <input type="number" class="form-control input-inline" name="SwitchAmount" min="0" step="0.1" placeholder="0" /></td><td class="deleteRow"><img src="img/delete.png"></td>';
+        function addTableRow() {
+            var rowNewText = '<td><input type="text" class="form-control" name="room_name" value="Санузел" /></td><td><input type="number" class="form-control" name="room_length" min="0" step="1" placeholder="0" /></td><td><input type="number" class="form-control" name="room_width" min="0" step="1" placeholder="0" /></td><td><input type="number" class="form-control" name="room_height" min="0" step="1" placeholder="0" /></td><td class="door"><select class="form-control input-inline" name="door_width"><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select>X<select class="form-control input-inline" name="door_height"><option>1900</option><option>2000</option><option>2200</option></select></td><td class="deleteRow"><img src="img/delete.png"></td>';
 
             var table = document.getElementById("rooms"),
                 rowsCount = table.rows.length,
                 newRowNumber = rowsCount + 1,
                 newRow = table.insertRow();
-                newRow.innerHTML =rowNewText;
+            newRow.innerHTML = rowNewText;
 
-	        renameRooms();
+ //           renameRooms();
         }
 
         function renameRooms() {
-	        var tbl = document.getElementById("rooms");
+            var tbl = document.getElementById("rooms");
 
-	        for (var r=1; r < tbl.rows.length; r++) {
-		        for (var j = 0; j < 5; j++) {
-			        var inpt = tbl.rows[r].cells[j].getElementsByTagName("input");
-			        var name;
-			        switch(j) {
-			          case 0:
-				        name = "room_name";
-				        break;
-			          case 1:
-				        name = "room_length";
-				        break;
-			          case 2:
-				        name = "room_width";
-				        break;
-			          case 3:
-				        name = "room_height";
-				        break;
-			        }
+            for (var r = 1; r < tbl.rows.length; r++) {
+                for (var j = 0; j < 5; j++) {
+                    var inpt = tbl.rows[r].cells[j].getElementsByTagName("input");
+                    var name;
+                    switch (j) {
+                        case 0:
+                            name = "room_name";
+                            break;
+                        case 1:
+                            name = "room_length";
+                            break;
+                        case 2:
+                            name = "room_width";
+                            break;
+                        case 3:
+                            name = "room_height";
+                            break;
+                    }
 
-			        inpt[0].setAttribute("name", name);
-		        }
-		        inpt = tbl.rows[r].cells[4].getElementsByTagName("input");
-		        inpt[0].setAttribute("name", "door_width");
-		        inpt[1].setAttribute("name", "door_height");
+                    inpt[0].setAttribute("name", name);
+                }
+                inpt = tbl.rows[r].cells[4].getElementsByTagName("input");
+                inpt[0].setAttribute("name", "door_width");
+                inpt[1].setAttribute("name", "door_height");
             }
         }
 
