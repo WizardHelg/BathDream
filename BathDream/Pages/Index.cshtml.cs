@@ -40,7 +40,7 @@ namespace BathDream.Pages
             new BathroomItem()
             {
                 DisplyName ="Душевой уголок",
-                BindedProperty = "Order.BathAmShowerConerAmountount",
+                BindedProperty = "Order.ShowerConerAmount",
                 Image ="img/3.png"
             },
 
@@ -294,9 +294,19 @@ namespace BathDream.Pages
                 ws.Range($"E{pointer + 4}").Value = room.Door.Width;
                 ws.Range($"G{pointer + 4}").Value = room.Door.Height;
 
-                sumAreas.SumCeilingArea += room.CeilingArea();
-                sumAreas.SumFloorArea += room.FloorArea();
-                sumAreas.SumWallsArea += room.WallsArea();
+                double ceilingArea = room.CeilingArea(),
+                        floorArea = room.FloorArea(), 
+                        wallsArea = room.WallsArea(), 
+                        doorArea = room.Door.Area();
+
+                sumAreas.SumCeilingArea += ceilingArea;
+                sumAreas.SumFloorArea += floorArea;
+                sumAreas.SumWallsArea += wallsArea;
+
+                ws.Range($"H{pointer + 1}").Value = floorArea;
+                ws.Range($"H{pointer + 2}").Value = wallsArea;
+                ws.Range($"H{pointer + 3}").Value = ceilingArea;
+                ws.Range($"H{pointer + 4}").Value = doorArea;
 
                 pointer += 6;
             }
@@ -310,37 +320,72 @@ namespace BathDream.Pages
             List<string> del_rows = new List<string>();
             bool del_section_flag;
             int dots = 0;
-
+            double total = 0;
+            
             int cursor_row = fill_start_row + 1; //18
+            void SetDoubleValue(double value, int shift = 0)
+            {
+                ws.Cell($"G{cursor_row + shift}").Value = value;
+                ws.Cell($"F{cursor_row + shift}").TryGetValue(out double res);
+                total += res * value;
+                ws.Cell($"H{cursor_row + shift}").Value = res * value;
+            }
+
+            void SetIntValue(int value, int shift = 0)
+            {
+                ws.Cell($"G{cursor_row + shift}").Value = value;
+                ws.Cell($"F{cursor_row + shift}").TryGetValue(out int res);
+                total += res * value;
+                ws.Cell($"H{cursor_row + shift}").Value = res * value;
+            }
+
+
             if (Order.RequiredRemoval)
-                ws.Cell($"G{cursor_row}").Value = sum_areas.SumFloorArea;
+                SetDoubleValue(sum_areas.SumFloorArea);
             else
                 del_rows.Add($"{cursor_row - 1}:{cursor_row}");
 
             cursor_row += 2; //20
             if (Order.FloorType.ToLower() == "плитка")
             {
-                for (int row = cursor_row; row < cursor_row + 6; row++)
-                    ws.Cell($"G{row}").Value = sum_areas.SumFloorArea;
+                double temp = sum_areas.SumFloorArea;
+                for (int row = 0; row < 6; row++)
+                    SetDoubleValue(temp, row);
             }
             else
                 del_rows.Add($"{cursor_row - 1}:{cursor_row + 7}");
 
+            del_section_flag = true;
             cursor_row += 9; //29
             if (Order.WallCoverType.ToLower() == "плитка")
             {
-                for (int row = cursor_row; row < cursor_row + 6; row++)
-                    ws.Cell($"G{row}").Value = sum_areas.SumWallsArea;
+                double temp = sum_areas.SumWallsArea;
+                del_section_flag = false;
+                for (int row = 0; row < 6; row++)
+                    SetDoubleValue(temp, row);
             }
             else
-                del_rows.Add($"{cursor_row - 1}:{cursor_row + 7}");
+                del_rows.Add($"{cursor_row}:{cursor_row + 6}");
 
-            cursor_row += 9; //38
+            //Тут панели ПВХ
+            cursor_row += 7; //36
+            if (Order.WallCoverType.ToLower() == "панели пвх")
+            {
+                del_section_flag = false;
+                SetDoubleValue(sum_areas.SumWallsArea);
+            }
+            else
+                del_rows.Add($"{cursor_row}");
+
+            if (del_section_flag)
+                del_rows.Add($"{cursor_row - 8}");
+
+            cursor_row += 2; //38
             del_section_flag = true;
             if (Order.SwitchAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.SwitchAmount;
+                SetIntValue(Order.SwitchAmount);
             }                   
             else
                 del_rows.Add($"{cursor_row}");
@@ -349,8 +394,8 @@ namespace BathDream.Pages
             if (Order.WarmFloor)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = 2;
-                ws.Cell($"G{cursor_row + 1}").Value = sum_areas.SumFloorArea;
+                SetIntValue(2);
+                SetDoubleValue(sum_areas.SumFloorArea, 1);
             }
             else
                 del_rows.Add($"{cursor_row}:{cursor_row + 1}");
@@ -364,7 +409,7 @@ namespace BathDream.Pages
             {
                 dots += 2 * Order.BathAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.BathAmount;
+                SetIntValue(Order.BathAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -374,7 +419,7 @@ namespace BathDream.Pages
             {
                 dots += 2 * Order.ShowerAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.ShowerAmount;
+                SetIntValue(Order.ShowerAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -384,7 +429,7 @@ namespace BathDream.Pages
             {
                 dots += 2 * Order.ShowerConerAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.ShowerConerAmount;
+                SetIntValue(Order.ShowerConerAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -394,7 +439,7 @@ namespace BathDream.Pages
             {
                 dots += 2 * Order.JacuzziAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.JacuzziAmount;
+                SetIntValue(Order.JacuzziAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -404,7 +449,7 @@ namespace BathDream.Pages
             {
                 dots += 2 * Order.HydroBathAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.HydroBathAmount;
+                SetIntValue(Order.HydroBathAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -414,7 +459,7 @@ namespace BathDream.Pages
             {
                 dots += 1 * Order.ToiletAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.ToiletAmount;
+                SetIntValue(Order.ToiletAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -424,7 +469,7 @@ namespace BathDream.Pages
             {
                 dots += 1 * (Order.InstallationAndToiletAmount + Order.InstallationAndBidetAmount);
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.InstallationAndToiletAmount + Order.InstallationAndBidetAmount;
+                SetIntValue(Order.InstallationAndToiletAmount + Order.InstallationAndBidetAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -434,7 +479,7 @@ namespace BathDream.Pages
             {
                 dots += 1 * Order.InstallationAndToiletAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.InstallationAndToiletAmount;
+                SetIntValue(Order.InstallationAndToiletAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -444,7 +489,7 @@ namespace BathDream.Pages
             {
                 dots += 1 * Order.BidetAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.BidetAmount;
+                SetIntValue(Order.BidetAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -454,7 +499,7 @@ namespace BathDream.Pages
             {
                 dots += 1 * Order.InstallationAndBidetAmount;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.InstallationAndBidetAmount;
+                SetIntValue(Order.InstallationAndBidetAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -464,7 +509,7 @@ namespace BathDream.Pages
             {
                 dots += 2;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.HygienicShowerAmount;
+                SetIntValue(Order.HygienicShowerAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -474,7 +519,7 @@ namespace BathDream.Pages
             {
                 dots += 2;
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.SinkAmount;
+                SetIntValue(Order.SinkAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -483,7 +528,7 @@ namespace BathDream.Pages
             if (Order.BedsideAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.BedsideAmount;
+                SetIntValue(Order.BedsideAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -492,7 +537,7 @@ namespace BathDream.Pages
             if (Order.MirrorAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.MirrorAmount;
+                SetIntValue(Order.MirrorAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -501,7 +546,7 @@ namespace BathDream.Pages
             if (Order.TowelDryerAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.TowelDryerAmount;
+                SetIntValue(Order.TowelDryerAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -510,7 +555,7 @@ namespace BathDream.Pages
             if (Order.BathroomAccessoriesAmount > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.BathroomAccessoriesAmount;
+                SetIntValue(Order.BathroomAccessoriesAmount);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -525,7 +570,7 @@ namespace BathDream.Pages
             if (Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = dots;
+                SetIntValue(dots);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -534,7 +579,7 @@ namespace BathDream.Pages
             if (Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Rooms.Count();
+                SetIntValue(Rooms.Count());
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -543,7 +588,7 @@ namespace BathDream.Pages
             if (Order.PLOverheadCrane > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.PLOverheadCrane;
+                SetIntValue(Order.PLOverheadCrane);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -552,7 +597,7 @@ namespace BathDream.Pages
             if (Order.PLCoarseFilter > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.PLCoarseFilter;
+                SetIntValue(Order.PLCoarseFilter);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -561,7 +606,7 @@ namespace BathDream.Pages
             if (Order.PLCheckValve > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.PLCheckValve;
+                SetIntValue(Order.PLCheckValve);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -570,7 +615,7 @@ namespace BathDream.Pages
             if (Order.PLCounter > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.PLCounter;
+                SetIntValue(Order.PLCounter);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -579,7 +624,7 @@ namespace BathDream.Pages
             if (Order.PLWaterCollectorCW > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.PLWaterCollectorCW;
+                SetIntValue(Order.PLWaterCollectorCW);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -588,7 +633,7 @@ namespace BathDream.Pages
             if (Order.PLWaterCollectorHW > 0)
             {
                 del_section_flag = false;
-                ws.Cell($"G{cursor_row}").Value = Order.PLWaterCollectorHW;
+                SetIntValue(Order.PLWaterCollectorHW);
             }
             else
                 del_rows.Add($"{cursor_row}");
@@ -603,22 +648,25 @@ namespace BathDream.Pages
             {
                 case "реечный":
                     del_rows.Add($"{cursor_row + 1}:{cursor_row + 2}");
-                    ws.Cell($"G{cursor_row}").Value = sum_areas.SumCeilingArea;
+                    SetDoubleValue(sum_areas.SumCeilingArea);
                     break;
                 case "натяжной":
                     del_rows.Add($"{cursor_row}");
                     del_rows.Add($"{cursor_row + 2}");
-                    ws.Cell($"G{cursor_row + 1}").Value = sum_areas.SumCeilingArea;
+                    SetDoubleValue(sum_areas.SumCeilingArea, 1);
                     break;
                 case "окраска":
                     del_rows.Add($"{cursor_row}:{cursor_row + 1}");
-                    ws.Cell($"G{cursor_row + 2}").Value = sum_areas.SumCeilingArea;
+                    SetDoubleValue(sum_areas.SumCeilingArea, 2);
                     break;
                 default:
                     del_rows.Add($"{cursor_row - 1}:{cursor_row + 2}");
                     break;
             }
 
+            //Вставка итога
+            cursor_row += 4;
+            ws.Range($"H{cursor_row}").Value = total;
 
             //Удаление ненужных строк
             DelUselessRow(ws, del_rows);
