@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\files\" />
     <Folder Include="Controls\" />
+    <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
 </Project>

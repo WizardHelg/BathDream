@@ -21,7 +21,7 @@ namespace BathDream.Models
         /// <summary>
         /// Санузен совмещенный?
         /// </summary>
-        public bool CombinedBathroom { get; set; }
+        //public bool CombinedBathroom { get; set; }
 
         /// <summary>
         /// Требуется демонтаж?
@@ -67,6 +67,11 @@ namespace BathDream.Models
         /// Установка двери
         /// </summary>
         public bool InstallDoor { get; set; }
+
+        /// <summary>
+        /// Сантехнический люк
+        /// </summary>
+        public int PlumbingHatch { get; set; }
         #endregion
         #region BathroomEquipments
         /// <summary>

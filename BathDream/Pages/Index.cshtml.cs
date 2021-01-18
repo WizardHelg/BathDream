@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BathDream.Models;
 using ClosedXML.Excel;
@@ -27,105 +28,112 @@ namespace BathDream.Pages
             {
                 DisplyName ="Ванная",
                 BindedProperty = "Order.BathAmount",
-                Image ="img/bath.png"
+                Image ="img/Bath.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Душевая кабина",
                 BindedProperty = "Order.ShowerAmount",
-                Image ="img/2.png"
+                Image ="img/Shower.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Душевой уголок",
                 BindedProperty = "Order.ShowerConerAmount",
-                Image ="img/3.png"
+                Image ="img/ShowerConer.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Джакузи",
                 BindedProperty = "Order.JacuzziAmount",
-                Image ="img/4.png"
+                Image ="img/Jacuzzi.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Ванна с функцией гидромассажа",
                 BindedProperty = "Order.HydroBathAmount",
-                Image ="img/bath.png"
+                Image ="img/HydroBath.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Унитаз",
                 BindedProperty = "Order.ToiletAmount",
-                Image ="img/5.png"
+                Image ="img/Toilet.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Инсталляция + подвесной унитаз",
                 BindedProperty = "Order.InstallationAndToiletAmount",
-                Image ="img/bath.png"
+                Image ="img/InstallationAndToilet.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Инсталляция биде + подвесное биде",
                 BindedProperty = "Order.InstallationAndBidetAmount",
-                Image ="img/bath.png"
+                Image ="img/InstallationAndBidet.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Гигиенический душ",
                 BindedProperty = "Order.HygienicShowerAmount",
-                Image ="img/bath.png"
+                Image ="img/HygienicShower.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Биде",
                 BindedProperty = "Order.BidetAmount",
-                Image ="img/bath.png"
+                Image ="img/Bidet.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Раковина",
                 BindedProperty = "Order.SinkAmount",
-                Image ="img/bath.png"
+                Image ="img/Sink.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Тумба",
                 BindedProperty = "Order.BedsideAmount",
-                Image ="img/bath.png"
+                Image ="img/Bedside.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Зеркало",
                 BindedProperty = "Order.MirrorAmount",
-                Image ="img/7.png"
+                Image ="img/Mirror.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Полотенцесушитель",
                 BindedProperty = "Order.TowelDryerAmount",
-                Image ="img/6.png"
+                Image ="img/TowelDryer.jpg"
             },
 
             new BathroomItem()
             {
                 DisplyName ="Ванные принадлежности",
                 BindedProperty = "Order.BathroomAccessoriesAmount",
-                Image ="img/bath.png"
+                Image ="img/BathroomAccessories.jpg"
+            },
+
+            new BathroomItem()
+            {
+                DisplyName ="Сантехнический люк",
+                BindedProperty = "Order.PlumbingHatch",
+                Image ="img/Plumbing.jpg"
             }
         };
         #endregion
@@ -136,37 +144,37 @@ namespace BathDream.Pages
             {
                 DisplyName ="Кран перекрытия",
                 BindedProperty = "Order.PLOverheadCrane",
-                Image ="img/faucet.png"
+                Image ="img/PLOverhead.jpg"
             },
             new BathroomItem()
             {
                 DisplyName ="Фильр грубой очистки",
                 BindedProperty = "Order.PLCoarseFilter",
-                Image ="img/faucet.png"
+                Image ="img/PLCoarseFilter.jpg"
             },
             new BathroomItem()
             {
                 DisplyName ="Обратный клапан",
                 BindedProperty = "Order.PLCheckValve",
-                Image ="img/faucet.png"
+                Image ="img/PLCheckValve.jpg"
             },
             new BathroomItem()
             {
                 DisplyName ="Счётчик",
                 BindedProperty = "Order.PLCounter",
-                Image ="img/faucet.png"
+                Image ="img/PLCounter.jpg"
             },
             new BathroomItem()
             {
                 DisplyName ="Водяной коллектор ХВ",
                 BindedProperty = "Order.PLWaterCollectorCW",
-                Image ="img/faucet.png"
+                Image ="img/PLWaterCollectorCW.jpg"
             },
             new BathroomItem()
             {
                 DisplyName ="Водяной коллектор ГВ",
                 BindedProperty = "Order.PLWaterCollectorHW",
-                Image ="img/faucet.png"
+                Image ="img/PLWaterCollectorCW.jpg"
             }
         };
         #endregion
@@ -195,24 +203,34 @@ namespace BathDream.Pages
         public async Task<IActionResult> OnPostSubmit()
         {
             string path;
+            string order_number = "";
             using (var wb = new XLWorkbook(Path.Combine(_env.WebRootPath, "templates", "BDTemplate.xlsx")))
             {
                 var ws = wb.Worksheet(1);
-                FillHeader(ws);
+                
                 int fill_start_row = SetRoomsTable(ws); //по дефолту должен вернуть 17 строку
                 FillWorkBook(wb, Rooms, fill_start_row); //Переисать, что бы можно было начинать со любой строки
                 
                 do
                 {
-                    path = GetFreePath();
+                    //try
+                    //{
+                        path = GetFreePath();
+                    //}
+                    //catch(Exception e)
+                    //{
+                    //    return new ContentResult() { Content = $"{e.Message}\n{e.StackTrace}" };
+                    //}
                 } while (System.IO.File.Exists(path));
 
+                order_number = Path.GetFileNameWithoutExtension(path);
+                FillHeader(ws, order_number);
                 wb.SaveAs(path);
             }
 
             if (string.IsNullOrEmpty(path)) return null;
 
-            string order_number = Path.GetFileNameWithoutExtension(path);
+            
             StringBuilder builder = new StringBuilder();
             builder.Append($"<h2>{PartOfDay()}, {Customer.Name}.</h2>");
             builder.Append($"<p>Ваш заказ {order_number} уже в обработке. Наши операторы свяжутся с Вами по номеру {Customer.Phone} для уточнения заказа.</p>");
@@ -226,7 +244,21 @@ namespace BathDream.Pages
                     path,
                     Path.Combine(_env.WebRootPath, "templates", "contract.docx")
                 });
+#if !DEBUG
+            builder = new StringBuilder();
+            builder.Append($"<h2>Заказ номер: {order_number}.</h2>");
+            builder.Append($"<p>Клиент: {Customer.Name} {Customer.SurName}.</p>");
+            builder.Append($"<p>E-mail: {Customer.Email}<br />Тел.: {Customer.Phone}</P>");
 
+            await SendEmail("info@bath-dream.ru",
+                $"Документы по заказу {order_number}",
+                builder.ToString(),
+                new List<string>()
+                {
+                    path
+                });
+
+#endif
             return RedirectToPagePreserveMethod("OrderResult"); //PhysicalFile(path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Заказ.xlsx");
         }
 
@@ -262,9 +294,10 @@ namespace BathDream.Pages
             await smtp.DisconnectAsync(true);
         }
 
-        private void FillHeader(IXLWorksheet ws)
+        private void FillHeader(IXLWorksheet ws, string order_number)
         {
             ws.Range("G3").Value = DateTime.Now.ToShortDateString();
+            ws.Range("D5").Value = $"Сметный расчет: {order_number}";
             ws.Range("D6").Value = $"Тел. {Customer.Phone}";
             ws.Range("D7").Value = $"Email: {Customer.Email}";
         }
@@ -319,7 +352,8 @@ namespace BathDream.Pages
             var ws = wb.Worksheet(1);
             List<string> del_rows = new List<string>();
             bool del_section_flag;
-            int dots = 0;
+            int water_dots = 0;
+            int sewer_dots = 0;
             double total = 0;
             
             int cursor_row = fill_start_row + 1; //18
@@ -361,7 +395,7 @@ namespace BathDream.Pages
             {
                 double temp = sum_areas.SumWallsArea;
                 del_section_flag = false;
-                for (int row = 0; row < 6; row++)
+                for (int row = 0; row < 5; row++)
                     SetDoubleValue(temp, row);
             }
             else
@@ -395,7 +429,7 @@ namespace BathDream.Pages
             {
                 del_section_flag = false;
                 SetIntValue(2);
-                SetDoubleValue(sum_areas.SumFloorArea, 1);
+                SetDoubleValue(sum_areas.SumFloorArea / 2, 1);
             }
             else
                 del_rows.Add($"{cursor_row}:{cursor_row + 1}");
@@ -407,7 +441,8 @@ namespace BathDream.Pages
             del_section_flag = true;
             if(Order.BathAmount > 0)
             {
-                dots += 2 * Order.BathAmount;
+                water_dots += 2 * Order.BathAmount;
+                sewer_dots += 1 * Order.BathAmount;
                 del_section_flag = false;
                 SetIntValue(Order.BathAmount);
             }
@@ -417,7 +452,8 @@ namespace BathDream.Pages
             cursor_row++; //43
             if (Order.ShowerAmount > 0)
             {
-                dots += 2 * Order.ShowerAmount;
+                water_dots += 2 * Order.ShowerAmount;
+                sewer_dots += 1 * Order.ShowerAmount;
                 del_section_flag = false;
                 SetIntValue(Order.ShowerAmount);
             }
@@ -427,7 +463,8 @@ namespace BathDream.Pages
             cursor_row++; //44
             if (Order.ShowerConerAmount > 0)
             {
-                dots += 2 * Order.ShowerConerAmount;
+                water_dots += 2 * Order.ShowerConerAmount;
+                sewer_dots += 1 * Order.ShowerConerAmount;
                 del_section_flag = false;
                 SetIntValue(Order.ShowerConerAmount);
             }
@@ -437,7 +474,8 @@ namespace BathDream.Pages
             cursor_row++; //45
             if (Order.JacuzziAmount > 0)
             {
-                dots += 2 * Order.JacuzziAmount;
+                water_dots += 2 * Order.JacuzziAmount;
+                sewer_dots += 1 * Order.JacuzziAmount;
                 del_section_flag = false;
                 SetIntValue(Order.JacuzziAmount);
             }
@@ -447,7 +485,8 @@ namespace BathDream.Pages
             cursor_row++; //46
             if (Order.HydroBathAmount > 0)
             {
-                dots += 2 * Order.HydroBathAmount;
+                water_dots += 2 * Order.HydroBathAmount;
+                sewer_dots += 1 * Order.HydroBathAmount;
                 del_section_flag = false;
                 SetIntValue(Order.HydroBathAmount);
             }
@@ -457,7 +496,8 @@ namespace BathDream.Pages
             cursor_row++; //47
             if (Order.ToiletAmount > 0)
             {
-                dots += 1 * Order.ToiletAmount;
+                water_dots += 1 * Order.ToiletAmount;
+                sewer_dots += 1 * Order.ToiletAmount;
                 del_section_flag = false;
                 SetIntValue(Order.ToiletAmount);
             }
@@ -467,7 +507,7 @@ namespace BathDream.Pages
             cursor_row++; //48
             if (Order.InstallationAndToiletAmount > 0 || Order.InstallationAndBidetAmount > 0)
             {
-                dots += 1 * (Order.InstallationAndToiletAmount + Order.InstallationAndBidetAmount);
+                water_dots += 1 * (Order.InstallationAndToiletAmount + Order.InstallationAndBidetAmount);
                 del_section_flag = false;
                 SetIntValue(Order.InstallationAndToiletAmount + Order.InstallationAndBidetAmount);
             }
@@ -477,7 +517,8 @@ namespace BathDream.Pages
             cursor_row++; //49
             if (Order.InstallationAndToiletAmount > 0)
             {
-                dots += 1 * Order.InstallationAndToiletAmount;
+                water_dots += 1 * Order.InstallationAndToiletAmount;
+                sewer_dots += 1 * Order.InstallationAndToiletAmount;
                 del_section_flag = false;
                 SetIntValue(Order.InstallationAndToiletAmount);
             }
@@ -487,7 +528,8 @@ namespace BathDream.Pages
             cursor_row++; //50
             if (Order.BidetAmount > 0)
             {
-                dots += 1 * Order.BidetAmount;
+                water_dots += 1 * Order.BidetAmount;
+                sewer_dots += 1 * Order.BidetAmount;
                 del_section_flag = false;
                 SetIntValue(Order.BidetAmount);
             }
@@ -497,7 +539,8 @@ namespace BathDream.Pages
             cursor_row++; //51
             if (Order.InstallationAndBidetAmount > 0)
             {
-                dots += 1 * Order.InstallationAndBidetAmount;
+                water_dots += 1 * Order.InstallationAndBidetAmount;
+                sewer_dots += 1 * Order.InstallationAndBidetAmount;
                 del_section_flag = false;
                 SetIntValue(Order.InstallationAndBidetAmount);
             }
@@ -507,7 +550,8 @@ namespace BathDream.Pages
             cursor_row++; //52
             if (Order.HygienicShowerAmount > 0)
             {
-                dots += 2;
+                water_dots += 2 * Order.HygienicShowerAmount;
+                sewer_dots += 1 * Order.HygienicShowerAmount;
                 del_section_flag = false;
                 SetIntValue(Order.HygienicShowerAmount);
             }
@@ -517,7 +561,8 @@ namespace BathDream.Pages
             cursor_row++; //53
             if (Order.SinkAmount > 0)
             {
-                dots += 2;
+                water_dots += 2 * Order.SinkAmount;
+                sewer_dots += 1 * Order.SinkAmount;
                 del_section_flag = false;
                 SetIntValue(Order.SinkAmount);
             }
@@ -560,32 +605,41 @@ namespace BathDream.Pages
             else
                 del_rows.Add($"{cursor_row}");
 
-            //Тут проверка по del-flag
-            if (del_section_flag)
-                del_rows.Add($"{cursor_row - 16}");
-
-            //Тут вставить херню с трубами
-            del_section_flag = true;
-            cursor_row += 2; //59
-            if (Order.RequiredReplacePipeline)
+            cursor_row++; //58
+            if (Order.PlumbingHatch > 0)
             {
                 del_section_flag = false;
-                SetIntValue(dots);
+                SetIntValue(Order.PlumbingHatch);
             }
             else
                 del_rows.Add($"{cursor_row}");
 
-            cursor_row++; //60
-            if (Order.RequiredReplacePipeline)
+            //Тут проверка по del-flag
+            if (del_section_flag)
+                del_rows.Add($"{cursor_row - 17}");
+
+            //Тут вставить херню с трубами
+            del_section_flag = true;
+            cursor_row += 2; //60
+            if (Order.RequiredReplacePipeline && water_dots > 0)
             {
                 del_section_flag = false;
-                SetIntValue(Rooms.Count());
+                SetIntValue(water_dots);
             }
             else
                 del_rows.Add($"{cursor_row}");
 
             cursor_row++; //61
-            if (Order.PLOverheadCrane > 0)
+            if (Order.RequiredReplacePipeline && sewer_dots > 0)
+            {
+                del_section_flag = false;
+                SetIntValue(sewer_dots);
+            }
+            else
+                del_rows.Add($"{cursor_row}");
+
+            cursor_row++; //62
+            if (Order.PLOverheadCrane > 0 && Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
                 SetIntValue(Order.PLOverheadCrane);
@@ -593,8 +647,8 @@ namespace BathDream.Pages
             else
                 del_rows.Add($"{cursor_row}");
 
-            cursor_row++; //62
-            if (Order.PLCoarseFilter > 0)
+            cursor_row++; //63
+            if (Order.PLCoarseFilter > 0 && Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
                 SetIntValue(Order.PLCoarseFilter);
@@ -602,8 +656,8 @@ namespace BathDream.Pages
             else
                 del_rows.Add($"{cursor_row}");
 
-            cursor_row++; //63
-            if (Order.PLCheckValve > 0)
+            cursor_row++; //64
+            if (Order.PLCheckValve > 0 && Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
                 SetIntValue(Order.PLCheckValve);
@@ -611,8 +665,8 @@ namespace BathDream.Pages
             else
                 del_rows.Add($"{cursor_row}");
 
-            cursor_row++; //64
-            if (Order.PLCounter > 0)
+            cursor_row++; //65
+            if (Order.PLCounter > 0 && Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
                 SetIntValue(Order.PLCounter);
@@ -620,8 +674,8 @@ namespace BathDream.Pages
             else
                 del_rows.Add($"{cursor_row}");
 
-            cursor_row++; //65
-            if (Order.PLWaterCollectorCW > 0)
+            cursor_row++; //66
+            if (Order.PLWaterCollectorCW > 0 && Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
                 SetIntValue(Order.PLWaterCollectorCW);
@@ -629,8 +683,8 @@ namespace BathDream.Pages
             else
                 del_rows.Add($"{cursor_row}");
 
-            cursor_row++; //66
-            if (Order.PLWaterCollectorHW > 0)
+            cursor_row++; //67
+            if (Order.PLWaterCollectorHW > 0 && Order.RequiredReplacePipeline)
             {
                 del_section_flag = false;
                 SetIntValue(Order.PLWaterCollectorHW);
@@ -640,10 +694,10 @@ namespace BathDream.Pages
 
             //Эт опотом заменить на верный сдвиг
             if (del_section_flag)
-                del_rows.Add($"{cursor_row - 8}"); //66 => 58;
+                del_rows.Add($"{cursor_row - 8}"); //67 => 59;
 
 
-            cursor_row += 2; //68
+            cursor_row += 2; //69
             switch (Order.CeilingCoverType.ToLower())
             {
                 case "реечный":
@@ -664,8 +718,31 @@ namespace BathDream.Pages
                     break;
             }
 
+            //Доп не нужная фигня
+            del_section_flag = true;
+            cursor_row += 4; //73
+            if (Order.NeedMakeWalls)
+            {
+                del_section_flag = false;
+            }
+            else
+                del_rows.Add($"{cursor_row}");
+
+            cursor_row++; //74
+            if (Order.InstallDoor)
+            {
+                del_section_flag = false;
+                SetIntValue(Rooms.Count());
+            }
+            else
+                del_rows.Add($"{cursor_row}");
+
+            //Эт опотом заменить на верный сдвиг
+            if (del_section_flag)
+                del_rows.Add($"{cursor_row - 2}");
+
             //Вставка итога
-            cursor_row += 4;
+            cursor_row += 2;
             ws.Range($"H{cursor_row}").Value = total;
 
             //Удаление ненужных строк
@@ -704,23 +781,35 @@ namespace BathDream.Pages
 
         private string GetFreePath()
         {
-            DateTime date_time = DateTime.Now;
-            StringBuilder builder = new StringBuilder();
-
-            builder.Append($"{date_time.Year:D4}");
-            builder.Append($"{date_time.Month:D2}");
-            builder.Append($"{date_time.Day:D2}");
-            builder.Append($"{date_time.Hour:D2}");
-            builder.Append($"{date_time.Minute:D2}");
-            builder.Append($"{date_time.Second:D2}");
-            builder.Append($"{date_time.Millisecond:D2}");
-            builder.Append($"{new Random().Next(1, 1000):D3}");
-            builder.Append(".xlsx");
+            string path = Path.Combine(_env.WebRootPath, "files");
+            DirectoryInfo directory = new DirectoryInfo(path);
+            var files = directory.EnumerateFiles();
+            int order_number = (files?.Count() ?? 0) + 1;
+            //int order_number = 1;
+            //foreach (FileInfo file in directory.EnumerateFiles())
+            //    order_number++;
 
             return Path.Combine(
-                        _env.WebRootPath,
-                        "files",
-                        builder.ToString());
+                            _env.WebRootPath,
+                            "files",
+                            $"{order_number:D4}.xlsx");
+            //DateTime date_time = DateTime.Now;
+            //StringBuilder builder = new StringBuilder();
+
+            //builder.Append($"{date_time.Year:D4}");
+            //builder.Append($"{date_time.Month:D2}");
+            //builder.Append($"{date_time.Day:D2}");
+            //builder.Append($"{date_time.Hour:D2}");
+            //builder.Append($"{date_time.Minute:D2}");
+            //builder.Append($"{date_time.Second:D2}");
+            //builder.Append($"{date_time.Millisecond:D2}");
+            //builder.Append($"{new Random().Next(1, 1000):D3}");
+            //builder.Append(".xlsx");
+
+            //return Path.Combine(
+            //            _env.WebRootPath,
+            //            "files",
+            //            builder.ToString());
         }
     }
 }
