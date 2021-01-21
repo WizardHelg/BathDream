@@ -272,9 +272,10 @@ namespace BathDream.Pages
 
         private static async Task SendEmail(string email, string subject, string message, List<string> attachments)
         {
+            //яндекс order@bath-dream.ru пароль BathDream2021
             var email_message = new MimeMessage();
 
-            email_message.From.Add(new MailboxAddress("BathDream", "support@ms-dev.ru"));
+            email_message.From.Add(new MailboxAddress("BathDream", "order@bath-dream.ru"));
             email_message.To.Add(new MailboxAddress("", email));
             email_message.Subject = subject;
 
@@ -288,8 +289,8 @@ namespace BathDream.Pages
             email_message.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            await smtp.ConnectAsync("smtp.masterhost.ru", 465, true);
-            await smtp.AuthenticateAsync("support@ms-dev.ru", "KX3-EGD-kzu-5ue");
+            await smtp.ConnectAsync("smtp.yandex.ru", 465, true);
+            await smtp.AuthenticateAsync("order@bath-dream.ru", "BathDream2021");
             await smtp.SendAsync(email_message);
             await smtp.DisconnectAsync(true);
         }
