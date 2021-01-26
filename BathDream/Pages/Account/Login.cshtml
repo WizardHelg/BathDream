@@ -1,0 +1,32 @@
+﻿@page
+@model BathDream.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<br />
+<br />
+<h2>@ViewData["Title"]</h2>
+<div class="col-md-4">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Input.Email"></label><br />
+            <input asp-for="Input.Email" class="form-control" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Input.Password"></label><br />
+            <input asp-for="Input.Password" class="form-control" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-group form-inline">
+            <input asp-for="Input.RememberMe" class="checkbox" />
+            <label asp-for="Input.RememberMe"></label>           
+            @*@Html.DisplayNameFor(m => m.Input.RememberMe)*@
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-block btn-success">Вход</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,26 @@
+﻿@page
+@using BathDream.Models;
+@model BathDream.Pages.Test.EListModel
+@{
+    ViewData["Title"] = "Список исполнителей";
+}
+
+<br />
+<br />
+
+<table class="table">
+    <tr>
+        <th>Имя</th>
+        <th>Email</th>
+        <th>Адресс</th>
+    </tr>
+    @foreach(User user in Model.Users)
+    {
+        <tr>
+            <td>@user.FullName</td>
+            <td>@user.Email</td>
+            <td>@user.Address</td>
+            @*<td><form method="post"><button class="btn-default" asp-page-handler="Profile" asp-route-id="@user.Id">Профиль</button></form></td>*@
+        </tr>
+    }
+</table>

@@ -1,0 +1,40 @@
+﻿@page
+@model BathDream.Pages.Test.IndexModel
+@{
+    ViewData["Title"] = "Тестовая страница";
+}
+
+<br />
+<br />
+<h2>@User.Identity.Name</h2>
+<div class="col-md-4">
+    <form method="post">
+        @if (Model.User.Identity.IsAuthenticated)
+        {
+            if (Model.User.IsInRole("executor"))
+            {
+                <a asp-page="/Account/Manage/ProfileExecutor" class="btn btn-block btn-success">Профиль</a>
+            }
+            <button asp-page-handler="Logout" type="submit" class="btn btn-block btn-success">Выход</button>
+        }
+        else
+        {
+            <a asp-page="/Account/Register" asp-route-role="executor" class="btn btn-block btn-success">Стать Испольнителем</a>
+            @*<a asp-page="/Account/Register" asp-route-role="customer">Стать клиентом</a>*@
+            <a asp-page="/Account/Login" class="btn btn-block btn-success">Вход</a>
+        }
+    </form>
+</div>
+
+
+
+
+
+@*@if (Model.User.IsInRole("admin"))
+    {
+        <p><a asp-page="/AdminPanel/Index" class="btn btn-success">AdminPanel</a></p>
+    }*@
+
+
+
+
