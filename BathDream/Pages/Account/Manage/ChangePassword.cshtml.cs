@@ -13,7 +13,6 @@ namespace BathDream.Pages.Account.Manage
     public class ChangePasswordModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private string _returnUrl;
 
         public ChangePasswordModel(UserManager<User> userManager) => _userManager = userManager;
 

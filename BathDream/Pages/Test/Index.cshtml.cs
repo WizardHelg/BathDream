@@ -23,7 +23,7 @@ namespace BathDream.Pages.Test
         public async Task<IActionResult> OnPostLogout()
         {
             await _signInManager.SignOutAsync();
-            return Page();
+            return RedirectToPage("/Test/Index");
         }
     }
 }
