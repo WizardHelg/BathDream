@@ -6,23 +6,29 @@
 
 <br />
 <br />
-<h2>@User.Identity.Name</h2>
-<div class="col-md-4">
-    <form method="post">
-        @if (Model.User.Identity.IsAuthenticated)
-        {
-            if (Model.User.IsInRole("executor"))
+<br />
+<div class="container">
+    <form method="post" class="form-horizontal col-md-5 col-md-offset-3">
+        <div class="form-group">
+            <h2>@User.Identity.Name</h2>
+        </div>
+        <div class="form-group">
+            @if (Model.User.Identity.IsAuthenticated)
             {
-                <a asp-page="/Account/Manage/ProfileExecutor" class="btn btn-block btn-success">Профиль</a>
+                if (Model.User.IsInRole("executor"))
+                {
+                    <p>Список новых заказов</p>
+                    <a asp-page="/Account/Manage/ProfileExecutor" class="btn btn-block btn-success">Профиль</a>
+                }
+                <button asp-page-handler="Logout" type="submit" class="btn btn-block btn-success">Выход</button>
             }
-            <button asp-page-handler="Logout" type="submit" class="btn btn-block btn-success">Выход</button>
-        }
-        else
-        {
-            <a asp-page="/Account/Register" asp-route-role="executor" class="btn btn-block btn-success">Стать Испольнителем</a>
-            @*<a asp-page="/Account/Register" asp-route-role="customer">Стать клиентом</a>*@
-            <a asp-page="/Account/Login" class="btn btn-block btn-success">Вход</a>
-        }
+            else
+            {
+                <a asp-page="/Account/Register" asp-route-role="executor" class="btn btn-block btn-success">Стать Испольнителем</a>
+                @*<a asp-page="/Account/Register" asp-route-role="customer">Стать клиентом</a>*@
+                <a asp-page="/Account/Login" class="btn btn-block btn-success">Вход</a>
+            }
+        </div>
     </form>
 </div>
 

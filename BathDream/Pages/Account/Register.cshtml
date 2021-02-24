@@ -6,9 +6,12 @@
 
 <br />
 <br />
-<h2>@ViewData["Title"]</h2>
-<div class="col-md-4">
-    <form method="post">
+
+<div class="container">
+    <form method="post" class="form-horizontal col-md-5 col-md-offset-3">
+        <div class="form-group">
+            <h2>@ViewData["Title"]</h2>
+        </div>
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <input type="hidden" asp-for="Input.Role" />
@@ -56,3 +59,5 @@
         <button type="submit" class="btn btn-block btn-success">Зарегестрироваться</button>
     </form>
 </div>
+<br />
+<br />

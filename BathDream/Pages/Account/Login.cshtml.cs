@@ -61,7 +61,7 @@ namespace BathDream.Pages.Account
                     if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                         return LocalRedirect(ReturnUrl);
                     else
-                        return RedirectToPage("/Index");
+                        return RedirectToPage("/Test/Index");
                 }
                 else
                     ModelState.AddModelError(String.Empty, "Неверный логин и.или пароль");

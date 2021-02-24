@@ -56,7 +56,7 @@ namespace BathDream
                 .AddEntityFrameworkStores<BDApplicationaContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddRazorPages();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic }));
         }
 

@@ -6,6 +6,8 @@
 
 <br />
 <br />
-<h2>@ViewData["Title"]</h2>
-
-<p>@Model.StatusMessage</p>
+<div class="jumbotron">
+    <h2>@ViewData["Title"]</h2>
+    <p style="font-weight:400">@Model.StatusMessage</p>
+    <p><a class="btn btn-lg btn-success text-center" asp-page="/Test/Index" role="button"><span class="glyphicon glyphicon-arrow-left"></span> Вернуться на главную</a></p>
+</div>

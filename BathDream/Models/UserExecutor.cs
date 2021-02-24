@@ -8,6 +8,7 @@ namespace BathDream.Models
 {
     public class UserExecutor : User
     {
+        public string About { get; set; }
         public int Rating => FeedBacks.Sum(f => f.Rating);
         public List<FeedBack> FeedBacks { get; set; } = new List<FeedBack>();
     }

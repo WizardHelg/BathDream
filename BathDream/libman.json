@@ -23,6 +23,10 @@
         "dist/js/bootstrap.min.js",
         "dist/js/npm.js"
       ]
+    },
+    {
+      "library": "bootstrap@3.3.7",
+      "destination": "wwwroot/lib/bootstrap/"
     }
   ]
 }
