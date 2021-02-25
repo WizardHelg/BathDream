@@ -1,35 +1,55 @@
 ﻿@page
 @model BathDream.Pages.Account.LoginModel
 @{
-    ViewData["Title"] = "Вход";
+    ViewData["Title"] = "Вход в личный кабинет";
 }
 
 <br />
 <br />
 
-<div class="container">
-    <form method="post" class="form-horizontal col-md-5 col-md-offset-3">
-        <div class="form-group">
-            <h2>@ViewData["Title"]</h2>
+
+<div class="row container-center">
+
+    <div class="col-lg-8 col-xs-12 lk-auth vertical-align container-center wrap">
+        <div class="lk-auth-title col-xs-12">Войти в<br>личный кабинет</div>
+
+        <form method="post" class="col-lg-12">
+            <div class="lk-form col-xs-12 vertical-align wrap">
+                <div class="col-sm-8 col-xs-12">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Input.Email" style="margin-right: 60px;">Логин</label>
+                        <input asp-for="Input.Email" placeholder="Введите Email" class="form-control">
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Password">Пароль</label>
+                        <input asp-for="Input.Password" class="form-control" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <input asp-for="Input.RememberMe" class="checkbox" />
+                        <label asp-for="Input.RememberMe"></label>
+                        @*@Html.DisplayNameFor(m => m.Input.RememberMe)*@
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-6 text-center">
+                    <div class="form-group" style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px;">
+                        <button type="submit" class="btn btn-block btn-success">Войти</button>
+                    </div>
+                    <div class="form-group" style="margin-top: 5px; ">
+                        <a href="#" style="font-size: small; color: gray;">Не помню пароль</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="lk-auth-registration col-xs-12 container-center wrap">
+
+            <div class="text-reg col-xs-12" style="margin-bottom: 10px">Если у вас нет аккаунта, вы можете зарегистрироваться по ссылке ниже.</div>
+            <a class="btn btn-default" style="text-decoration: none;" href="/Account/Register?role=executor">Зарегистрироваться</a>
+
         </div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Input.Email"></label><br />
-            <input asp-for="Input.Email" class="form-control" />
-            <span asp-validation-for="Input.Email" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Input.Password"></label><br />
-            <input asp-for="Input.Password" class="form-control" />
-            <span asp-validation-for="Input.Password" class="text-danger"></span>
-        </div>
-        <div class="form-group form-inline">
-            <input asp-for="Input.RememberMe" class="checkbox" />
-            <label asp-for="Input.RememberMe"></label>
-            @*@Html.DisplayNameFor(m => m.Input.RememberMe)*@
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-block btn-success">Вход</button>
-        </div>
-    </form>
+    </div>
 </div>

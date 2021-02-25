@@ -1,46 +1,424 @@
 ﻿@page
 @model BathDream.Pages.Test.IndexModel
 @{
-    ViewData["Title"] = "Тестовая страница";
+    ViewData["Title"] = "Профиль специалиста";
 }
 
-<br />
-<br />
-<br />
-<div class="container">
-    <form method="post" class="form-horizontal col-md-5 col-md-offset-3">
-        <div class="form-group">
-            <h2>@User.Identity.Name</h2>
+<div class="container-scroller">
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <div class="row row-offcanvas row-offcanvas-right">
+            <!-- partial:partials/_settings-panel.html -->
+            <div class="theme-setting-wrapper">
+                <div id="settings-trigger"><i class="mdi mdi-settings"></i></div>
+                <div id="theme-settings" class="settings-panel">
+                    <i class="settings-close mdi mdi-close"></i>
+                    <p class="settings-heading">SIDEBAR SKINS</p>
+                    <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+                    <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+                    <p class="settings-heading mt-2">HEADER SKINS</p>
+                    <div class="color-tiles mx-0 px-4">
+                        <div class="tiles primary"></div>
+                        <div class="tiles success"></div>
+                        <div class="tiles warning"></div>
+                        <div class="tiles danger"></div>
+                        <div class="tiles pink"></div>
+                        <div class="tiles info"></div>
+                        <div class="tiles dark"></div>
+                        <div class="tiles default"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="right-sidebar" class="settings-panel">
+                <i class="settings-close mdi mdi-close"></i>
+                <ul class="nav nav-tabs" id="setting-panel" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="todo-tab" data-toggle="tab" href="#todo-section" role="tab" aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="chats-tab" data-toggle="tab" href="#chats-section" role="tab" aria-controls="chats-section">CHATS</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="setting-content">
+                    <div class="tab-pane fade show active scroll-wrapper" id="todo-section" role="tabpanel" aria-labelledby="todo-section">
+                        <div class="add-items d-flex px-3 mb-0">
+                            <form class="form w-100">
+                                <div class="form-group d-flex">
+                                    <input type="text" class="form-control todo-list-input" placeholder="Add To-do">
+                                    <button type="submit" class="add btn btn-primary todo-list-add-btn" id="add-task">Add</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="list-wrapper px-3">
+                            <ul class="d-flex flex-column-reverse todo-list">
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox">
+                                            Team review meeting at 3.00 PM
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox">
+                                            Prepare for presentation
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox">
+                                            Resolve all the low priority tickets due today
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked>
+                                            Schedule meeting for next week
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                                <li class="completed">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="checkbox" type="checkbox" checked>
+                                            Project review
+                                        </label>
+                                    </div>
+                                    <i class="remove mdi mdi-close-circle-outline"></i>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="events py-4 border-bottom px-3">
+                            <div class="wrapper d-flex mb-2">
+                                <i class="mdi mdi-circle-outline text-primary mr-2"></i>
+                                <span>Feb 11 2018</span>
+                            </div>
+                            <p class="mb-0 font-weight-thin text-gray">Creating component page</p>
+                            <p class="text-gray mb-0">build a js based app</p>
+                        </div>
+                        <div class="events pt-4 px-3">
+                            <div class="wrapper d-flex mb-2">
+                                <i class="mdi mdi-circle-outline text-primary mr-2"></i>
+                                <span>Feb 7 2018</span>
+                            </div>
+                            <p class="mb-0 font-weight-thin text-gray">Meeting with Alisa</p>
+                            <p class="text-gray mb-0 ">Call Sarah Graves</p>
+                        </div>
+                    </div>
+                    <!-- To do section tab ends -->
+                    <div class="tab-pane fade" id="chats-section" role="tabpanel" aria-labelledby="chats-section">
+                        <div class="d-flex align-items-center justify-content-between border-bottom">
+                            <p class="settings-heading border-top-0 mb-3 pl-3 pt-0 border-bottom-0 pb-0">Friends</p>
+                            <small class="settings-heading border-top-0 mb-3 pt-0 border-bottom-0 pb-0 pr-3 font-weight-normal">See All</small>
+                        </div>
+                        <ul class="chat-list">
+                            <li class="list active">
+                                <div class="profile"><img src="http://via.placeholder.com/100x100/f4f4f4/000000" alt="image"><span class="online"></span></div>
+                                <div class="info">
+                                    <p>Thomas Douglas</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">19 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="http://via.placeholder.com/100x100/f4f4f4/000000" alt="image"><span class="offline"></span></div>
+                                <div class="info">
+                                    <div class="wrapper d-flex">
+                                        <p>Catherine</p>
+                                    </div>
+                                    <p>Away</p>
+                                </div>
+                                <div class="badge badge-success badge-pill my-auto mx-2">4</div>
+                                <small class="text-muted my-auto">23 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="http://via.placeholder.com/100x100/f4f4f4/000000" alt="image"><span class="online"></span></div>
+                                <div class="info">
+                                    <p>Daniel Russell</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">14 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="http://via.placeholder.com/100x100/f4f4f4/000000" alt="image"><span class="offline"></span></div>
+                                <div class="info">
+                                    <p>James Richardson</p>
+                                    <p>Away</p>
+                                </div>
+                                <small class="text-muted my-auto">2 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="http://via.placeholder.com/100x100/f4f4f4/000000" alt="image"><span class="online"></span></div>
+                                <div class="info">
+                                    <p>Madeline Kennedy</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">5 min</small>
+                            </li>
+                            <li class="list">
+                                <div class="profile"><img src="http://via.placeholder.com/100x100/f4f4f4/000000" alt="image"><span class="online"></span></div>
+                                <div class="info">
+                                    <p>Sarah Graves</p>
+                                    <p>Available</p>
+                                </div>
+                                <small class="text-muted my-auto">47 min</small>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- chat tab ends -->
+                </div>
+            </div>
+            <!-- partial -->
+            <!-- partial:partials/_sidebar.html -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item nav-profile">
+                        <div class="nav-link">
+                            <div class="profile-image">
+                                <img src="http://via.placeholder.com/100x100/f4f4f4/000000" alt="image" />
+                                <span class="online-status online"></span> <!--change class online to offline or busy as needed-->
+                            </div>
+                            <div class="profile-name">
+                                <p class="name">@User.Identity.Name</p>
+                                <p class="designation">Специалист</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="icon-rocket menu-icon"></i>
+                            <span class="menu-title">Портфолио</span>
+                            <span class="badge badge-success">New</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="icon-shield menu-icon"></i>
+                            <span class="menu-title">Заказы</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="false" aria-controls="page-layouts">
+                            <i class="icon-check menu-icon"></i>
+                            <span class="menu-title">Выпадающий список</span>
+                            <span class="badge badge-success">3</span>
+                        </a>
+                        <div class="collapse" id="page-layouts">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="#">Пункт 1</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="#">Пункт 2</a></li>
+                                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="#">Пункт 3</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Account/Manage/ProfileExecutor">
+                            <i class="icon-rocket menu-icon"></i>
+                            <span class="menu-title">Редактировать профиль</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- partial -->
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-md-center">
+                                    <i class="mdi mdi-basket icon-lg text-success"></i>
+                                    <div class="ml-3">
+                                        <h4>Заказы в работе</h4>
+                                        <h2>2</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-md-center">
+                                    <i class="mdi mdi-rocket icon-lg text-warning"></i>
+                                    <div class="ml-3">
+                                        <h4>В ожидании</h4>
+                                        <h2>7</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-md-center">
+                                    <i class="mdi mdi-diamond icon-lg text-info"></i>
+                                    <div class="ml-3">
+                                        <h4>Выполнено</h4>
+                                        <h2>34</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-md-center">
+                                    <i class="mdi mdi-chart-line-stacked icon-lg text-danger"></i>
+                                    <div class="ml-3">
+                                        <h4>Доход за месяц</h4>
+                                        <h2>117 500</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row grid-margin">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Текущие заказы</h4>
+
+                                <div class="table">
+                                    <table class="table mt-3 border-top">
+                                        <thead>
+                                            <tr>
+                                                <th>Код заказа</th>
+                                                <th>Заказчик</th>
+                                                <th>Расположение</th>
+                                                <th>Стоимость</th>
+                                                <th>Статус</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>50014</td>
+                                                <td>Катя</td>
+                                                <td>Москва</td>
+                                                <td>110100</td>
+                                                <td><div class="badge badge-success badge-fw">Progress</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>50015</td>
+                                                <td>Оля</td>
+                                                <td>Москва</td>
+                                                <td>$4500</td>
+                                                <td><div class="badge badge-success badge-fw">Progress</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>50016</td>
+                                                <td>Петя</td>
+                                                <td>Москва</td>
+                                                <td>$4300</td>
+
+                                                <td><div class="badge badge-success badge-fw">Progress</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td>50017</td>
+                                                <td>Александр</td>
+                                                <td>Москва</td>
+                                                <td>$6400</td>
+                                                <td><div class="badge badge-success badge-fw">Progress</div></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                           
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Новости/Отзывы</h4>
+                                <p class="card-description">Тут будет что-то написано</p>
+                                <div id="js-legend" class="chartjs-legend mt-4 mb-5"></div>
+                                <div class="demo-chart">
+                                    <canvas id="dashboard-monthly-analytics"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="wrapper d-md-flex align-items-center justify-content-center text-center text-md-left">
+                                    <i class="mdi mdi-facebook icon-lg text-facebook"></i>
+                                    <div class="wrapper ml-md-3">
+                                        <p class="text-facebook mb-0 font-weight-medium">15k Likes</p>
+                                        <small class="text-muted mb-0">You main list growing !</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="wrapper d-md-flex align-items-center justify-content-center text-center text-md-left">
+                                    <i class="mdi mdi-twitter icon-lg text-twitter"></i>
+                                    <div class="wrapper ml-md-3">
+                                        <p class="text-twitter mb-0 font-weight-medium">18k followers</p>
+                                        <small class="text-muted mb-0">There you are !</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="wrapper d-md-flex align-items-center justify-content-center text-center text-md-left">
+                                    <i class="mdi mdi-linkedin icon-lg text-linkedin"></i>
+                                    <div class="wrapper ml-md-3">
+                                        <p class="text-linkedin mb-0 font-weight-medium">5k connections</p>
+                                        <small class="text-muted mb-0">Going good !</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- content-wrapper ends -->
+
         </div>
-        <div class="form-group">
-            @if (Model.User.Identity.IsAuthenticated)
-            {
-                if (Model.User.IsInRole("executor"))
-                {
-                    <p>Список новых заказов</p>
-                    <a asp-page="/Account/Manage/ProfileExecutor" class="btn btn-block btn-success">Профиль</a>
-                }
-                <button asp-page-handler="Logout" type="submit" class="btn btn-block btn-success">Выход</button>
-            }
-            else
-            {
-                <a asp-page="/Account/Register" asp-route-role="executor" class="btn btn-block btn-success">Стать Испольнителем</a>
-                @*<a asp-page="/Account/Register" asp-route-role="customer">Стать клиентом</a>*@
-                <a asp-page="/Account/Login" class="btn btn-block btn-success">Вход</a>
-            }
-        </div>
-    </form>
+        <!-- row-offcanvas ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+    @*@if (Model.User.IsInRole("admin"))
+        {
+            <p><a asp-page="/AdminPanel/Index" class="btn btn-success">AdminPanel</a></p>
+        }*@
+
+
+
+
 </div>
-
-
-
-
-
-@*@if (Model.User.IsInRole("admin"))
-    {
-        <p><a asp-page="/AdminPanel/Index" class="btn btn-success">AdminPanel</a></p>
-    }*@
-
-
-
-
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="js/off-canvas.js"></script>
+<script src="js/hoverable-collapse.js"></script>
+<script src="js/misc.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/todolist.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="js/dashboard.js"></script>
