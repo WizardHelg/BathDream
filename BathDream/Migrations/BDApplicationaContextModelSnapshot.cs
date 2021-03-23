@@ -4,22 +4,38 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
     [DbContext(typeof(BDApplicationaContext))]
-    [Migration("20210217075051_Test")]
-    partial class Test
+    partial class BDApplicationaContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("BathDream.Models.Estimate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("Estimates");
+                });
 
             modelBuilder.Entity("BathDream.Models.FeedBack", b =>
                 {
@@ -31,11 +47,11 @@ namespace BathDream.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ExecutorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ExecutorProfileId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
@@ -44,9 +60,72 @@ namespace BathDream.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ExecutorId");
+                    b.HasIndex("ExecutorProfileId");
 
                     b.ToTable("FeedBacks");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Contract")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ExecutorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ExecutorId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("DoorHeight")
+                        .HasColumnType("float");
+
+                    b.Property<double>("DoorWidth")
+                        .HasColumnType("float");
+
+                    b.Property<int>("EstimateId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Length")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Width")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstimateId");
+
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("BathDream.Models.User", b =>
@@ -57,15 +136,8 @@ namespace BathDream.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -128,8 +200,83 @@ namespace BathDream.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+            modelBuilder.Entity("BathDream.Models.UserProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("UserProfiles");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Work", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("EstimateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstimateId");
+
+                    b.ToTable("Works");
+                });
+
+            modelBuilder.Entity("BathDream.Models.WorkPrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("EstimateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstimateId");
+
+                    b.ToTable("WorkPrices");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -263,36 +410,95 @@ namespace BathDream.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BathDream.Models.UserCustomer", b =>
+            modelBuilder.Entity("BathDream.Models.ExecutorProfile", b =>
                 {
-                    b.HasBaseType("BathDream.Models.User");
-
-                    b.HasDiscriminator().HasValue("UserCustomer");
-                });
-
-            modelBuilder.Entity("BathDream.Models.UserExecutor", b =>
-                {
-                    b.HasBaseType("BathDream.Models.User");
+                    b.HasBaseType("BathDream.Models.UserProfile");
 
                     b.Property<string>("About")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasDiscriminator().HasValue("UserExecutor");
+                    b.ToTable("ExecutorProfiles");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Estimate", b =>
+                {
+                    b.HasOne("BathDream.Models.Order", "Order")
+                        .WithOne("Estimate")
+                        .HasForeignKey("BathDream.Models.Estimate", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("BathDream.Models.FeedBack", b =>
                 {
-                    b.HasOne("BathDream.Models.UserCustomer", "Customer")
+                    b.HasOne("BathDream.Models.UserProfile", "Customer")
                         .WithMany("FeedBacks")
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("BathDream.Models.UserExecutor", "Executor")
-                        .WithMany("FeedBacks")
+                    b.HasOne("BathDream.Models.ExecutorProfile", "Executor")
+                        .WithMany()
+                        .HasForeignKey("ExecutorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Executor");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Order", b =>
+                {
+                    b.HasOne("BathDream.Models.UserProfile", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("BathDream.Models.ExecutorProfile", "Executor")
+                        .WithMany()
                         .HasForeignKey("ExecutorId");
 
                     b.Navigation("Customer");
 
                     b.Navigation("Executor");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Room", b =>
+                {
+                    b.HasOne("BathDream.Models.Estimate", "Estimate")
+                        .WithMany("Rooms")
+                        .HasForeignKey("EstimateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estimate");
+                });
+
+            modelBuilder.Entity("BathDream.Models.UserProfile", b =>
+                {
+                    b.HasOne("BathDream.Models.User", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("BathDream.Models.UserProfile", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Work", b =>
+                {
+                    b.HasOne("BathDream.Models.Estimate", "Estimate")
+                        .WithMany()
+                        .HasForeignKey("EstimateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estimate");
+                });
+
+            modelBuilder.Entity("BathDream.Models.WorkPrice", b =>
+                {
+                    b.HasOne("BathDream.Models.Estimate", null)
+                        .WithMany("Works")
+                        .HasForeignKey("EstimateId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -346,14 +552,37 @@ namespace BathDream.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BathDream.Models.UserCustomer", b =>
+            modelBuilder.Entity("BathDream.Models.ExecutorProfile", b =>
                 {
-                    b.Navigation("FeedBacks");
+                    b.HasOne("BathDream.Models.UserProfile", null)
+                        .WithOne()
+                        .HasForeignKey("BathDream.Models.ExecutorProfile", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("BathDream.Models.UserExecutor", b =>
+            modelBuilder.Entity("BathDream.Models.Estimate", b =>
+                {
+                    b.Navigation("Rooms");
+
+                    b.Navigation("Works");
+                });
+
+            modelBuilder.Entity("BathDream.Models.Order", b =>
+                {
+                    b.Navigation("Estimate");
+                });
+
+            modelBuilder.Entity("BathDream.Models.User", b =>
+                {
+                    b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("BathDream.Models.UserProfile", b =>
                 {
                     b.Navigation("FeedBacks");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

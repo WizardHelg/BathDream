@@ -10,9 +10,14 @@ namespace BathDream.Data
 {
     public class BDApplicationaContext : IdentityDbContext<User>
     {
-        public DbSet<UserCustomer> UserCustomers { get; set; }
-        public DbSet<UserExecutor> UserExecutors { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<ExecutorProfile> ExecutorProfiles { get; set; }
         public DbSet<FeedBack> FeedBacks { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Estimate> Estimates { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<WorkPrice> WorkPrices { get; set; }
+        public DbSet<Work> Works { get; set; }
 
         public BDApplicationaContext(DbContextOptions<BDApplicationaContext> options)
             : base(options)

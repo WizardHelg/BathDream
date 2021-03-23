@@ -12,7 +12,7 @@ namespace BathDream.Models
         public string UName { get; set; }
         public string UFamaly { get; set; }
         public string UPatronymic { get; set; }
-        public string Address { get; set; }
+        public UserProfile Profile { get; set; }
 
         [NotMapped]
         public string FullName => $"{UName} {UPatronymic} {UFamaly}";

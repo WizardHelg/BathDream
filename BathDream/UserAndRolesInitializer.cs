@@ -25,7 +25,7 @@ namespace BathDream
 
             if (await userManager.FindByNameAsync(adminEmail) == null)
             {
-                User admin = new User()
+                User admin = new()
                 {
                     Email = adminEmail,
                     UserName = adminEmail

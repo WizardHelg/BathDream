@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace BathDream.Models
 {
-    public class Order
+    public class Work
     {
         public int Id { get; set; }
-        public string Status { get; set; }
-        public UserProfile Customer { get; set; }
-        public ExecutorProfile Executor { get; set; }
+        public int EstimateId { get; set; }
         public Estimate Estimate { get; set; }
-        public string Contract { get; set; }
+        public string Name { get; set; }
+        public string Unit { get; set; }
+        public double Price { get; set; }
     }
 }

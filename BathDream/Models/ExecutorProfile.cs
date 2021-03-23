@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace BathDream.Models
 {
-    public class UserExecutor : User
+    [Table("ExecutorProfiles")]
+    public class ExecutorProfile : UserProfile
     {
         public string About { get; set; }
-        public int Rating => FeedBacks.Sum(f => f.Rating);
-        public List<FeedBack> FeedBacks { get; set; } = new List<FeedBack>();
+        
+        public double GetRating() => FeedBacks.Average(fb => fb.Rating);
     }
 }

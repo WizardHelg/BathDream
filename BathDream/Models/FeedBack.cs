@@ -8,8 +8,9 @@ namespace BathDream.Models
     public class FeedBack
     {
         public int Id { get; set; }
-        public UserCustomer Customer { get; set; }
-        public UserExecutor Executor { get; set; }
+        public UserProfile Customer { get; set; }
+        public int ExecutorProfileId { get; set; }
+        public ExecutorProfile Executor { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; }
     }

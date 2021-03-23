@@ -181,10 +181,10 @@ namespace BathDream.Pages
         readonly IWebHostEnvironment _env;
 
         [BindProperty]
-        public Order Order { get; set; }
+        public COrder Order { get; set; }
 
         [BindProperty]
-        public Rooms Rooms { get; set; }
+        public CRooms Rooms { get; set; }
 
         [BindProperty]
         public Customer Customer { get; set; }
@@ -317,7 +317,7 @@ namespace BathDream.Pages
             int pointer = 10;
             int index = 1;
             ISumAreas sumAreas = Rooms;
-            foreach(Room room in Rooms)
+            foreach(CRoom room in Rooms)
             {
                 ws.Range($"B{pointer - 1}").Value = index++;
                 ws.Range($"C{pointer - 1}").Value = room.Name;

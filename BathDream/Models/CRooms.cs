@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace BathDream.Models
 {
-    public class Rooms : ISumAreas
+    public class CRooms : ISumAreas
     {
         public double SumFloorArea { get; set; }
         public double SumCeilingArea { get; set; }
@@ -39,7 +39,7 @@ namespace BathDream.Models
         public IEnumerator GetEnumerator()
         {
             for (int i = 0; i < Names.GetLength(0); i++)
-                yield return new Room
+                yield return new CRoom
                 {
                     Name = Names[i],
                     Width = double.TryParse(Widths[i], NumberStyles.Any, CultureInfo.InvariantCulture, out double resW) ? resW : 0.0,

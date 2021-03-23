@@ -59,22 +59,29 @@ namespace BathDream.Pages.Account.Manage
             [DataType(DataType.Text)]
             [Display(Name = "Регион")]
             public string Address { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "О себе")]
+            public string About { get; set; }
             public string Id { get; set; }
             public string Role { get; set; }
             public int Rating { get; set; }
-            public List<FeedBack> FeedBacks { get; set; }
+            //public List<FeedBack> FeedBacks { get; set; }
 
         }
         public async Task OnGet()
         {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+            ExecutorProfile profile = user.Profile as ExecutorProfile;
             Input.Id = user.Id;
             Input.Name = user.UName;
             Input.Famaly = user.UFamaly;
             Input.Patronymic = user.UPatronymic;
             Input.Email = user.Email;
             Input.Phone = user.PhoneNumber;
-            Input.Address = user.Address;
+            Input.Address = profile.Address;
+            Input.About = profile.About;
             //var feedbacks = _db.FeedBacks.Where(x => x.Executor.Id == user.Id).ToList();
             //user.FeedBacks = feedbacks;
             //Input.FeedBacks = feedbacks;
@@ -86,13 +93,18 @@ namespace BathDream.Pages.Account.Manage
             if (ModelState.IsValid)
             {
                 User user = await _userManager.FindByIdAsync(Input.Id);
+                _db.Entry(user).Reference(x => x.Profile).Load();
+                ExecutorProfile profile = user.Profile as ExecutorProfile;
+
                 if (user != null)
                 {
                     user.UName = Input.Name;
                     user.UFamaly = Input.Famaly;
                     user.UPatronymic = Input.Patronymic;
                     user.PhoneNumber = Input.Phone;
-                    user.Address = Input.Address;
+                    profile.Address = Input.Address;
+                    profile.About = Input.About;
+                    
 
                     var result = await _userManager.UpdateAsync(user);
                     if (!result.Succeeded)
@@ -102,10 +114,10 @@ namespace BathDream.Pages.Account.Manage
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
                     }
+                    else await _db.SaveChangesAsync();
                 }
             }
             return Page();
-
         }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BathDream.Migrations
 {
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,8 +29,6 @@ namespace BathDream.Migrations
                     UName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UFamaly = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UPatronymic = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -158,13 +156,52 @@ namespace BathDream.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserProfiles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExecutorProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    About = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExecutorProfiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExecutorProfiles_UserProfiles_Id",
+                        column: x => x.Id,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FeedBacks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ExecutorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    ExecutorProfileId = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -172,17 +209,133 @@ namespace BathDream.Migrations
                 {
                     table.PrimaryKey("PK_FeedBacks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FeedBacks_AspNetUsers_CustomerId",
+                        name: "FK_FeedBacks_ExecutorProfiles_ExecutorProfileId",
+                        column: x => x.ExecutorProfileId,
+                        principalTable: "ExecutorProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FeedBacks_UserProfiles_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    ExecutorId = table.Column<int>(type: "int", nullable: true),
+                    Contract = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_ExecutorProfiles_ExecutorId",
+                        column: x => x.ExecutorId,
+                        principalTable: "ExecutorProfiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_FeedBacks_AspNetUsers_ExecutorId",
-                        column: x => x.ExecutorId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Orders_UserProfiles_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "UserProfiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Estimates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Estimates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Estimates_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EstimateId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Width = table.Column<double>(type: "float", nullable: false),
+                    Height = table.Column<double>(type: "float", nullable: false),
+                    Length = table.Column<double>(type: "float", nullable: false),
+                    DoorWidth = table.Column<double>(type: "float", nullable: false),
+                    DoorHeight = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rooms_Estimates_EstimateId",
+                        column: x => x.EstimateId,
+                        principalTable: "Estimates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WorkPrices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    EstimateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkPrices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WorkPrices_Estimates_EstimateId",
+                        column: x => x.EstimateId,
+                        principalTable: "Estimates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Works",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EstimateId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Works", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Works_Estimates_EstimateId",
+                        column: x => x.EstimateId,
+                        principalTable: "Estimates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -225,14 +378,52 @@ namespace BathDream.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Estimates_OrderId",
+                table: "Estimates",
+                column: "OrderId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FeedBacks_CustomerId",
                 table: "FeedBacks",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FeedBacks_ExecutorId",
+                name: "IX_FeedBacks_ExecutorProfileId",
                 table: "FeedBacks",
+                column: "ExecutorProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CustomerId",
+                table: "Orders",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ExecutorId",
+                table: "Orders",
                 column: "ExecutorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_EstimateId",
+                table: "Rooms",
+                column: "EstimateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfiles_UserId",
+                table: "UserProfiles",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkPrices_EstimateId",
+                table: "WorkPrices",
+                column: "EstimateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Works_EstimateId",
+                table: "Works",
+                column: "EstimateId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -256,7 +447,28 @@ namespace BathDream.Migrations
                 name: "FeedBacks");
 
             migrationBuilder.DropTable(
+                name: "Rooms");
+
+            migrationBuilder.DropTable(
+                name: "WorkPrices");
+
+            migrationBuilder.DropTable(
+                name: "Works");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Estimates");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "ExecutorProfiles");
+
+            migrationBuilder.DropTable(
+                name: "UserProfiles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

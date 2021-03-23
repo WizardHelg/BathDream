@@ -21,6 +21,7 @@ namespace BathDream.Pages.Test
         public class InputModel
         {
             public string NameFamaly { get; set; }
+            public string About { get; set; }
         }
 
         public IndexModel(SignInManager<User> signInManager, UserManager<User> userManager)
@@ -31,7 +32,7 @@ namespace BathDream.Pages.Test
 
         public async Task OnGetAsync()
         {
-            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            User user = await _userManager.FindByNameAsync(User.Identity.Name) as User;
             Input.NameFamaly = $"{user.UName} {user.UFamaly}";
         }
 
