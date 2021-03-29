@@ -13,7 +13,7 @@ namespace BathDream.Pages.Test
     [Authorize]
     public class IndexModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
+        //private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
 
         [BindProperty]
@@ -24,21 +24,25 @@ namespace BathDream.Pages.Test
             public string About { get; set; }
         }
 
-        public IndexModel(SignInManager<User> signInManager, UserManager<User> userManager)
+        public IndexModel(/*SignInManager<User> signInManager,*/ UserManager<User> userManager)
         {
-            _signInManager = signInManager;
+            //_signInManager = signInManager;
             _userManager = userManager;
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            User user = await _userManager.FindByNameAsync(User.Identity.Name) as User;
-            Input.NameFamaly = $"{user.UName} {user.UFamaly}";
-        }
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var roles = await _userManager.GetRolesAsync(user);
+            if(roles.Count > 0)
+                switch (roles[0])
+                {
+                    case "executor":
+                        return RedirectToPage("/Account/Executor");
+                    case "customer":
+                        return RedirectToPage("/Account/Customer");
+                }
 
-        public async Task<IActionResult> OnPostLogout()
-        {
-            await _signInManager.SignOutAsync();
             return RedirectToPage("/Index");
         }
     }

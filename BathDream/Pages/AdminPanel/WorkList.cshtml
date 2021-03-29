@@ -1,0 +1,34 @@
+﻿@page
+@using BathDream.Models
+@model BathDream.Pages.AdminPanel.WorkListModel
+@{
+    ViewData["Title"] = "Редактирование работ";
+}
+
+<br />
+<br />
+
+<form method="post">
+    <a class="btn btn-default" asp-page="./WorkEdit">Добавить</a>
+    <table class="table">
+        <tr>
+            <th>Внутреннее имя</th>
+            <th>Название работы</th>
+            <th>Еденица измерения</th>
+            <th>Цена</th>
+            <th>Редактирование</th>
+            <th>Удаление</th>
+        </tr>
+        @foreach (WorkPrice wp in Model.Input.WorkPrices)
+        {
+            <tr>
+                <td>@wp.InnerName</td>
+                <td>@wp.Name</td>
+                <td>@wp.Unit</td>
+                <td>@wp.Price</td>
+                <td><a class="btn btn-default" asp-page="./WorkEdit" asp-page-handler="Edit" asp-route-id=@wp.Id>Редактировать</a></td>
+                <td><button class="btn btn-danger" asp-page-handler="Delete" asp-route-id="@wp.Id">Удалить</button></td>
+            </tr>
+        }
+    </table>
+</form>

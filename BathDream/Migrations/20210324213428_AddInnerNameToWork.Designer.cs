@@ -4,14 +4,16 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    partial class BDApplicationaContextModelSnapshot : ModelSnapshot
+    [Migration("20210324213428_AddInnerNameToWork")]
+    partial class AddInnerNameToWork
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,9 +79,6 @@ namespace BathDream.Migrations
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("ExecutorId")
                         .HasColumnType("int");
@@ -240,26 +239,17 @@ namespace BathDream.Migrations
                     b.Property<int>("EstimateId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Group")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InnerName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Position")
-                        .HasColumnType("int");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Volume")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

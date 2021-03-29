@@ -246,10 +246,11 @@
             <radio-form-element element-name="Order.InstallDoor" element-value="false" element-checked="true">Нет</radio-form-element>
         </simple-form-container>
 
+        <button class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету</button>
         @*<button type="submit" class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету1</button>*@
-        <button type="button" class="btn btn-success btn-lg btn-block" formaction="/?handler=submit" data-target="#modal-order" data-toggle="modal">Расчитать смету</button>
+        @*<button type="button" class="btn btn-success btn-lg btn-block" formaction="/?handler=submit" data-target="#modal-order" data-toggle="modal">Расчитать смету</button>*@
 
-        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modal-order" role="dialog" tabindex="-1">
+        @*<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modal-order" role="dialog" tabindex="-1">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -280,7 +281,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
     </form>
 
     <script type="text/javascript">

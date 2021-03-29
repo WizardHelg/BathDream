@@ -16,9 +16,9 @@ namespace BathDream.Pages.Account.Manage
     public class ProfileExecutorModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private readonly BDApplicationaContext _db;
+        private readonly DBApplicationaContext _db;
 
-        public ProfileExecutorModel(UserManager<User> userManager, BDApplicationaContext db)
+        public ProfileExecutorModel(UserManager<User> userManager, DBApplicationaContext db)
         {
             _userManager = userManager;
             _db = db;

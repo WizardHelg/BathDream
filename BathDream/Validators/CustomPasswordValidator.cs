@@ -18,7 +18,7 @@ namespace BathDream.Validators
 
         public Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user, string password)
         {
-            List<IdentityError> errors = new List<IdentityError>();
+            List<IdentityError> errors = new();
 
             if (String.IsNullOrEmpty(password) || password.Length < RequiredLength)
                 errors.Add(new IdentityError { Description = $"Минимальная длинна пароля {RequiredLength}" });

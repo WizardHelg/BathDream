@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BathDream.Pages.AdminPanel
 {
-    public class RolesModel : PageModel
+    public class TestTempDataModel : PageModel
     {
         public void OnGet()
         {

@@ -14,7 +14,7 @@ namespace BathDream.Validators
         public bool RequireUniqueEmail { get; set; }
         public async Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user)
         {
-            List<IdentityError> errors = new List<IdentityError>();
+            List<IdentityError> errors = new();
 
             if (String.IsNullOrEmpty(AllowedUserNameCharactersReqEx) && Regex.IsMatch(user.Email, AllowedUserNameCharactersReqEx))
                 errors.Add(new IdentityError() { Description = "Допустимы только буквенно-цифровые симолы а так же символы: @ - _ ." });

@@ -10,11 +10,14 @@
 <div class="container-fluid">
     <div class="row container-center">
         <div class="col-lg-8 col-xs-12 lk-auth-reg vertical-align container-center wrap">
-            <div class="lk-auth-title col-xs-12">Регистрация<br>нового специалиста</div>
+            <div class="lk-auth-title col-xs-12">Регистрация<br>нового @Model.Input.UserType</div>
             <form method="post" class="form-horizontal" style="width:100%">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <input type="hidden" asp-for="Input.Role" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" asp-for="Input.TempOerderID" />
                 </div>
 
                 <div class="form-group">
@@ -85,7 +88,15 @@
                     Если у вас уже есть аккаунт, то нажав на кнопку ниже, вы сможете ввести свои данные
                     и войти в свой личный кабинет
                 </div>
-                <a class="btn btn-default" style="text-decoration: none; " href="/Account/Login">   Войти   </a>
+                @if (Model.Input.TempOerderID > 0)
+                {
+                    <a class="btn btn-default" style="text-decoration: none;" asp-page="/Account/Login" asp-page-handler="FromAddOrder" asp-route-id="@Model.Input.TempOerderID">Войти</a>
+                }
+                else
+                {
+                    <a class="btn btn-default" style="text-decoration: none;" asp-page="/Account/Login">Войти</a>
+                }
+
             </div>
         </div>
     </div>

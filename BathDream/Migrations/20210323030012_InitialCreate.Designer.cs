@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
-    [DbContext(typeof(BDApplicationaContext))]
+    [DbContext(typeof(DBApplicationaContext))]
     [Migration("20210323030012_InitialCreate")]
     partial class InitialCreate
     {

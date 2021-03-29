@@ -44,7 +44,7 @@ namespace BathDream
                 RequireUniqueEmail = true
             });
 
-            services.AddDbContext<BDApplicationaContext>(options =>
+            services.AddDbContext<DBApplicationaContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
@@ -53,7 +53,7 @@ namespace BathDream
             {
                 options.SignIn.RequireConfirmedAccount = true;
             })
-                .AddEntityFrameworkStores<BDApplicationaContext>()
+                .AddEntityFrameworkStores<DBApplicationaContext>()
                 .AddDefaultTokenProviders();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();

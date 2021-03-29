@@ -18,6 +18,9 @@
                 <div class="col-sm-8 col-xs-12">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
+                        <input type="hidden" asp-for="Input.TempOrderId" />
+                    </div>
+                    <div class="form-group">
                         <label asp-for="Input.Email" style="margin-right: 60px;">Логин</label>
                         <input asp-for="Input.Email" placeholder="Введите Email" class="form-control">
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
@@ -45,11 +48,15 @@
             </div>
         </form>
 
-        <div class="lk-auth-registration col-xs-12 container-center wrap">
+        @if (Model.Input.TempOrderId == 0)
+        {
+            <div class="lk-auth-registration col-xs-12 container-center wrap">
 
-            <div class="text-reg col-xs-12" style="margin-bottom: 10px">Если у вас нет аккаунта, вы можете зарегистрироваться по ссылке ниже.</div>
-            <a class="btn btn-default" style="text-decoration: none;" href="/Account/Register?role=executor">Зарегистрироваться</a>
+                <div class="text-reg col-xs-12" style="margin-bottom: 10px">Если у вас нет аккаунта, вы можете зарегистрироваться по ссылке ниже.</div>
+                <a class="btn btn-default" style="text-decoration: none;" asp-page="/Account/Register" asp-route-role="executor">Зарегистрироваться как специалист</a>
+                <a class="btn btn-default" style="text-decoration: none;" asp-page="/Account/Register" asp-route-role="customer">Зарегистрироваться как клиент</a>
 
-        </div>
+            </div>
+        }
     </div>
 </div>

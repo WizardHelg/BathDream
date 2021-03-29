@@ -16,9 +16,9 @@ namespace BathDream.Pages.Account
     public class RegisterModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private readonly BDApplicationaContext _db;
+        private readonly DBApplicationaContext _db;
 
-        public RegisterModel(UserManager<User> userManager, BDApplicationaContext db)
+        public RegisterModel(UserManager<User> userManager, DBApplicationaContext db)
         {
             _userManager = userManager;
             _db = db;
@@ -72,10 +72,32 @@ namespace BathDream.Pages.Account
             public string PasswordConfirm { get; set; }
 
             public string Role { get; set; }
+            public string UserType { get; set; }
+
+            public int TempOerderID { get; set; } = 0;
         }
         public void OnGet(string role)
         {
             Input = new InputModel { Role = role };
+            switch (role)
+            {
+                case "executor":
+                    Input.UserType = "специалиста";
+                    break;
+                case "customer":
+                    Input.UserType = "пользовател€";
+                    break;
+            }
+        }
+
+        public void OnGetFromAddOrder(int id)
+        {
+            Input = new InputModel
+            {
+                Role = "customer",
+                UserType = "пользовател€",
+                TempOerderID = id
+            };
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -127,11 +149,12 @@ namespace BathDream.Pages.Account
                         values: new
                         {
                             userId = user.Id,
-                            code
+                            code,
+                            tempOrderId = Input.TempOerderID
                         },
                         protocol: Request.Scheme);
                     EmailService email = new();
-                    await email.SendEmailAsync(user.Email, "ѕодтвердите пароль", $"ƒл€ завершени€ регистрации ререйдите по ссылке <a href='{callbackUrl}'>link</a>");
+                    await email.SendEmailAsync(user.Email, "ѕодтвердите Email", $"ƒл€ завершени€ регистрации ререйдите по ссылке <a href='{callbackUrl}'>link</a>");
                     return RedirectToPage("/Account/RegisterConfirm");
                 }
                 else

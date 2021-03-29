@@ -7,6 +7,7 @@ using BathDream.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using BathDream.Data;
 
 namespace BathDream.Pages.Account
 {
@@ -15,13 +16,16 @@ namespace BathDream.Pages.Account
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly DBApplicationaContext _db;
 
         public LoginModel(
             UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            DBApplicationaContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _db = db;
         }
 
         public string ReturnUrl { get; set; }
@@ -43,12 +47,23 @@ namespace BathDream.Pages.Account
 
             [Display(Name = "«апомнить?")]
             public bool RememberMe { get; set; }
+
+            public int TempOrderId { get; set; } = 0;
         }
 
         public void OnGet(string returnUrl = null)
         {
+            Input = new InputModel();
             returnUrl ??= Url.Content("~/");
             ReturnUrl = returnUrl;
+        }
+
+        public void OnGetFromAddOrder(int id)
+        {
+            Input = new InputModel()
+            {
+                TempOrderId = id
+            };
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -58,6 +73,26 @@ namespace BathDream.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, false);
                 if (result.Succeeded)
                 {
+                    if(Input.TempOrderId > 0)
+                    {
+                        //получить пользовател€
+                        User user = await _userManager.FindByNameAsync(Input.Email);
+                        await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
+                        //получить заказ
+                        Order order = _db.Orders.Where(o => o.Id == Input.TempOrderId).FirstOrDefault();
+
+                        //св€зать их узами внешнего ключа
+                        if(order != null)
+                        {
+                            order.Customer = user.Profile;
+                            order.Status = "created";
+                            _db.Update(order);
+                            _db.SaveChanges();
+                        }
+                    }
+
+
                     if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                         return LocalRedirect(ReturnUrl);
                     else

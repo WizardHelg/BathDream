@@ -19,6 +19,7 @@ namespace BathDream.Models
 
         public double FloorArea() => Width / 1000 * Length / 1000;
         public double CeilingArea() => Width / 1000 * Length / 1000;
-        public double WallsArea() => 2 * (Width / 1000 + Length / 1000) * Height / 1000 - (DoorWidth / 1000 * DoorHeight / 1000);
+        public double DoorArea() => DoorWidth / 1000 * DoorHeight / 1000;
+        public double WallsArea() => 2 * (Width / 1000 + Length / 1000) * Height / 1000 - DoorArea();
     }
 }

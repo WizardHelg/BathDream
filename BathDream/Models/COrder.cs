@@ -153,32 +153,32 @@ namespace BathDream.Models
         /// <summary>
         /// Кран перекрытия
         /// </summary>
-        public int PLOverheadCrane { get; set; }
+        public int PLOverheadCrane { get; set; } = 1;
 
         /// <summary>
         /// Фильр грубой очистки
         /// </summary>
-        public int PLCoarseFilter { get; set; }
+        public int PLCoarseFilter { get; set; } = 1;
 
         /// <summary>
         /// Обратный клапан
         /// </summary>
-        public int PLCheckValve { get; set; }
+        public int PLCheckValve { get; set; } = 1;
 
         /// <summary>
         /// Счётчик
         /// </summary>
-        public int PLCounter { get; set; }
+        public int PLCounter { get; set; } = 1;
 
         /// <summary>
         /// Водяной коллектор ХВ
         /// </summary>
-        public int PLWaterCollectorCW { get; set; }
+        public int PLWaterCollectorCW { get; set; } = 1;
 
         /// <summary>
         /// Водяной коллектор ГВ
         /// </summary>
-        public int PLWaterCollectorHW { get; set; }
+        public int PLWaterCollectorHW { get; set; } = 1;
         #endregion
     }
 }

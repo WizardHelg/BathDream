@@ -1,0 +1,35 @@
+﻿@page
+@model BathDream.Pages.AdminPanel.WorkEditModel
+@{
+    ViewData["Title"] = "Редактирование работы";
+}
+
+<br />
+<br />
+
+<div class="container-center">
+    <form class="col-lg-10 form-horizontal" method="post">
+        <div class="form-group">
+            <input type="hidden" asp-for="Input.Id" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Input.InnerName"></label>
+            <input class="form-control" asp-for="Input.InnerName" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Input.Name"></label>
+            <input class="form-control" asp-for="Input.Name" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Input.Unit"></label>
+            <input class="form-control" asp-for="Input.Unit" />
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Input.Price"></label>
+            <input class="form-control" asp-for="Input.Price" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-default">Сохранить</button>
+        </div>
+    </form>
+</div>

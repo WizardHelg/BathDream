@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Data
 {
-    public class BDApplicationaContext : IdentityDbContext<User>
+    public class DBApplicationaContext : IdentityDbContext<User>
     {
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<ExecutorProfile> ExecutorProfiles { get; set; }
@@ -19,7 +19,7 @@ namespace BathDream.Data
         public DbSet<WorkPrice> WorkPrices { get; set; }
         public DbSet<Work> Works { get; set; }
 
-        public BDApplicationaContext(DbContextOptions<BDApplicationaContext> options)
+        public DBApplicationaContext(DbContextOptions<DBApplicationaContext> options)
             : base(options)
         {
         }

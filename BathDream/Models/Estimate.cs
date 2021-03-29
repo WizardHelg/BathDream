@@ -11,6 +11,6 @@ namespace BathDream.Models
         public int OrderId { get; set; }
         public Order Order { get; set; }
         public List<Room> Rooms { get; set; }
-        public List<WorkPrice> Works { get; set; }
+        public List<Work> Works { get; set; }
     }
 }

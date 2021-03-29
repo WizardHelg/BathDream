@@ -9,6 +9,7 @@ namespace BathDream.Models
     {
         public int Id { get; set; }
         public string Status { get; set; }
+        public DateTime Date { get; set; }
         public UserProfile Customer { get; set; }
         public ExecutorProfile Executor { get; set; }
         public Estimate Estimate { get; set; }
