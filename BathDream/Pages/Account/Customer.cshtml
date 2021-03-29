@@ -7,133 +7,104 @@
 
 <br />
 <br />
-<p>Страница пользователя @Model.Input.NameFamaly</p>
+<!--<p>Страница пользователя @Model.Input.NameFamaly</p>
 <a asp-page="/Account/Manage/ProfileCustomer">Редактировать профиль</a>
-<a asp-page-handler="Logout">Выход</a>
+<a asp-page-handler="Logout">Выход</a>-->
 
 <br />
 @if (Model.Input.Display)
 {
     string sub_caption = "";
-    int room_count = 1;
 
-<table border="1">
-    <tr>
-        <td>Приложение № 1</td>
-    </tr>
-    <tr>
-        <td>К договору №______________________________</td>
-        <td></td>
-        <td></td>
-        <td>@Model.Input.OrderDate</td>
-    </tr>
-    <tr>
-        <td>Адрес объекта:____________________________</td>
-    </tr>
-    <tr>
-        <td>Сметный расчет:</td>
-        <td>@Model.Input.OrderNumber</td>
-    </tr>
-    <tr>
-        <td>Тел.:</td>
-        <td>@Model.Input.CustomerPhone</td>
-    </tr>
-    <tr>
-        <td>Email:</td>
-        <td>@Model.Input.CustomerEmail</td>
-    </tr>
-</table>
-<br />
+    <h2>Приложение № 1</h2>
+    <p>К договору №________ от @Model.Input.OrderDate</p>
+    <p>Адрес объекта:____________________________</p>
+    <p>Сметный расчет: @Model.Input.OrderNumber</p>
 
-<table border="1">
-    <caption>Помещения</caption>
-    @foreach (Room room in @Model.Input.Rooms)
-    {
-        <tr>
-            <td>@{room_count++;}</td>
-            <td>Размеры помещения</td>
-            <td>Ширина</td>
-            <td>Длинна</td>
-            <td>Высота</td>
-            <td>м2</td>
+
+    <h3>Помещения</h3>
+
+
+    <table class="table table-bordered table-hover">
+        <tr class="success">
+            <th>Помещение</th>
+            @foreach (Room room in @Model.Input.Rooms)
+            {
+                <th style="text-align: center;">@room.Name</th>
+            }
         </tr>
         <tr>
-            <td></td>
             <td>Размеры</td>
-            <td>@room.Width</td>
-            <td>@room.Length</td>
-            <td>@room.Height</td>
-            <td></td>
+            @foreach (Room room in @Model.Input.Rooms)
+            {
+                <td style="text-align: center;">@room.Width x @room.Length x @room.Height мм</td>
+            }
         </tr>
         <tr>
-            <td></td>
-            <td>Полы</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>@room.FloorArea()</td>
+            <td>Пол</td>
+            @foreach (Room room in @Model.Input.Rooms)
+            {
+                <td style="text-align: center;">@room.FloorArea() кв.м</td>
+            }
         </tr>
         <tr>
-            <td></td>
             <td>Стены</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>@room.WallsArea()</td>
+            @foreach (Room room in @Model.Input.Rooms)
+            {
+                <td style="text-align: center;">@room.WallsArea() кв.м</td>
+            }
         </tr>
         <tr>
-            <td></td>
             <td>Потолок</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>@room.CeilingArea()</td>
+            @foreach (Room room in @Model.Input.Rooms)
+            {
+                <td style="text-align: center;">@room.CeilingArea() кв.м</td>
+            }
         </tr>
         <tr>
-            <td></td>
-            <td>Двери</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>@room.DoorArea()</td>
+            <td>Дверь</td>
+            @foreach (Room room in @Model.Input.Rooms)
+            {
+                <td style="text-align: center;">@room.DoorArea() кв.м</td>
+            }
         </tr>
         <tr></tr>
-    }
-</table>
+    </table>
 
-    <table border="1">
-        <caption>Работы</caption>
-        <tr>
-            <th>ПП</th>
-            <th></th>
-            <th>Наименование работа</th>
-            <th>ед.изм</th>
-            <th>цена</th>
-            <th>кол-во</th>
-            <th>итог</th>
+
+    <h3>Работы</h3>
+    <table class="table table-bordered table-hover">
+        <tr class="success">
+            <th style="text-align: center;">№ п/п</th>
+            <th style="text-align: center;">Тип</th>
+            <th style="text-align: center;">Наименование</th>
+            <th style="text-align: center;">Ед.изм</th>
+            <th style="text-align: center;">Цена</th>
+            <th style="text-align: center;">Кол-во</th>
+            <th style="text-align: center;">Сумма</th>
         </tr>
 
         @foreach (Work work in @Model.Input.Works)
         {
-            @if(sub_caption != work.Group)
+            @if (sub_caption != work.Group)
             {
                 sub_caption = work.Group;
                 <tr>
-                    <td colspan="7">@sub_caption</td>
+                    <td colspan="7" class="info" style="text-align: center;"><b>@sub_caption</b></td>
                 </tr>
             }
             <tr>
-                <td>@work.Position</td>
+                <td style="text-align: center;">@work.Position</td>
                 <td>@work.FirstWord</td>
                 <td>@work.WithoutFirstWord</td>
-                <td>@work.Unit</td>
-                <td>@work.Price</td>
-                <td>@work.Volume</td>
-                <td>@work.Total</td>
+                <td style="text-align: center;">@work.Unit</td>
+                <td style="text-align: right;">@work.Price.ToString("# ##0")</td>
+                <td style="text-align: center;">@work.Volume</td>
+                <td style="text-align: right;">@work.Total.ToString("# ##0.00")</td>
             </tr>
         }
     </table>
-    <p>Итого @Model.Input.Total</p>
-    <p>Исполнитель__________   Заказчик_________</p>
-    
+    <h2 style="text-align: right;">Итого: @Model.Input.Total.ToString("# ##0.00")</h2>
+    <button class="btn btn-success" type="submit">Подписать</button>
+
 }
