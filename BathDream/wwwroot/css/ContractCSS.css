@@ -1,0 +1,32 @@
+﻿.contract-table {
+    width: 100%;
+}
+
+.contract-li-span {
+    font-weight: normal;
+}
+
+.contract-p {
+    text-indent: 25px;
+}
+
+.contract-text {
+    text-align: justify;
+}
+
+.contract-top-level {
+    text-align: center;
+    font-weight: bold;
+}
+
+.contract-center {
+    text-align: center;
+}
+
+.contract-right {
+    text-align: right;
+}
+
+.contract-bold {
+    font-weight: bold;
+}

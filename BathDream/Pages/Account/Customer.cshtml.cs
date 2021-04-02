@@ -24,6 +24,7 @@ namespace BathDream.Pages.Account
         public class InputModel
         {
             public string NameFamaly { get; set; }
+            public string FIO { get; set; }
             public bool Display { get; set; } = false;
             public string CustomerPhone { get; set; }
             public string CustomerEmail { get; set; }
@@ -32,6 +33,7 @@ namespace BathDream.Pages.Account
             public List<Room> Rooms { get; set; }
             public List<Work> Works { get; set; }
             public double Total { get; set; }
+            public string ContentView { get; set; }
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db)
@@ -43,10 +45,12 @@ namespace BathDream.Pages.Account
 
         public async Task OnGetAsync()
         {
+            Input.ContentView = "./Views/CustomerEstimatePartialView";
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
             
             Input.NameFamaly = $"{user.UName} {user.UFamaly}";
+            Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
             Input.CustomerPhone = user.PhoneNumber;
             Input.CustomerEmail = user.Email;
 
@@ -55,7 +59,7 @@ namespace BathDream.Pages.Account
                             .ThenInclude(e => e.Rooms)
                             .Include(x => x.Estimate)
                             .ThenInclude(x => x.Works).FirstOrDefault();
-            
+
             if(order != null)
             {
                 Input.Display = true;
@@ -65,6 +69,17 @@ namespace BathDream.Pages.Account
                 Input.Works = order.Estimate.Works;
                 Input.Total = Input.Works.Sum(w => w.Total);
             }
+        }
+
+        public async Task<IActionResult> OnGetContract()
+        {
+            Input.ContentView = "./Views/CustomerContractPartialView";
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            //await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
+            Input.NameFamaly = $"{user.UName} {user.UFamaly}";
+            Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
+            return Page();
         }
 
         public async Task OnGetFromConfirmAsync(int tempOrderId)
