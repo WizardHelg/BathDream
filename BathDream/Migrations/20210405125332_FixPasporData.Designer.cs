@@ -4,14 +4,16 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    partial class BDApplicationaContextModelSnapshot : ModelSnapshot
+    [Migration("20210405125332_FixPasporData")]
+    partial class FixPasporData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,7 +226,7 @@ namespace BathDream.Migrations
                     b.Property<string>("PasportAddress")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("PasportDate")
+                    b.Property<DateTime>("PasportDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PasportIssued")

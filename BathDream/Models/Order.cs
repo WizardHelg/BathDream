@@ -14,5 +14,7 @@ namespace BathDream.Models
         public ExecutorProfile Executor { get; set; }
         public Estimate Estimate { get; set; }
         public string Contract { get; set; }
+        public string ObjectAdress { get; set; }
+        public bool Signed { get; set; }
     }
 }

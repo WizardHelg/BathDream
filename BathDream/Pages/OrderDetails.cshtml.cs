@@ -11,15 +11,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace BathDream.Pages.Account.Manage
+namespace BathDream.Pages
 {
     [Authorize(Roles = "customer")]
-    public class ProfileCustomerModel : PageModel
+    public class OrderDetailsModel : PageModel
     {
         private readonly UserManager<User> _userManager;
         private readonly DBApplicationaContext _db;
 
-        public ProfileCustomerModel(UserManager<User> userManager, DBApplicationaContext db)
+        public OrderDetailsModel(UserManager<User> userManager, DBApplicationaContext db)
         {
             _userManager = userManager;
             _db = db;
@@ -29,6 +29,21 @@ namespace BathDream.Pages.Account.Manage
         public InputModel Input { get; set; } = new InputModel();
         public class InputModel
         {
+            [Required(ErrorMessage = "Не указан адрес объекта")]
+            [DataType(DataType.Text)]
+            [Display(Name = "Адрес объекта")]
+            public string ObjectAddress { get; set; }
+
+            [Required(ErrorMessage = "Не указан email")]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            [Required(ErrorMessage = "Требуется указать телефон")]
+            [DataType(DataType.PhoneNumber)]
+            [Display(Name = "Телефон")]
+            public string Phone { get; set; }
+
             [Required(ErrorMessage = "Требуется указать имя")]
             [StringLength(64, ErrorMessage = "Длинна имени должна быть от {1} до {2}", MinimumLength = 2)]
             [DataType(DataType.Text)]
@@ -65,7 +80,6 @@ namespace BathDream.Pages.Account.Manage
 
             [Required(ErrorMessage = "Не указана дата выдачи паспорта")]
             [DataType(DataType.Date)]
-            //[DisplayFormat(DataFormatString = "dd.mm.yyyy")]
             [Display(Name = "Дата выдачи паспорта")]
             public DateTime? PasportDate { get; set; }
 
@@ -74,34 +88,18 @@ namespace BathDream.Pages.Account.Manage
             [Display(Name = "Адрес регистрации по паспорту")]
             public string PasportAddress { get; set; }
 
-            [Required(ErrorMessage = "Не указан email")]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            [Required(ErrorMessage = "Требуется указать телефон")]
-            [DataType(DataType.PhoneNumber)]
-            [Display(Name = "Телефон")]
-            [RegularExpression(@"[7][0-9]{10}", ErrorMessage = "Введите номер телефона в формате: 7, далее 10 цифр номера без разделителй")]
-            public string Phone { get; set; }
-
-            [Required(ErrorMessage = "Требуется указать регион")]
-            [DataType(DataType.Text)]
-            [Display(Name = "Регион")]
-            public string Address { get; set; }
-
-            public string Id { get; set; }
-            public string Role { get; set; }
-            //public List<FeedBack> FeedBacks { get; set; }
-
+            public int Id { get; set; }
         }
-        public async Task OnGet()
+
+        public async Task OnGet(int OrderId)
         {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
             UserProfile profile = user.Profile;
 
-            Input.Id = user.Id;
+            Input.Id = OrderId;
+            Input.Email = user.Email;
+            Input.Phone = user.PhoneNumber;
             Input.Name = user.UName;
             Input.Famaly = user.UFamaly;
             Input.Patronymic = user.UPatronymic;
@@ -110,26 +108,23 @@ namespace BathDream.Pages.Account.Manage
             Input.PasportIssued = profile.PasportIssued;
             Input.PasportDate = profile.PasportDate;
             Input.PasportAddress = profile.PasportAddress;
-            Input.Email = user.Email;
-            Input.Phone = user.PhoneNumber;
-            Input.Address = profile.Address;
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPost()
         {
             if (ModelState.IsValid)
             {
-                User user = await _userManager.FindByIdAsync(Input.Id);
-                _db.Entry(user).Reference(x => x.Profile).Load();
+                User user = await _userManager.FindByNameAsync(User.Identity.Name);
+                await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
                 UserProfile profile = user.Profile;
+                Order order = await _db.Orders.Where(o => o.Id == Input.Id).FirstOrDefaultAsync();
 
-                if (user != null)
+                if(user != null && order != null)
                 {
                     user.UName = Input.Name;
                     user.UFamaly = Input.Famaly;
                     user.UPatronymic = Input.Patronymic;
                     user.PhoneNumber = Input.Phone;
-                    profile.Address = Input.Address;
                     profile.PasportSerial = Input.PasportSerial;
                     profile.PasportNumber = Input.PasportNumber;
                     profile.PasportIssued = Input.PasportIssued;
@@ -137,14 +132,19 @@ namespace BathDream.Pages.Account.Manage
                     profile.PasportAddress = Input.PasportAddress;
 
                     var result = await _userManager.UpdateAsync(user);
-                    if (!result.Succeeded)
+                    if(!result.Succeeded)
                     {
                         foreach (var error in result.Errors)
-                        {
                             ModelState.AddModelError(string.Empty, error.Description);
-                        }
+
+                        return Page();
                     }
-                    else await _db.SaveChangesAsync();
+
+                    order.ObjectAdress = Input.ObjectAddress;
+
+                    _db.Orders.Update(order);
+                    await _db.SaveChangesAsync();
+                    return RedirectToPage("/Account/Customer", "Contract", new { OrderId = Input.Id});
                 }
             }
             return Page();

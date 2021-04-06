@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BathDream.Data;
+using BathDream.Services;
 
 namespace BathDream.Pages.Account
 {
@@ -17,15 +18,18 @@ namespace BathDream.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly DBApplicationaContext _db;
+        //private readonly SMSConfirmator _confirmator;
 
         public LoginModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            DBApplicationaContext db)
+            DBApplicationaContext db
+            /*SMSConfirmator confirmator*/)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
+            //_confirmator = confirmator;
         }
 
         public string ReturnUrl { get; set; }
@@ -35,6 +39,10 @@ namespace BathDream.Pages.Account
 
         public class InputModel
         {
+            public string Phone { get; set; }
+            public int Code { get; set; }
+            public string TempId { get; set; }
+
             [Required(ErrorMessage = "Не указан email")]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -53,8 +61,8 @@ namespace BathDream.Pages.Account
 
         public void OnGet(string returnUrl = null)
         {
-            Input = new InputModel();
             returnUrl ??= Url.Content("~/");
+            Input = new InputModel();
             ReturnUrl = returnUrl;
         }
 

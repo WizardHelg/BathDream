@@ -4,14 +4,16 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    partial class BDApplicationaContextModelSnapshot : ModelSnapshot
+    [Migration("20210402204116_AddOrderAdressSignAndPrifilePasport")]
+    partial class AddOrderAdressSignAndPrifilePasport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,21 +221,6 @@ namespace BathDream.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasportAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PasportDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PasportIssued")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasportNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasportSerial")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Photo")
@@ -513,6 +500,38 @@ namespace BathDream.Migrations
                     b.HasOne("BathDream.Models.User", "User")
                         .WithOne("Profile")
                         .HasForeignKey("BathDream.Models.UserProfile", "UserId");
+
+                    b.OwnsOne("BathDream.Models.Pasport", "Pasport", b1 =>
+                        {
+                            b1.Property<int>("UserProfileId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                            b1.Property<string>("Address")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<DateTime>("Date")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Issued")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Number")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Serial")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("UserProfileId");
+
+                            b1.ToTable("UserProfiles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserProfileId");
+                        });
+
+                    b.Navigation("Pasport");
 
                     b.Navigation("User");
                 });

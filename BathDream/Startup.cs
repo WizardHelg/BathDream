@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BathDream.Data;
 using BathDream.Models;
 using BathDream.Validators;
+using BathDream.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -29,6 +30,8 @@ namespace BathDream
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddSingleton<SMSConfirmator>();
+
             services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(serv => new CustomPasswordValidator()
             {
                 RequiredLength = 6,
@@ -51,7 +54,7 @@ namespace BathDream
 
             services.AddIdentity<User, IdentityRole>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = true;
+                options.SignIn.RequireConfirmedAccount = false;
             })
                 .AddEntityFrameworkStores<DBApplicationaContext>()
                 .AddDefaultTokenProviders();

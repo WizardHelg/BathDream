@@ -13,9 +13,8 @@
 
 <div style="position: fixed; left: 25px; top: 100px">
     <ul>
-        @*<li><a href="#">Тут списко закзав</a></li>
-        <li>Некий разделитель</li>
-        <li><a href="#">Удалить текущий заказ</a></li>*@
+        <li><a asp-page="/Account/Manage/ProfileCustomer">Профиль</a></li>
+        <li><a asp-page-handler="DeleteOrder">Удалить текущий заказ</a></li>
         <li><a asp-page-handler="Logout">Выход</a></li>
     </ul>
 </div>

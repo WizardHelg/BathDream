@@ -13,20 +13,10 @@ namespace BathDream.Pages.Test
     [Authorize]
     public class IndexModel : PageModel
     {
-        //private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
 
-        [BindProperty]
-        public InputModel Input { get; set; } = new InputModel();
-        public class InputModel
+        public IndexModel(UserManager<User> userManager)
         {
-            public string NameFamaly { get; set; }
-            public string About { get; set; }
-        }
-
-        public IndexModel(/*SignInManager<User> signInManager,*/ UserManager<User> userManager)
-        {
-            //_signInManager = signInManager;
             _userManager = userManager;
         }
 

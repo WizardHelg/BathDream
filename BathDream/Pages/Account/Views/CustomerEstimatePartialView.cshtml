@@ -12,8 +12,8 @@
     string sub_caption = "";
 
     <h2>Приложение № 1</h2>
-    <p>К договору №________ от @Model.OrderDate</p>
-    <p>Адрес объекта:____________________________</p>
+    <p>К договору № @Model.OrderNumber от @Model.OrderDate</p>
+    <p>Адрес объекта: @Model.OrderAddress</p>
     <p>Сметный расчет: @Model.OrderNumber</p>
 
 
@@ -93,13 +93,16 @@
                 <td>@work.FirstWord</td>
                 <td>@work.WithoutFirstWord</td>
                 <td style="text-align: center;">@work.Unit</td>
-                <td style="text-align: right;">@work.Price.ToString("# ##0")</td>
+                <td style="text-align: right;">@if (work.Price == 0.0)
+                                                    { <span>30% от стоимости</span> }
+                                                else 
+                                                    @work.Price.ToString("# ##0")</td>
                 <td style="text-align: center;">@work.Volume</td>
                 <td style="text-align: right;">@work.Total.ToString("# ##0.00")</td>
             </tr>
         }
     </table>
     <h2 style="text-align: right;">Итого: @Model.Total.ToString("# ##0.00")</h2>
-    <button class="btn btn-success" type="submit">Подписать</button>
+    <a class="btn btn-success" asp-page-handler="Contract">Подписать</a>
 
 }
