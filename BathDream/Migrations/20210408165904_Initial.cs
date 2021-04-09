@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BathDream.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,6 +47,22 @@ namespace BathDream.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WorkPrices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    InnerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkPrices", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,6 +178,11 @@ namespace BathDream.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PasportSerial = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasportNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasportIssued = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasportDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PasportAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -229,9 +250,12 @@ namespace BathDream.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: true),
                     ExecutorId = table.Column<int>(type: "int", nullable: true),
-                    Contract = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Contract = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ObjectAdress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Signed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -295,37 +319,19 @@ namespace BathDream.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WorkPrices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    EstimateId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WorkPrices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_WorkPrices_Estimates_EstimateId",
-                        column: x => x.EstimateId,
-                        principalTable: "Estimates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Works",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    InnerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EstimateId = table.Column<int>(type: "int", nullable: false),
+                    Position = table.Column<int>(type: "int", nullable: false),
+                    Group = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: false)
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Volume = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -414,11 +420,6 @@ namespace BathDream.Migrations
                 column: "UserId",
                 unique: true,
                 filter: "[UserId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WorkPrices_EstimateId",
-                table: "WorkPrices",
-                column: "EstimateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Works_EstimateId",

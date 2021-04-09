@@ -31,11 +31,7 @@
                 <a class="navbar-brand" asp-page="/Index"><img alt="Brand" src="~/img/logo.png"></a>
             </div>
             <div id="navbar" class="collapse navbar-collapse pull-right">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a asp-page="/Index">Формирование заказа</a></li>
-                    <li><a href="https://bath-dream.ru/">О компании</a></li>
-                    <li><a href="https://bath-dream.ru/">Контакты</a></li>
-                </ul>
+                @RenderSection("MainMenu", false)
             </div><!--/.nav-collapse -->
         </div>
     </nav>

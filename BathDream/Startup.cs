@@ -30,7 +30,7 @@ namespace BathDream
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddSingleton<SMSConfirmator>();
+            services.AddSingleton<SMSConfirmator>();
 
             services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(serv => new CustomPasswordValidator()
             {
@@ -44,7 +44,7 @@ namespace BathDream
             services.AddTransient<IUserValidator<User>, CustomUserValidator>(serv => new CustomUserValidator()
             {
                 AllowedUserNameCharactersReqEx = @"^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$",
-                RequireUniqueEmail = true
+                RequireUniqueEmail = false
             });
 
             services.AddDbContext<DBApplicationaContext>(options =>

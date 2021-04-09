@@ -82,8 +82,14 @@
         ("Phone", "Телефон"),
         ("Email", "Email")
     };
+
+    string returnUrl = "/";
 }
 
+@section MainMenu
+{ 
+    <partial name="MainMenu" model="returnUrl" />
+}
 <div class="order">
 
     <form method="post">

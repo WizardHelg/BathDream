@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BathDream.Data;
 using BathDream.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages.Account
 {
@@ -18,18 +20,18 @@ namespace BathDream.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly DBApplicationaContext _db;
-        //private readonly SMSConfirmator _confirmator;
+        private readonly SMSConfirmator _confirmator;
 
         public LoginModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            DBApplicationaContext db
-            /*SMSConfirmator confirmator*/)
+            DBApplicationaContext db,
+            SMSConfirmator confirmator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
-            //_confirmator = confirmator;
+            _confirmator = confirmator;
         }
 
         public string ReturnUrl { get; set; }
@@ -39,77 +41,100 @@ namespace BathDream.Pages.Account
 
         public class InputModel
         {
+            [Required(ErrorMessage = "Требуется указать телефон")]
+            [DataType(DataType.PhoneNumber)]
+            [Display(Name = "Телефон")]
+            [RegularExpression(@"[7][0-9]{10}", ErrorMessage = "Введите номер телефона в формате: 7, далее 10 цифр номера без разделителей")]
             public string Phone { get; set; }
-            public int Code { get; set; }
-            public string TempId { get; set; }
 
-            [Required(ErrorMessage = "Не указан email")]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
+            [Required(ErrorMessage = "Требуется указать код")]
+            [DataType(DataType.Text)]
+            [StringLength(4, MinimumLength = 4, ErrorMessage = "Код должен содержать 4 цифры")]
+            [RegularExpression(@"[0-9]*", ErrorMessage = "Код может содержать только цифры")]
+            [Display(Name = "Код подтверждения")]
+            public string Code { get; set; }
 
-            [Required(ErrorMessage = "Требуется указать пароль")]
-            [DataType(DataType.Password)]
-            [Display(Name = "Пароль")]
-            public string Password { get; set; }
+            public string GUID { get; set; }
+            public bool CheckMode { get; set; }
+            public string ReturnUrl { get; set; }
 
-            [Display(Name = "Запомнить?")]
-            public bool RememberMe { get; set; }
-
-            public int TempOrderId { get; set; } = 0;
+            [Display(Name = "Код пришедший на телефон")]
+            public string TempCode { get; set; }
         }
 
         public void OnGet(string returnUrl = null)
         {
+            if (Input == null) Input = new InputModel();
             returnUrl ??= Url.Content("~/");
-            Input = new InputModel();
-            ReturnUrl = returnUrl;
+            Input.ReturnUrl = returnUrl;
+            Input.CheckMode = false;
         }
 
-        public void OnGetFromAddOrder(int id)
+        public IActionResult OnPostSendCodeAsync()
         {
-            Input = new InputModel()
+            if (ModelState.TryGetValue("Input.Phone", out ModelStateEntry value)
+                && value.ValidationState == ModelValidationState.Valid)
             {
-                TempOrderId = id
-            };
+                (string guid, string code) = _confirmator.AddNewSMSConfirmation();
+                Input.GUID = guid;
+                Input.CheckMode = true;
+                Input.TempCode = code;
+            }
+            
+            ModelState["Input.Code"].Errors.Clear();
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostCheckCodeAsync()
         {
-            if (ModelState.IsValid)
+            if(ModelState.IsValid && _confirmator.TryConfirm(Input.GUID, Input.Code))
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, false);
-                if (result.Succeeded)
+                User user = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == Input.Phone);
+
+                if (user is null)
                 {
-                    if(Input.TempOrderId > 0)
+                    user = new()
                     {
-                        //получить пользователя
-                        User user = await _userManager.FindByNameAsync(Input.Email);
-                        await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+                        PhoneNumber = Input.Phone,
+                    };
 
-                        //получить заказ
-                        Order order = _db.Orders.Where(o => o.Id == Input.TempOrderId).FirstOrDefault();
+                    user.UserName = user.Id;
 
-                        //связать их узами внешнего ключа
-                        if(order != null)
-                        {
-                            order.Customer = user.Profile;
-                            order.Status = "created";
-                            _db.Update(order);
-                            _db.SaveChanges();
-                        }
+                    var result = await _userManager.CreateAsync(user);
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty, "Ошибка создания пользователя");
+                        return Page();
                     }
 
-
-                    if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
-                        return LocalRedirect(ReturnUrl);
-                    else
-                        return RedirectToPage("/Test/Index");
+                    await _userManager.AddToRoleAsync(user, "customer");
+                    UserProfile profile = new()
+                    {
+                        User = user
+                    };
+                    
+                    await _db.UserProfiles.AddAsync(profile);
+                    await _db.SaveChangesAsync();
                 }
-                else
-                    ModelState.AddModelError(String.Empty, "Неверный логин и.или пароль");
+
+                //user = await _userManager.FindByIdAsync(user.Id);
+                await _signInManager.SignInAsync(user, true);
+                return Redirect(Input.ReturnUrl);
             }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Не верный код подтверждения");
+            }
+
+            Input.CheckMode = true;
             return Page();
+        }
+
+        public async Task<IActionResult> OnGetLogoutAsync(string returnUrl)
+        {
+            returnUrl ??= Url.Content("~/");
+            await _signInManager.SignOutAsync();
+            return Redirect(returnUrl);
         }
     }
 }

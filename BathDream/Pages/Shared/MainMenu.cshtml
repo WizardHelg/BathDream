@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Identity;
+@using BathDream.Models;
+@inject UserManager<User> manager
+@model string
+@{
+    string path = Model;
+    path ??= Url.Content("~/");
+
+    var name = "";
+    if (User.Identity.IsAuthenticated
+        && await manager.FindByNameAsync(User.Identity.Name) is User user)
+        name = $"{user.UName} {user.UFamaly}";
+}
+
+<ul class="nav navbar-nav">
+    <li class="active"><a asp-page="/Index">Формирование заказа</a></li>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <li><a href="#">@name</a></li>
+        <li><a asp-page="/Account/Login" asp-page-handler="Logout" asp-route-returnUrl="@path">Выйти</a></li>
+    }
+    else
+    {
+        <li><a asp-page="/Account/Login" asp-route-returnUrl="@path">Войти</a></li>
+    }
+    <li><a href="#">Стать специалистом</a></li>
+    <li><a href="https://bath-dream.ru/">О компании</a></li>
+    <li><a href="https://bath-dream.ru/">Контакты</a></li>
+</ul>

@@ -18,44 +18,39 @@
                 <div class="col-sm-8 col-xs-12">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <input type="hidden" asp-for="Input.TempOrderId" />
+                        <input type="hidden" asp-for="@Model.Input.GUID" value="@Model.Input.GUID" />
+                        <input type="hidden" asp-for="@Model.Input.ReturnUrl" value="@Model.Input.ReturnUrl" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="Input.Email" style="margin-right: 60px;">Логин</label>
-                        <input asp-for="Input.Email" placeholder="Введите Email" class="form-control">
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <label asp-for="Input.TempCode" style="margin-right: 60px;"></label>
+                        <input type="text" asp-for="Input.TempCode" value="@Model.Input.TempCode" />
+                        <span asp-validation-for="Input.TempCode" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Input.Password">Пароль</label>
-                        <input asp-for="Input.Password" class="form-control" />
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <label asp-for="Input.Phone" style="margin-right: 60px;"></label>
+                        <input asp-for="Input.Phone" placeholder="Формат: 7, далее 10 цифр номера без разделителей" class="form-control">
+                        <span asp-validation-for="Input.Phone" class="text-danger"></span>
                     </div>
-
-                    <div class="form-group form-inline">
-                        <input asp-for="Input.RememberMe" class="checkbox" />
-                        <label asp-for="Input.RememberMe"></label>
+                    <div class="form-group">
+                        <label asp-for="Input.Code"></label>
+                        <input asp-for="Input.Code" placeholder="Код подтверждения из SMS" class="form-control" />
+                        <span asp-validation-for="Input.Code" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-sm-4 col-xs-6 text-center">
                     <div class="form-group" style="margin-bottom: 0px; margin-left: 0px; margin-right: 0px;">
-                        <button type="submit" class="btn btn-block btn-success">Войти</button>
-                    </div>
-                    <div class="form-group" style="margin-top: 5px; ">
-                        <a href="#" style="font-size: small; color: gray;">Не помню пароль</a>
+                        @if (Model.Input.CheckMode)
+                        {
+                            <button asp-page-handler="CheckCode" class="btn btn-block btn-success">Войти</button>
+                            <button asp-page-handler="SendCode" class="btn btn-block btn-success">Отправить код повторно</button>
+                        }
+                        else
+                        {
+                            <button asp-page-handler="SendCode" class="btn btn-block btn-success">Отправить код</button>
+                        }
                     </div>
                 </div>
             </div>
         </form>
-
-        @if (Model.Input.TempOrderId == 0)
-        {
-            <div class="lk-auth-registration col-xs-12 container-center wrap">
-
-                <div class="text-reg col-xs-12" style="margin-bottom: 10px">Если у вас нет аккаунта, вы можете зарегистрироваться по ссылке ниже.</div>
-                <a class="btn btn-default" style="text-decoration: none;" asp-page="/Account/Register" asp-route-role="executor">Зарегистрироваться как специалист</a>
-                <a class="btn btn-default" style="text-decoration: none;" asp-page="/Account/Register" asp-route-role="customer">Зарегистрироваться как клиент</a>
-
-            </div>
-        }
     </div>
 </div>

@@ -36,7 +36,7 @@ namespace BathDream.Services
             toRemove.ForEach(i => _confirmation_pairs.Remove(i));
         }
 
-        public (string guid, int code) AddNewSMSConfirmation()
+        public (string guid, string code) AddNewSMSConfirmation()
         {
             Guid guid;
             do
@@ -47,17 +47,13 @@ namespace BathDream.Services
             int code = random.Next(1000, 10_000);
             _confirmation_pairs.Add(guid, (code, DateTime.Now));
 
-            return (guid.ToString(), code);
+            return (guid.ToString(), code.ToString());
         }
 
-        public bool TryConfirm(string strGuid, int vCode)
-        {
-            if (Guid.TryParse(strGuid, out Guid guid) &&
-                _confirmation_pairs.TryGetValue(guid, out (int code, DateTime time) item) &&
-                item.code == vCode)
-                    return true;
-
-            return false;
-        }
+        public bool TryConfirm(string strGuid, string vCode) =>
+                Guid.TryParse(strGuid, out Guid guid)
+                && int.TryParse(vCode, out int i_code)
+                && _confirmation_pairs.TryGetValue(guid, out (int code, DateTime time) item)
+                && item.code == i_code;
     }
 }

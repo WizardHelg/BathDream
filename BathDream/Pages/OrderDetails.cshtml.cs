@@ -125,6 +125,7 @@ namespace BathDream.Pages
                     user.UFamaly = Input.Famaly;
                     user.UPatronymic = Input.Patronymic;
                     user.PhoneNumber = Input.Phone;
+                    user.Email = Input.Email;
                     profile.PasportSerial = Input.PasportSerial;
                     profile.PasportNumber = Input.PasportNumber;
                     profile.PasportIssued = Input.PasportIssued;
@@ -144,7 +145,7 @@ namespace BathDream.Pages
 
                     _db.Orders.Update(order);
                     await _db.SaveChangesAsync();
-                    return RedirectToPage("/Account/Customer", "Contract", new { OrderId = Input.Id});
+                    return RedirectToPage("/Account/Customer", "Contract");
                 }
             }
             return Page();

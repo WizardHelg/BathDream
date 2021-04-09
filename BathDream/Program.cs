@@ -26,7 +26,7 @@ namespace BathDream
                 {
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await UserAndRolesInitializer.InitializeAsync(userManager, roleManager);
+                    await UserAndRolesInitializer.InitializeAsync(/*userManager, */roleManager);
                 }
                 catch { }
             }

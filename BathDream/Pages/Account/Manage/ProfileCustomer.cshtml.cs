@@ -85,7 +85,7 @@ namespace BathDream.Pages.Account.Manage
             [RegularExpression(@"[7][0-9]{10}", ErrorMessage = "Введите номер телефона в формате: 7, далее 10 цифр номера без разделителй")]
             public string Phone { get; set; }
 
-            [Required(ErrorMessage = "Требуется указать регион")]
+            //[Required(ErrorMessage = "Требуется указать регион")]
             [DataType(DataType.Text)]
             [Display(Name = "Регион")]
             public string Address { get; set; }
@@ -128,13 +128,15 @@ namespace BathDream.Pages.Account.Manage
                     user.UName = Input.Name;
                     user.UFamaly = Input.Famaly;
                     user.UPatronymic = Input.Patronymic;
-                    user.PhoneNumber = Input.Phone;
-                    profile.Address = Input.Address;
                     profile.PasportSerial = Input.PasportSerial;
                     profile.PasportNumber = Input.PasportNumber;
                     profile.PasportIssued = Input.PasportIssued;
                     profile.PasportDate = Input.PasportDate;
                     profile.PasportAddress = Input.PasportAddress;
+                    user.Email = Input.Email;
+                    user.PhoneNumber = Input.Phone;
+                    profile.Address = Input.Address;
+                    
 
                     var result = await _userManager.UpdateAsync(user);
                     if (!result.Succeeded)

@@ -23,7 +23,8 @@ namespace BathDream.Pages.Account
         public InputModel Input { get; set; } = new InputModel();
         public class InputModel
         {
-            public string Sign { get; set; } = "Не подписан";
+            public bool Signed { get; set; } = false;
+            public string SignText { get; set; } = "Не подписан";
             public string NameFamaly { get; set; }
             public string FIO { get; set; }
             public bool Display { get; set; } = false;
@@ -61,11 +62,22 @@ namespace BathDream.Pages.Account
             Input.CustomerPhone = user.PhoneNumber;
             Input.CustomerEmail = user.Email;
 
-            Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id)
-                                .Include(o => o.Estimate)
-                                .ThenInclude(e => e.Rooms)
-                                .Include(x => x.Estimate)
-                                .ThenInclude(x => x.Works).FirstOrDefaultAsync();
+            //Order order = null;
+            if (TempData["OrderId"] is int orid
+                && await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid) is Order order)
+            {
+                //int orid = (int)TempData["OrderId"];
+                //order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid);
+                order.Customer = user.Profile;
+                order.Status = "created";
+                await _db.SaveChangesAsync();
+            }
+            
+            order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id)
+                                    .Include(o => o.Estimate)
+                                    .ThenInclude(e => e.Rooms)
+                                    .Include(x => x.Estimate)
+                                    .ThenInclude(x => x.Works).FirstOrDefaultAsync();
 
             if(order != null)
             {
@@ -76,24 +88,12 @@ namespace BathDream.Pages.Account
                 Input.Rooms = order.Estimate.Rooms;
                 Input.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
                 Input.Total = Input.Works.Sum(w => w.Total);
+                Input.Signed = order.Signed;
             }
         }
 
-        //public async Task<IActionResult> OnGetContract()
-        //{
-        //    Input.ContentView = "./Views/CustomerContractPartialView";
-        //    User user = await _userManager.FindByNameAsync(User.Identity.Name);
-        //    //await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
-
-        //    Input.NameFamaly = $"{user.UName} {user.UFamaly}";
-        //    Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
-        //    return Page();
-        //}
-
-        public async Task<IActionResult> OnGetContract(int OrderId)
+        public async Task<IActionResult> OnGetContractAsync()
         {
-            //Чекнуть подписан ли контракт. Если нет, то тупо херачим страничку с деталями зазака.
-            //Если подписан, то перекидываем на контракт
             Input.ContentView = "./Views/CustomerContractPartialView";
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
@@ -108,15 +108,14 @@ namespace BathDream.Pages.Account
             if (user.Profile.PasportDate is DateTime dt)
                 Input.PasportDate = dt.ToShortDateString();
 
-            bool order_signed = false;
             int order_id = 0;
             if (await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order)
             {
-                Input.Sign = order.Signed ? "Подписан" : "Не подписан";
+                Input.SignText = order.Signed ? "Подписан" : "Не подписан";
                 Input.OrderDate = order.Date.ToShortDateString();
                 Input.OrderNumber = order.Id;
                 Input.OrderAddress = order.ObjectAdress;
-                order_signed = order.Signed;
+                Input.Signed = order.Signed;
                 order_id = order.Id;
             }
             else
@@ -124,7 +123,7 @@ namespace BathDream.Pages.Account
                 return RedirectToPage("/Account/Customer");
             }
 
-            if (!order_signed && string.IsNullOrEmpty(Input.OrderAddress) && user.Profile.IsFilled())
+            if (!Input.Signed && (string.IsNullOrEmpty(Input.OrderAddress) || !user.Profile.IsFilled()))
                 return RedirectToPage("/OrderDetails", new { OrderId = order_id });
 
             return Page();
@@ -153,7 +152,8 @@ namespace BathDream.Pages.Account
                 Input.OrderNumber = order.Id;
                 Input.OrderAddress = order.ObjectAdress;
                 order.Signed = true;
-                Input.Sign = "Подписан";
+                Input.SignText = "Подписан";
+                Input.Signed = order.Signed;
                 await _db.SaveChangesAsync();
             }
 
@@ -169,32 +169,6 @@ namespace BathDream.Pages.Account
             await _db.SaveChangesAsync();
             return RedirectToAction("OnGetAsync");
         }
-
-        public async Task OnGetFromConfirmAsync(int tempOrderId)
-        {
-            User user = await _userManager.FindByNameAsync(User.Identity.Name);
-            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
-
-            Input.NameFamaly = $"{user.UName} {user.UFamaly}";
-            Input.CustomerPhone = user.PhoneNumber;
-            Input.CustomerEmail = user.Email;
-
-            Order order = _db.Orders.Where(o => o.Id == tempOrderId)
-                            .Include(o => o.Estimate)
-                            .ThenInclude(e => e.Rooms)
-                            .Include(x => x.Estimate)
-                            .ThenInclude(x => x.Works).FirstOrDefault();
-
-            if (order != null)
-            {
-                Input.Display = true;
-                Input.OrderDate = order.Date.ToShortDateString();
-                Input.OrderNumber = order.Id;
-                Input.Rooms = order.Estimate.Rooms;
-                Input.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
-                Input.Total = Input.Works.Sum(w => w.Total);
-            }
-        } 
 
         public async Task<IActionResult> OnGetLogoutAsync()
         {

@@ -7,7 +7,7 @@
 }
 
 <br />
-<p>@Model.Sign &lt;- Временный указатель</p>
+<p>@Model.Signed &lt;- Временный указатель</p>
 <br />
 <p class="contract-center"><span class="contract-bold">ДОГОВОР</span> № @Model.OrderNumber</p>
 <table class="contract-table">
@@ -17,7 +17,7 @@
     </tr>
 </table>
 <div class="contract-text">
-    <p class="contract-p">@Model.FIO, <span class="contract-bold">зарегистрирован(на) по адресу:</span> @Model.PasportAddress, именуемый в дальнейшем <span class="contract-bold">Заказчик</span>, и <span class="contract-bold">Общество с ограниченной ответственностью «Престиж»</span>, именуемый в дальнейшем <span class="contract-bold">Подрядчик</span>, в лице Генерального директора <span class="contract-bold">Захаревича Дмитрия Борисовича</span>, действующего на основании Устава, с другой стороны, заключили настоящий Договор о нижеследующем:</p>
+    <p class="contract-p">@Model.OrderNumber, <span class="contract-bold">зарегистрирован(на) по адресу:</span> @Model.PasportAddress, именуемый в дальнейшем <span class="contract-bold">Заказчик</span>, и <span class="contract-bold">Общество с ограниченной ответственностью «Престиж»</span>, именуемый в дальнейшем <span class="contract-bold">Подрядчик</span>, в лице Генерального директора <span class="contract-bold">Захаревича Дмитрия Борисовича</span>, действующего на основании Устава, с другой стороны, заключили настоящий Договор о нижеследующем:</p>
     <p class="contract-top-level">1. Предмет Договора.</p>
     <p class="contract-p">1.1. Заказчик поручает, а Подрядчик принимает на себя обязательства по ремонту помещения (квартира), по адресу: <span class="contract-bold">@Model.OrderAddress</span>, именуемый в дальнейшем Объект, согласно проектно-сметной документации, прилагаемой к настоящему договору и пожеланиями Заказчика, выраженными в письменной форме.</p>
     <p class="contract-top-level">2. Стоимость и сроки выполнения работ.</p>
@@ -118,7 +118,7 @@
 </table>
 
 <br />
-@if (@Model.Sign != "Подписан")
+@if (!@Model.Signed)
 {
     <a class="btn btn-success" asp-page-handler="Sign">Подписать</a>
 }
