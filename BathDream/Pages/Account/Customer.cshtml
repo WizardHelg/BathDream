@@ -16,20 +16,132 @@
 <a asp-page="/Account/Manage/ProfileCustomer">Редактировать профиль</a>
 <a asp-page-handler="Logout">Выход</a>-->
 
+
+
+
+
+
+
+
+
+
+
+<div class="page-wrapper chiller-theme toggled">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" style="color: #333;" href="#">
+        <i class="fas fa-bars"></i>
+    </a>
+    <nav id="sidebar" class="sidebar-wrapper">
+        <div class="sidebar-content">
+            <div class="sidebar-brand">
+                <a href="#">Меню</a>
+                <div id="close-sidebar">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+
+            <div class="sidebar-header">
+                
+                <div class="user-pic">
+                    <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                         alt="User picture">
+                </div>
+
+                <div class="user-info">
+                    <span class="user-name">
+                        @User.Identity.Name
+                        <strong>@User.Identity.Name</strong>
+                    </span>
+                    <span class="user-role">Заказчик</span>
+                    <span class="user-status">
+                        <!--<i class="fa fa-circle"></i>-->
+                        <span>Online</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- sidebar-search  -->
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="header-menu">
+                        <span>Этапы работы</span>
+                    </li>
+                    <li class="sidebar-dropdown">
+                        <a asp-page-handler="#">
+                            <i class="fa fa-tachometer-alt"></i>
+                            <span>Смета</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-dropdown">
+                        <a asp-page-handler="Contract">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Договор</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-dropdown">
+                        <a asp-page-handler="Brief">
+                            <i class="far fa-gem"></i>
+                            <span>Проект</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-dropdown">
+                        <a href="#">
+                            <i class="fa fa-chart-line"></i>
+                            <span>Материал</span>
+                        </a>
+                        <!--
+                        <div class="sidebar-submenu">
+                            <ul>
+                                <li>
+                                    <a href="#">Pie chart</a>
+                                </li>
+                                <li>
+                                    <a href="#">Line chart</a>
+                                </li>
+                                <li>
+                                    <a href="#">Bar chart</a>
+                                </li>
+                                <li>
+                                    <a href="#">Histogram</a>
+                                </li>
+                            </ul>
+                        </div>-->
+                    </li>
+                    <li class="sidebar-dropdown">
+                        <a href="#">
+                            <i class="fa fa-globe"></i>
+                            <span>Документы</span>
+                        </a>
+
+                    </li>
+
+                </ul>
+            </div>
+            <!-- sidebar-menu  -->
+        </div>
+    </nav>
+    <!-- sidebar-wrapper  -->
+    <main class="page-content">
+        <div class="container-fluid">
+            <partial name="@Model.Input.ContentView" model="Model.Input" />
+            <hr>
+        </div>
+    </main>
+    <!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+<!--
+
+
 <div style="position: fixed; left: 25px; top: 100px">
     <ul>
         <li><a asp-page="/Account/Manage/ProfileCustomer">Профиль</a></li>
         <li><a asp-page-handler="DeleteOrder">Удалить текущий заказ</a></li>
         <li><a asp-page-handler="Logout">Выход</a></li>
     </ul>
-</div>
+</div>-->
 
-<div>
-    <a asp-page-handler="#" class="btn btn-info" style="width: 150px;">Смета</a>
-    <a asp-page-handler="Contract" class="btn btn-info" style="width: 150px;">Договор</a>
-    <a asp-page-handler="Brief" class="btn btn-info" style="width: 150px;">Проект</a>
-    <button type="button" class="btn btn-info" style="width: 150px;">Материал</button>
-    <button type="button" class="btn btn-info" style="width: 150px;">Документы</button>
-</div>
 
-<partial name="@Model.Input.ContentView" model="Model.Input" />
+
+
+
+

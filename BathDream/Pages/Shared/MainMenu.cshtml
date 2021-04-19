@@ -16,17 +16,29 @@
 }
 
 <ul class="nav navbar-nav">
-    <li class="active"><a asp-page="/Index">Формирование заказа</a></li>
+
     @if (User.Identity.IsAuthenticated)
     {
-        <li><a href="#">@name</a></li>
+        <li><a asp-page="/Account/Customer">Профиль</a></li>
         <li><a asp-page="/Account/Login" asp-page-handler="Logout" asp-route-returnUrl="@path">Выйти</a></li>
     }
     else
     {
         <li><a asp-page="/Account/Login" asp-route-returnUrl="@path">Войти</a></li>
     }
-    <li><a a asp-page="/Account/Login" asp-route-returnUrl="@path" asp-route-role="executor">Стать специалистом</a></li>
+    <!--
+    <li class="dropdown">
+        <a itemprop="url" href="#" class="dropdown-toggle" data-toggle="dropdown">Компания<span class="caret"></span></a>
+
+
+        <ul class="dropdown-menu">
+            <li><a itemprop="url" href="/portfolio">Наши проекты</a></li>
+            <li><a itemprop="url" href="/vacancies">Вакансии</a></li>
+            <li><a itemprop="url" href="/blog">Блог</a></li>
+            <li><a itemprop="url" href="/contacts">Контакты</a></li>
+        </ul>
+        </li>
+            -->
+
     <li><a href="https://bath-dream.ru/">О компании</a></li>
-    <li><a href="https://bath-dream.ru/">Контакты</a></li>
 </ul>
