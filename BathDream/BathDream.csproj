@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Attributes\" />
     <Folder Include="Controls\" />
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\files\" />

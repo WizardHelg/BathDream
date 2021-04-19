@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using BathDream.ClassExtensions;
+using BathDream.Attributes;
 
 namespace BathDream.Pages
 {
@@ -42,6 +44,7 @@ namespace BathDream.Pages
             [Required(ErrorMessage = "Требуется указать телефон")]
             [DataType(DataType.PhoneNumber)]
             [Display(Name = "Телефон")]
+            [PhoneNumber(ErrorMessage = "Не верный формат номера телефона")]
             public string Phone { get; set; }
 
             [Required(ErrorMessage = "Требуется указать имя")]
@@ -99,7 +102,7 @@ namespace BathDream.Pages
 
             Input.Id = OrderId;
             Input.Email = user.Email;
-            Input.Phone = user.PhoneNumber;
+            Input.Phone = user.PhoneNumber.GetPhoneNumberToView();
             Input.Name = user.UName;
             Input.Famaly = user.UFamaly;
             Input.Patronymic = user.UPatronymic;
@@ -124,7 +127,7 @@ namespace BathDream.Pages
                     user.UName = Input.Name;
                     user.UFamaly = Input.Famaly;
                     user.UPatronymic = Input.Patronymic;
-                    user.PhoneNumber = Input.Phone;
+                    user.PhoneNumber = Input.Phone.GetPhoneNumber();
                     user.Email = Input.Email;
                     profile.PasportSerial = Input.PasportSerial;
                     profile.PasportNumber = Input.PasportNumber;

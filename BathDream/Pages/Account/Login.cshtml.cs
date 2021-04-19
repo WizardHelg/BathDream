@@ -11,6 +11,8 @@ using BathDream.Data;
 using BathDream.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using BathDream.ClassExtensions;
+using BathDream.Attributes;
 
 namespace BathDream.Pages.Account
 {
@@ -44,7 +46,8 @@ namespace BathDream.Pages.Account
             [Required(ErrorMessage = "Требуется указать телефон")]
             [DataType(DataType.PhoneNumber)]
             [Display(Name = "Телефон")]
-            [RegularExpression(@"[7][0-9]{10}", ErrorMessage = "Введите номер телефона в формате: 7, далее 10 цифр номера без разделителей")]
+            //[RegularExpression(@"[7][0-9]{10}", ErrorMessage = "Введите номер телефона в формате: 7, далее 10 цифр номера без разделителей")]
+            [PhoneNumber(ErrorMessage = "Не верный формат номера телефона")]
             public string Phone { get; set; }
 
             [Required(ErrorMessage = "Требуется указать код")]
@@ -57,17 +60,19 @@ namespace BathDream.Pages.Account
             public string GUID { get; set; }
             public bool CheckMode { get; set; }
             public string ReturnUrl { get; set; }
+            public string Role { get; set; }
 
             [Display(Name = "Код пришедший на телефон")]
             public string TempCode { get; set; }
         }
 
-        public void OnGet(string returnUrl = null)
+        public void OnGet(string returnUrl = null, string role = "customer")
         {
             if (Input == null) Input = new InputModel();
             returnUrl ??= Url.Content("~/");
             Input.ReturnUrl = returnUrl;
             Input.CheckMode = false;
+            Input.Role = role;
         }
 
         public IActionResult OnPostSendCodeAsync()
@@ -107,13 +112,25 @@ namespace BathDream.Pages.Account
                         return Page();
                     }
 
-                    await _userManager.AddToRoleAsync(user, "customer");
-                    UserProfile profile = new()
-                    {
-                        User = user
-                    };
+                    await _userManager.AddToRoleAsync(user, Input.Role);
                     
-                    await _db.UserProfiles.AddAsync(profile);
+                    if(Input.Role == "executor")
+                    {
+                        ExecutorProfile profile = new()
+                        {
+                            User = user
+                        };
+                        await _db.ExecutorProfiles.AddAsync(profile);
+                    }
+                    else
+                    {
+                        UserProfile profile = new()
+                        {
+                            User = user
+                        };
+                        await _db.UserProfiles.AddAsync(profile);
+                    }
+
                     await _db.SaveChangesAsync();
                 }
 

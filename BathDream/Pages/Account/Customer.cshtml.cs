@@ -170,6 +170,16 @@ namespace BathDream.Pages.Account
             return RedirectToAction("OnGetAsync");
         }
 
+        public async Task<IActionResult> OnGetBriefAsync()
+        {
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
+            if (order is not null)
+                return RedirectToPage("/Brief", new { id = order.Id });
+
+            return Page();
+        }
+
         public async Task<IActionResult> OnGetLogoutAsync()
         {
             await _signInManager.SignOutAsync();

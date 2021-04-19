@@ -1,0 +1,275 @@
+﻿@page
+@model BathDream.Pages.BriefModel
+@{
+}
+
+@section MainMenu
+{
+    <partial name="MainMenu" model="null" />
+}
+
+<br />
+<br />
+<h3>Заполните бриф для создания проекта от нашего Архитектора</h3>
+<form method="post">
+    <p><b>1. Выберите стиль дизайна</b></p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <span class="radio-inline">
+                    <input asp-for="Input.DesignStyle" type="radio" value="Классика" checked />
+                    Классика
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <span class="radio-inline">
+                    <input asp-for="Input.DesignStyle" type="radio" value="Модерн" />
+                    Модерн
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <span class="radio-inline">
+                    <input asp-for="Input.DesignStyle" type="radio" value="Хайтек" />
+                    Хайтек
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <span class="radio-inline">
+                    <input asp-for="Input.DesignStyle" type="radio" value="Прованс" />
+                    Прованс
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <span class="radio-inline">
+                    <input asp-for="Input.DesignStyle" type="radio" value="Кантри" />
+                    Кантри
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <span class="radio-inline">
+                    <input asp-for="Input.DesignStyle" type="radio" value="Лофт" />
+                    Лофт
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    <p><b>2. Выберите пол</b></p>
+    <p>
+        Веберите цветовую гамму:
+        <select asp-for="Input.FloorColor" class="form-control">
+            @foreach (var color in Model.TileColors)
+            {
+                <option>@color</option>
+            }
+        </select>
+    </p>
+    <p>
+        Напишите бюджет плитки до суммы в руб.:
+        <select asp-for="Input.FloorTileBudget" class="form-control">
+            <option>1 000</option>
+            <option>5 000</option>
+            <option>10 000</option>
+            <option>50 000</option>
+            <option>100 000</option>
+        </select>
+    </p>
+    <p>Укладка плитки</p>
+    <div class="form-group row">
+        <label class="col-sm-3 control-label">Укладка плитки</label>
+        <div class="col-sm-8">
+            <lable class="radio-inline">
+                <input asp-for="Input.FloorLayingTilesType" type="radio" value="По диагонали" checked />
+                По диагонали
+            </lable>
+            <lable class="radio-inline">
+                <input asp-for="Input.FloorLayingTilesType" type="radio" value="Линейно" />
+                Линейно
+            </lable>
+        </div>
+    </div>
+    <p>Размер плитки</p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.FloorTileSize" type="radio" value="Широкоформатная" checked />
+                    Широкоформатная
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.FloorTileSize" type="radio" value="Мелкоформатная" />
+                    Мелкоформатная
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.FloorTileSize" type="radio" value="С добавлением декора" />
+                    С добавлением декора
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    <p>2. Выберите стены</p>
+    <p>
+        Веберите цветовую гамму:
+        <select asp-for="Input.WallColor" class="form-control">
+            @foreach (var color in Model.TileColors)
+            {
+                <option>@color</option>
+            }
+        </select>
+    </p>
+    <p>
+        Напишите бюджет плитки до суммы в руб.:
+        <select asp-for="Input.WallTileBudget" class="form-control">
+            <option>1 000</option>
+            <option>5 000</option>
+            <option>10 000</option>
+            <option>50 000</option>
+            <option>100 000</option>
+        </select>
+    </p>
+    <p>Укладка плитки</p>
+    <div class="form-group row">
+        <div class="col-sm-8">
+            <lable class="radio-inline">
+                <input asp-for="Input.WallLayingTilesType" type="radio" value="По диагонали" checked />
+                По диагонали
+            </lable>
+            <lable class="radio-inline">
+                <input asp-for="Input.WallLayingTilesType" type="radio" value="Линейно" />
+                Линейно
+            </lable>
+        </div>
+    </div>
+    <p>Размер плитки</p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.WallTileSize" type="radio" value="Широкоформатная" checked />
+                    Широкоформатная
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.WallTileSize" type="radio" value="Мелкоформатная" />
+                    Мелкоформатная
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.WallTileSize" type="radio" value="С добавлением декора" />
+                    С добавлением декора
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+        </div>
+    </div>
+    <p>Какие углы на плитке</p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.WallTileAngular" type="radio" value="Раскладка под плитку" checked />
+                    Раскладка под плитку
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 panel panel-success">
+                <span class="radio-inline">
+                    <input asp-for="Input.WallTileAngular" type="radio" value="Угол 90 запиленной плитки" />
+                    Угол 90&deg; запиленной плитки
+                </span>
+                <img alt="Brand" src="img/Bath.jpg" />
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    <p>3. Электрика</p>
+    <hr />
+
+    <p>4. Сантехника</p>
+    <table id="santex" class="table table-hover table-condensed table-responsive">
+        <tr>
+            <th class="col-md-1">Наименование</th>
+            <th class="col-md-1">Количество</th>
+            <th class="col-md-2">Бюджет</th>
+            <th class="col-md-8">Варианты стиля</th>
+        </tr>
+        @foreach(var item in Model.SantechItems)
+        {
+            <tr>
+                <td>
+                    <input hidden name="name" value="@item.Name"/>
+                    <label name ="name">@item.Name</label>
+                </td>
+                <td>
+                    <input hidden name="amount" value="@item.Amount" />
+                    <label name ="amount">@item.Amount</label>
+                </td>
+                <td>
+                    <select name="budget" class="form-control">
+                        @foreach (var price in item.Prices)
+                        {
+                            <option>@price</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <div class="container-fluid">
+                        <div class="row">
+                            @{
+                                bool IsCheked = true;
+                                
+                                @foreach (var c_item in item.ChoiseItems)
+                                {
+                                    string style_name = $"style-{item.Name}";
+                                    <div class="col-md-4 panel panel-success">
+                                        @if (c_item.IsRadio)
+                                        {
+                                        <span class="radio-inline">
+                                            @if (IsCheked)
+                                            {
+                                                <input type="radio" name="@style_name" value="@c_item.Text" checked />
+                                                IsCheked = false;
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" name="@style_name" value="@c_item.Text" />
+                                            }
+                                            @c_item.Text
+                                        </span>
+                                        }
+                                        <img alt="Brand" src="@c_item.Img" />
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+    <button class="btn btn-success">Отправить</button>
+</form>
+<tr />
+<tr />
+<tr />
