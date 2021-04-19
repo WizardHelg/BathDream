@@ -25,7 +25,8 @@ namespace BathDream.Pages.Account
         {
             public bool Signed { get; set; } = false;
             public string SignText { get; set; } = "Не подписан";
-            public string NameFamaly { get; set; }
+            public string UserName { get; set; }
+            public string UserFamaly { get; set; }
             public string FIO { get; set; }
             public bool Display { get; set; } = false;
             public string CustomerPhone { get; set; }
@@ -57,7 +58,8 @@ namespace BathDream.Pages.Account
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
             
-            Input.NameFamaly = $"{user.UName} {user.UFamaly}";
+            Input.UserName = user.UName;
+            Input.UserFamaly = user.UFamaly;
             Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
             Input.CustomerPhone = user.PhoneNumber;
             Input.CustomerEmail = user.Email;

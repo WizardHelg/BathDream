@@ -12,7 +12,7 @@
 
 <br />
 <br />
-<!--<p>Страница пользователя @Model.Input.NameFamaly</p>
+<!--<p>Страница пользователя @Model.Input.UserName</p>
 <a asp-page="/Account/Manage/ProfileCustomer">Редактировать профиль</a>
 <a asp-page-handler="Logout">Выход</a>-->
 
@@ -48,8 +48,8 @@
 
                 <div class="user-info">
                     <span class="user-name">
-                        @User.Identity.Name
-                        <strong>@User.Identity.Name</strong>
+                        @Model.Input.UserName
+                        <strong>@Model.Input.UserFamaly</strong>
                     </span>
                     <span class="user-role">Заказчик</span>
                     <span class="user-status">
