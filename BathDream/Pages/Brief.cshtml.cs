@@ -515,7 +515,7 @@ namespace BathDream.Pages
                 builder.Append($"{item.Name} - количество: {item.Amount}, бюджет: {item.Budget}, стиль: {style}<br />");
             }
 
-            _emailSender.Send("wizardhelg@gmail.com", "Бриф", builder.ToString());
+            _emailSender.Send("info@bath-dream.ru", "Бриф", builder.ToString());
 
             return RedirectToPage("/BriefSend");
         }
