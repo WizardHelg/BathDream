@@ -31,10 +31,33 @@ namespace BathDream.Pages
         public InputModel Input { get; set; } = new InputModel();
         public class InputModel
         {
-            [Required(ErrorMessage = "Не указан адрес объекта")]
+            [Required(ErrorMessage = "Не указан город")]
             [DataType(DataType.Text)]
-            [Display(Name = "Адрес объекта")]
-            public string ObjectAddress { get; set; }
+            [Display(Name = "Город")]
+            public string City { get; set; }
+
+            [Required(ErrorMessage = "Не указана улица")]
+            [DataType(DataType.Text)]
+            [Display(Name = "Улица")]
+            public string Street { get; set; }
+
+            [Required(ErrorMessage = "Не указан номер дома")]
+            [DataType(DataType.Text)]
+            [Display(Name = "Номер дома")]
+            public string HouseNumber { get; set; }
+
+            [Required(ErrorMessage = "Не указана квартира")]
+            [DataType(DataType.Text)]
+            [Display(Name = "Квартира")]
+            public string ApartmentNumber { get; set; }
+
+            //[Required(ErrorMessage = "Не указан адрес объекта")]
+            //[DataType(DataType.Text)]
+            //[Display(Name = "Адрес объекта")]
+            public string ObjectAddress
+            {
+                get => $"{City}, {Street}, {HouseNumber}, {ApartmentNumber}";
+            }
 
             [Required(ErrorMessage = "Не указан email")]
             [EmailAddress]

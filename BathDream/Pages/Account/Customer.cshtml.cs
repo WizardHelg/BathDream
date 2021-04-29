@@ -175,8 +175,9 @@ namespace BathDream.Pages.Account
         public async Task<IActionResult> OnGetBriefAsync()
         {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
-            Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
-            if (order is not null)
+            //Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
+            if(await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order
+               && order.Signed)
                 return RedirectToPage("/Brief", new { id = order.Id });
 
             return Page();

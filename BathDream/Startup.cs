@@ -31,6 +31,7 @@ namespace BathDream
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SMSConfirmator>();
+            services.AddTransient<EmailSender>();
 
             services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(serv => new CustomPasswordValidator()
             {

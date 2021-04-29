@@ -11,15 +11,24 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.IO;
 using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Identity;
+using BathDream.Services;
 
 namespace BathDream.Pages
 {
-    //[Authorize]
+    [Authorize(Roles = "customer")]
     public class BriefModel : PageModel
     {
         readonly DBApplicationaContext _db;
+        readonly EmailSender _emailSender;
+        readonly UserManager<User> _userManager;
 
-        public BriefModel(DBApplicationaContext db) => _db = db;
+        public BriefModel(DBApplicationaContext db, EmailSender emailSender, UserManager<User> userManager)
+        {
+            _db = db;
+            _emailSender = emailSender;
+            _userManager = userManager;
+        }
 
         #region Данные для вывода сантехники
         public List<string> TileColors { get; init; } = new List<string>()
@@ -353,13 +362,18 @@ namespace BathDream.Pages
             public string FloorColor { get; set; }
             public string FloorTileBudget { get; set; }
             public string FloorLayingTilesType { get; set; }
-            public string FloorTileSize { get; set; }
+            public bool FloorTileSize1 { get; set; }
+            public bool FloorTileSize2 { get; set; }
+            public bool FloorTileSize3 { get; set; }
 
             public string WallColor { get; set; }
             public string WallTileBudget { get; set; }
             public string WallLayingTilesType { get; set; }
-            public string WallTileSize { get; set; }
+            public bool WallTileSize1 { get; set; }
+            public bool WallTileSize2 { get; set; }
+            public bool WallTileSize3 { get; set; }
             public string WallTileAngular { get; set; }
+            public string Electric { get; set; }
         }
         #endregion
         #region Биндинг сантехники
@@ -445,23 +459,51 @@ namespace BathDream.Pages
             return RedirectToPage("/");
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            //await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
             StringBuilder builder = new();
-            builder.AppendLine($"Общий стиль: {Input.DesignStyle}");
-            builder.AppendLine();
+            builder.Append($"Клиент: {user.UFamaly} {user.UName}<br />");
+            builder.Append($"Email Клиента: {user.Email}<br />");
+            builder.Append($"Номер Клиента: {user.PhoneNumber}<br />");
 
-            builder.AppendLine($"Цвет пола: {Input.FloorColor}");
-            builder.AppendLine($"Бюджет плитки пола: {Input.FloorTileBudget}");
-            builder.AppendLine($"Укладка плитки пола: {Input.FloorLayingTilesType}");
-            builder.AppendLine($"Размер плитки пола: {Input.FloorTileSize}");
-            builder.AppendLine();
 
-            builder.AppendLine($"Цвет стен: {Input.WallColor}");
-            builder.AppendLine($"Бюджет плитки стен: {Input.WallTileBudget}");
-            builder.AppendLine($"Укладка плитки стен: {Input.WallLayingTilesType}");
-            builder.AppendLine($"Размер плитки стен: {Input.WallTileSize}");
-            builder.AppendLine($"Углы плитки стен: {Input.WallTileAngular}");
+            StringBuilder size_builder = new();
+            builder.Append($"Общий стиль: {Input.DesignStyle}<br />");
+            builder.Append("<br />");
+
+            builder.Append($"Цвет пола: {Input.FloorColor}<br />");
+            builder.Append($"Бюджет плитки пола: {Input.FloorTileBudget}<br />");
+            builder.Append($"Укладка плитки пола: {Input.FloorLayingTilesType}<br />");
+            if (Input.FloorTileSize1) size_builder.Append("Широкоформатная, ");
+            if (Input.FloorTileSize2) size_builder.Append("Мелкоформатная, ");
+            if (Input.FloorTileSize3) size_builder.Append("С добавлением декора, ");
+            if(size_builder.Length > 0)
+            {
+                size_builder.Remove(size_builder.Length - 2, 2);
+                builder.Append($"Размер плитки пола: {size_builder}<br />");
+                size_builder.Clear();
+            }
+            builder.Append("<br />");
+
+            builder.Append($"Цвет стен: {Input.WallColor}<br />");
+            builder.Append($"Бюджет плитки стен: {Input.WallTileBudget}<br />");
+            builder.Append($"Укладка плитки стен: {Input.WallLayingTilesType}<br />");
+            if (Input.WallTileSize1) size_builder.Append("Широкоформатная, ");
+            if (Input.WallTileSize2) size_builder.Append("Мелкоформатная, ");
+            if (Input.WallTileSize3) size_builder.Append("С добавлением декора, ");
+            if (size_builder.Length > 0)
+            {
+                size_builder.Remove(size_builder.Length - 2, 2);
+                builder.Append($"Размер плитки стен: {size_builder}<br />");
+                size_builder.Clear();
+            }
+            builder.Append($"Углы плитки стен: {Input.WallTileAngular}<br />");
+            builder.Append("<br />");
+
+            builder.Append($"Электрика: {Input.Electric}<br />");
             builder.AppendLine();
 
             var styles = PageContext.HttpContext.Request.Form;
@@ -470,10 +512,12 @@ namespace BathDream.Pages
                 styles.TryGetValue($"style-{item.Name}", out StringValues value);
                 
                 string style = value[0]?.ToString() ?? "";
-                builder.AppendLine($"{item.Name} - количество: {item.Amount}, бюджет: {item.Budget}, стиль: {style}");
+                builder.Append($"{item.Name} - количество: {item.Amount}, бюджет: {item.Budget}, стиль: {style}<br />");
             }
 
-            return Content(builder.ToString());
+            _emailSender.Send("wizardhelg@gmail.com", "Бриф", builder.ToString());
+
+            return RedirectToPage("/BriefSend");
         }
     }
 }
