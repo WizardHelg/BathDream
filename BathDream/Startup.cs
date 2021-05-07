@@ -61,6 +61,7 @@ namespace BathDream
                 .AddDefaultTokenProviders();
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
             services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic }));
         }
 

@@ -18,6 +18,7 @@ namespace BathDream.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<WorkPrice> WorkPrices { get; set; }
         public DbSet<Work> Works { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public DBApplicationaContext(DbContextOptions<DBApplicationaContext> options)
             : base(options)
@@ -26,6 +27,11 @@ namespace BathDream.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Message>()
+                .HasOne<User>(a => a.Sender)
+                .WithMany(d => d.Messages)
+                .HasForeignKey(d => d.UserID);
         }
     }
 }
