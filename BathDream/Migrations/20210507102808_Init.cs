@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BathDream.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -172,6 +172,29 @@ namespace BathDream.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    File = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserProfiles",
                 columns: table => new
                 {
@@ -249,7 +272,7 @@ namespace BathDream.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: true),
                     ExecutorId = table.Column<int>(type: "int", nullable: true),
@@ -400,6 +423,11 @@ namespace BathDream.Migrations
                 column: "ExecutorProfileId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Messages_UserID",
+                table: "Messages",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
@@ -446,6 +474,9 @@ namespace BathDream.Migrations
 
             migrationBuilder.DropTable(
                 name: "FeedBacks");
+
+            migrationBuilder.DropTable(
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Rooms");

@@ -211,7 +211,7 @@ namespace BathDream.Pages
             Order order = new()
             {
                 Date = DateTime.Now.Date,
-                Status = "temp"
+                Status = Models.Order.Statuses.Temp
             };
             await _db.Orders.AddAsync(order);
 

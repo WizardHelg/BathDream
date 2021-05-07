@@ -71,7 +71,7 @@ namespace BathDream.Pages.Account
                 //int orid = (int)TempData["OrderId"];
                 //order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid);
                 order.Customer = user.Profile;
-                order.Status = "created";
+                order.Status = Order.Statuses.New;
                 await _db.SaveChangesAsync();
             }
             
