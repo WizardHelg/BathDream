@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages.Account
 {
+    //Authorize(Roles = "architector")]
     public class ArchitectorModel : PageModel
     {
         public List<Order> Orders { get; set; }
