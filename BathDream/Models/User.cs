@@ -19,12 +19,5 @@ namespace BathDream.Models
 
         [NotMapped]
         public string ShortName => $"{UFamaly} {(String.IsNullOrEmpty(UName) ? "" : $"{UName.First()}.")} {(String.IsNullOrEmpty(UPatronymic) ? "" : $"{UPatronymic.First()}.")}";
-
-
-        public User()
-        {
-            Messages = new HashSet<Message>();
-        }
-        public virtual ICollection<Message> Messages { get; set; }
     }
 }

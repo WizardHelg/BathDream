@@ -94,13 +94,13 @@ namespace BathDream.Pages.Account
         {
             if(ModelState.IsValid && _confirmator.TryConfirm(Input.GUID, Input.Code))
             {
-                User user = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == Input.Phone);
+                User user = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == Input.Phone.GetPhoneNumber());
 
                 if (user is null)
                 {
                     user = new()
                     {
-                        PhoneNumber = Input.Phone,
+                        PhoneNumber = Input.Phone.GetPhoneNumber(),
                     };
 
                     user.UserName = user.Id;

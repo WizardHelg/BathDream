@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BathDream.Pages.Account
 {
@@ -181,6 +182,11 @@ namespace BathDream.Pages.Account
                 return RedirectToPage("/Brief", new { id = order.Id });
 
             return Page();
+        }
+
+        public void OnGetChat()
+        {
+            Input.ContentView = "./Views/ChatPartialView";
         }
 
         public async Task<IActionResult> OnGetLogoutAsync()

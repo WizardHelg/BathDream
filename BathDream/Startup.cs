@@ -60,6 +60,8 @@ namespace BathDream
                 .AddEntityFrameworkStores<DBApplicationaContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddSignalR();
+
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddSingleton(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic }));
@@ -87,6 +89,7 @@ namespace BathDream
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapRazorPages();
             });
         }

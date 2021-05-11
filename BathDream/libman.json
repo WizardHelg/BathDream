@@ -10,6 +10,16 @@
       "provider": "cdnjs",
       "library": "jquery@3.5.1",
       "destination": "wwwroot/lib/jquery/dist/"
+    },
+    {
+      "library": "@microsoft/signalr@5.0.5",
+      "destination": "wwwroot/js/microsoft/signalr/",
+      "files": [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.js.map",
+        "dist/browser/signalr.min.js",
+        "dist/browser/signalr.min.js.map"
+      ]
     }
   ]
 }
