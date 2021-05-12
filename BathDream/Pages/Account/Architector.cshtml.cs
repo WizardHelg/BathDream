@@ -15,7 +15,9 @@ namespace BathDream.Pages.Account
     //Authorize(Roles = "architector")]
     public class ArchitectorModel : PageModel
     {
-        public List<Order> Orders { get; set; }
+        //public List<Order> Orders { get; set; }
+
+        public List<(Order Order, bool IsNewMessages)> Data = new List<(Order Order, bool IsNewMessages)>();
 
         private readonly DBApplicationaContext _db;
 
@@ -23,12 +25,20 @@ namespace BathDream.Pages.Account
         {
             _db = db;
         }
-        public void OnGet()
+        public async Task OnGetAsync()
         {
 
-            Orders = _db.Orders.Where(o => o.Status == Order.Statuses.New)
-                .Include(o => o.Customer)
-                .ThenInclude(c => c.User).ToList();
+            var orders = await _db.Orders.Where(o => (o.Status & Order.Statuses.Brief) > 0)
+                                   .Include(o => o.Customer)
+                                   .ThenInclude(c => c.User).ToListAsync();
+
+            foreach(var order in orders)
+            {
+                string id = order.Customer.User.Id;
+                var is_new_mes = _db.Messages.Any(m => m.Sender.Id == id && !m.IsReaded);
+
+                Data.Add((order, is_new_mes));
+            }
         }
 
 

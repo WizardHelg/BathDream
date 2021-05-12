@@ -10,3 +10,43 @@
 {
     <partial name="MainMenu" model="null" />
 }
+
+<br />
+<br />
+
+<div id="inputForm">
+    <textarea id="message"></textarea>
+    <input type="button" id="sendBtn" value="Отправить" />
+</div>
+<div id="chatroom" style="overflow: auto; width: 500px; height : 400px;"></div>
+<script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
+<script type="text/javascript">
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+
+    connection.on("Send", function (data) {
+
+        let elem = document.createElement("p");
+        elem.insertAdjacentHTML('afterbegin', data);
+        let cr = document.getElementById("chatroom");
+        cr.insertAdjacentElement('beforeend', elem);
+    });
+
+    connection.on("GetId", function (data) {
+        connection.send("GetCustomerMessages", "@Model.UserId")
+    });
+
+    document.getElementById("sendBtn").addEventListener("click", function (e) {
+        let message = document.getElementById("message").value;
+        connection.invoke("SendToClient", message, "@Model.UserId");
+    });
+
+    document.getElementById("message").addEventListener("keyup", function (event) {
+        if (!event.shiftKey && event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("sendBtn").click();
+            document.getElementById("message").value = "";
+        }
+    });
+
+    connection.start();
+</script>

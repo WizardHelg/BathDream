@@ -13,9 +13,8 @@ namespace BathDream.Models
         public DateTime? DateTime { get; set; }
         public string Text { get; set; }
         public string File { get; set; }
-
         public User Sender { get; set; }
-
         public User Recipient { get; set; }
+        public bool IsReaded { get; set; } = false;
     }
 }

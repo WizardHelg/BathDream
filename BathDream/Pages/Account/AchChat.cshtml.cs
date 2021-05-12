@@ -9,8 +9,11 @@ namespace BathDream.Pages.Account
 {
     public class AchChatModel : PageModel
     {
-        public void OnGet()
+        [BindProperty]
+        public string UserId { get; set; }
+        public void OnGet(string id)
         {
+            UserId = id;
         }
     }
 }

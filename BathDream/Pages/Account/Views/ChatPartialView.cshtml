@@ -7,9 +7,10 @@
 }
 
 <div id="inputForm">
-    <input type="text" id="message" />
+    @*<input type="text" id="message" />*@
+    <textarea id="message"></textarea>
     <input type="button" id="sendBtn" value="Отправить" />
 </div>
-<div id="chatroom"></div>
+<div id="chatroom" style="overflow: auto; width: 500px; height : 400px;"></div>
 <script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>

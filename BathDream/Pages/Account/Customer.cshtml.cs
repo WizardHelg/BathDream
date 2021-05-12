@@ -160,7 +160,7 @@ namespace BathDream.Pages.Account
                 await _db.SaveChangesAsync();
             }
 
-            return Page();
+            return await OnGetBriefAsync();
         }
 
         public async Task<IActionResult> OnGetDeleteOrderAsync()
@@ -179,9 +179,17 @@ namespace BathDream.Pages.Account
             //Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
             if(await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order
                && order.Signed)
-                return RedirectToPage("/Brief", new { id = order.Id });
+            {
+                if((order.Status & Order.Statuses.Brief) == 0)
+                    return RedirectToPage("/Brief", new { id = order.Id });
+                else
+                {
+                    Input.ContentView = "./Views/ChatPartialView";
+                    return Page();
+                }
+            }
 
-            return Page();
+            return RedirectToPage();
         }
 
         public void OnGetChat()

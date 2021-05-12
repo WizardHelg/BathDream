@@ -31,6 +31,8 @@ namespace BathDream.Pages.Test
                         return RedirectToPage("/Account/Executor");
                     case "customer":
                         return RedirectToPage("/Account/Customer");
+                    case "architect":
+                        return RedirectToPage("/Account/Architector");
                 }
 
             return RedirectToPage("/Index");

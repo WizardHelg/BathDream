@@ -388,7 +388,7 @@ namespace BathDream.Pages
 
             public IEnumerator<SantechModelItem> GetEnumerator()
             {
-                for (int i = 0; i < Name.GetLength(0); i++)
+                for (int i = 0; i < (Name?.GetLength(0) ?? 0); i++)
                     yield return new()
                     {
                         Name = Name[i],
@@ -406,8 +406,12 @@ namespace BathDream.Pages
         }
         #endregion
 
+        [BindProperty]
+        public int OrderId { get; set; }
+
         public async Task<IActionResult> OnGet(int id = 0)
         {
+            OrderId = id;
             void AddSantech(string name, string amount)
             {
                 if (_santeh_items.TryGetValue(name, out SantechItem value))
@@ -465,10 +469,6 @@ namespace BathDream.Pages
             //await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
 
             StringBuilder builder = new();
-            builder.Append($"Клиент: {user.UFamaly} {user.UName}<br />");
-            builder.Append($"Email Клиента: {user.Email}<br />");
-            builder.Append($"Номер Клиента: {user.PhoneNumber}<br />");
-
 
             StringBuilder size_builder = new();
             builder.Append($"Общий стиль: {Input.DesignStyle}<br />");
@@ -504,7 +504,7 @@ namespace BathDream.Pages
             builder.Append("<br />");
 
             builder.Append($"Электрика: {Input.Electric}<br />");
-            builder.AppendLine();
+            builder.Append("<br />");
 
             var styles = PageContext.HttpContext.Request.Form;
             foreach (var item in Santech)
@@ -515,9 +515,15 @@ namespace BathDream.Pages
                 builder.Append($"{item.Name} - количество: {item.Amount}, бюджет: {item.Budget}, стиль: {style}<br />");
             }
 
-            _emailSender.Send("info@bath-dream.ru", "Бриф", builder.ToString());
+            await ChatHub.AddBriefMessage(builder.ToString(), user.Id, _userManager, _db);
 
-            return RedirectToPage("/BriefSend");
+            if (OrderId > 0 && await _db.Orders.FirstOrDefaultAsync(o => o.Id == OrderId) is Order order)
+            {
+                order.Status |= Order.Statuses.Brief;
+                await _db.SaveChangesAsync();
+            }
+
+            return RedirectToPage("/Account/Customer", "Chat");
         }
     }
 }

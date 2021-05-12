@@ -9,8 +9,9 @@ namespace BathDream.Models
     {
         public enum Statuses
         {
-            Temp,
-            New
+            Temp = 0,
+            New = 1,
+            Brief = 2
         }
 
         public int Id { get; set; }

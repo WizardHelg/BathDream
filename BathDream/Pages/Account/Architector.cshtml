@@ -24,16 +24,23 @@
             <th style="text-align:center">Клиент</th>
             <th style="text-align:center">Статус</th>
             <th style="text-align:center">Чат</th>
+            <th style="text-align:center">Новые сообщения</th>
         </tr>
-        @foreach (var order in @Model.Orders)
+        @foreach (var order_info in @Model.Data)
         {
             <tr>
 
-                <td style="text-align: center;">@order.Id</td>
-                <td style="text-align: center;">@order.Date.ToString("dd.MM.yyyy")</td>
-                <td style="text-align: center;">@order.Customer.User.FullName</td>
-                <td style="text-align: center;">@order.Status</td>
-                <td style="text-align: center;"><a href="">Открыть чат</a></td>
+                <td style="text-align: center;">@order_info.Order.Id</td>
+                <td style="text-align: center;">@order_info.Order.Date.ToString("dd.MM.yyyy")</td>
+                <td style="text-align: center;">@order_info.Order.Customer.User.FullName</td>
+                <td style="text-align: center;">@order_info.Order.Status</td>
+                <td style="text-align: center;"><a asp-page="/Account/AchChat" asp-route-id="@order_info.Order.Customer.User.Id">Открыть чат</a></td>
+                <td style="text-align: center;">
+                    @if (order_info.IsNewMessages)
+                    {
+                        <span>X</span>
+                    }
+                </td>
             </tr>
         }
     </table>
