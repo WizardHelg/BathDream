@@ -12,9 +12,9 @@ namespace BathDream.Models
         public int Id { get; set;  }
         public DateTime? DateTime { get; set; }
         public string Text { get; set; }
-        public string File { get; set; }
         public User Sender { get; set; }
         public User Recipient { get; set; }
         public bool IsReaded { get; set; } = false;
+        public List<FileItem> Files { get; set; }
     }
 }
