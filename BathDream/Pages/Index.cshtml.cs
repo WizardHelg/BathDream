@@ -195,9 +195,11 @@ namespace BathDream.Pages
 
         public IndexModel(DBApplicationaContext db) => _db = db;
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            
+            if (User.IsInRole("architect"))
+                return RedirectToPage("/Account/Architector");
+            return Page();
         }
 
         public async Task<IActionResult> OnPostSubmit()

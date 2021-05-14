@@ -193,10 +193,10 @@ namespace BathDream.Pages.Account
             return RedirectToPage();
         }
 
-        public async void OnPostAddFiles(IFormFileCollection uploads, string[] descriptions)
-        {
-            Input.ContentView = "./Views/ChatPartialView";
-        }
+        //public async void OnPostAddFiles(IFormFileCollection uploads, string[] descriptions)
+        //{
+        //    Input.ContentView = "./Views/ChatPartialView";
+        //}
 
         public void OnGetChat()
         {

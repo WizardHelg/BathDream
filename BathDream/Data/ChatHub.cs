@@ -92,10 +92,12 @@ namespace BathDream.Data
             if(await _user_manager.FindByNameAsync(id) is User user)
             {
                 User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == _arch_number);
-                var messages = from message in _db.Messages
+                var messages = (from message in _db.Messages
                                where message.Sender.Id == id || message.Recipient.Id == id
                                orderby message.DateTime
-                               select message;
+                               select message)
+                               .Include(message => message.Sender)
+                               .Include(message => message.Recipient);
 
                 foreach (var message in messages)
                 {
@@ -126,10 +128,12 @@ namespace BathDream.Data
                     return;
                 }
 
-                var messanges = from message in _db.Messages
+                var messanges = (from message in _db.Messages
                                 where message.Recipient.Id == user.Id || message.Sender.Id == user.Id
                                 orderby message.DateTime
-                                select message;
+                                select message)
+                                .Include(message => message.Sender)
+                                .Include(message => message.Recipient);
 
                 foreach (var message in messanges)
                 {

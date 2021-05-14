@@ -1,6 +1,6 @@
 ﻿
 var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
-const messages = document.getElementById('msg_history');
+const messages = document.getElementById('chatroom');
 
 connection.on("Send", function (data) {
 
@@ -57,11 +57,12 @@ connection.on("Send", function (data) {
 
     let cr = document.getElementById("chatroom");
     cr.insertAdjacentElement('beforeend', elem);
-    scrollToBottom();
+    messages.scrollTop = messages.scrollHeight;   
 });
 
-function scrollToBottom() {
-    messages.scrollTop = messages.scrollHeight;
+window.onload = function () {
+    document.getElementById("sendBtn").scrollIntoView(false);
+    window.scrollBy(0, 10);
 }
 
 document.getElementById("sendBtn").addEventListener("click", function (e) {
