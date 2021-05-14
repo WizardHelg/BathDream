@@ -14,22 +14,86 @@
 <br />
 <br />
 
-<div id="inputForm">
-    <textarea id="message"></textarea>
-    <input type="button" id="sendBtn" value="Отправить" />
+<div class="messaging">
+    <div class="inbox_msg">
+        <div class="mesgs">
+            <div class="msg_history" id="chatroom"></div>
+            <div class="type_msg">
+                <div class="input_msg_write">
+                    <!--<textarea id="message"  class="write_msg" placeholder="Написать сообщение"></textarea>-->
+                    <input type="text" id="message" class="write_msg" placeholder="Написать сообщение" />
+                    <button class="msg_send_btn" id="sendBtn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div id="chatroom" style="overflow: auto; width: 500px; height : 400px;"></div>
+
 <script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript">
     var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
-
+    const messages = document.getElementById('msg_history');
     connection.on("Send", function (data) {
 
-        let elem = document.createElement("p");
-        elem.insertAdjacentHTML('afterbegin', data);
+        var when = new Date(data.when);
+        var options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+        };
+        let elem = document.createElement("div");
+        if (data.isMe == 1) {
+
+            elem.className = "outgoing_msg";
+
+            let elem2 = document.createElement('div');
+            elem2.className = "sent_msg";
+
+            let elem3 = document.createElement('p');
+            elem3.innerHTML = data.message;
+
+            let elemWhen = document.createElement('span');
+            elemWhen.innerHTML = when.toLocaleString("ru", options);
+            elemWhen.className = "time_date";
+
+            elem2.appendChild(elem3);
+            elem2.appendChild(elemWhen);
+
+            elem.appendChild(elem2);
+            elem.appendChild(elem2);
+
+        }
+        else {
+            elem.className = "incoming_msg";
+            let elem2 = document.createElement('div');
+            elem2.className = "received_msg";
+            let elem3 = document.createElement('div');
+            elem3.className = "received_withd_msg";
+            let elem4 = document.createElement('p');
+            elem4.innerHTML = data.message;
+
+            let elemWhen = document.createElement('span');
+            elemWhen.className = "time_date";
+            elemWhen.innerHTML = when.toLocaleString("ru", options);
+
+            elem3.appendChild(elem4);
+            elem3.appendChild(elemWhen);
+
+            elem2.appendChild(elem3);
+            elem.appendChild(elem2);
+        }
+
+
         let cr = document.getElementById("chatroom");
         cr.insertAdjacentElement('beforeend', elem);
+        scrollToBottom();
     });
+
+    function scrollToBottom() {
+        messages.scrollTop = messages.scrollHeight;
+    }
 
     connection.on("GetId", function (data) {
         connection.send("GetCustomerMessages", "@Model.UserId")
