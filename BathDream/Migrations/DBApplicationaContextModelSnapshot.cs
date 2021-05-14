@@ -65,29 +65,6 @@ namespace BathDream.Migrations
                     b.ToTable("FeedBacks");
                 });
 
-            modelBuilder.Entity("BathDream.Models.FileItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("FrendlyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MessageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MessageId");
-
-                    b.ToTable("FileItem");
-                });
-
             modelBuilder.Entity("BathDream.Models.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -97,6 +74,9 @@ namespace BathDream.Migrations
 
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("File")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsReaded")
                         .HasColumnType("bit");
@@ -536,15 +516,6 @@ namespace BathDream.Migrations
                     b.Navigation("Executor");
                 });
 
-            modelBuilder.Entity("BathDream.Models.FileItem", b =>
-                {
-                    b.HasOne("BathDream.Models.Message", "Message")
-                        .WithMany("Files")
-                        .HasForeignKey("MessageId");
-
-                    b.Navigation("Message");
-                });
-
             modelBuilder.Entity("BathDream.Models.Message", b =>
                 {
                     b.HasOne("BathDream.Models.User", "Recipient")
@@ -671,11 +642,6 @@ namespace BathDream.Migrations
                     b.Navigation("Rooms");
 
                     b.Navigation("Works");
-                });
-
-            modelBuilder.Entity("BathDream.Models.Message", b =>
-                {
-                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("BathDream.Models.Order", b =>

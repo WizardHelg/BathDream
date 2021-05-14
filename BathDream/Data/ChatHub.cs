@@ -159,14 +159,23 @@ namespace BathDream.Data
             if (await userManager.FindByNameAsync(userId) is User user)
             {
                 User arch = db.Users.FirstOrDefault(u => u.PhoneNumber == _arch_number);
-                Message temp_message = new Message
+                Message user_message = new Message
                 {
                     DateTime = cur_time,
                     Text = message,
                     Sender = user,
                     Recipient = arch,
                 };
-                db.Messages.Add(temp_message);
+                db.Messages.Add(user_message);
+
+                Message arch_message = new Message
+                {
+                    DateTime = cur_time,
+                    Text = "Спасибо за предоставленный бриф. Скоро свяжусь с Вами и предоставлю варианты дизайна Вашей ванной мечты.",
+                    Sender = arch,
+                    Recipient = user
+                };
+                db.Messages.Add(arch_message);
                 db.SaveChanges();
             }
         }

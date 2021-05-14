@@ -19,7 +19,19 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <li><a asp-page="/Account/Customer">Профиль</a></li>
+        if (User.IsInRole("architect"))
+        {
+            <li><a asp-page="/Account/Architector">Профиль</a></li>
+        }
+        else if (User.IsInRole("customer"))
+        {
+            <li><a asp-page="/Account/Customer">Профиль</a></li>
+        }
+        else
+        {
+            <li><a asp-page="#">Профиль</a></li>
+        }
+
         <li><a asp-page="/Account/Login" asp-page-handler="Logout" asp-route-returnUrl="@path">Выйти</a></li>
     }
     else

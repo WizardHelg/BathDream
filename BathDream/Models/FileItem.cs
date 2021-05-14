@@ -9,7 +9,9 @@ namespace BathDream.Models
     {
         public int Id { get; set; }
         public string FrendlyName { get; set; }
+        public string Description { get; set; }
         public string Path { get; set; }
         public Message Message { get; set; }
+        public Order Order { get; set; }
     }
 }

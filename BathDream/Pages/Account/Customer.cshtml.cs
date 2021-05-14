@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Http;
 
 namespace BathDream.Pages.Account
 {
@@ -190,6 +191,11 @@ namespace BathDream.Pages.Account
             }
 
             return RedirectToPage();
+        }
+
+        public async void OnPostAddFiles(IFormFileCollection uploads, string[] descriptions)
+        {
+            Input.ContentView = "./Views/ChatPartialView";
         }
 
         public void OnGetChat()
