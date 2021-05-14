@@ -102,10 +102,10 @@ namespace BathDream.Data
                     if (message.Sender.Id != arch.Id)
                         message.IsReaded = true;
 
-                    await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = message.Text, When = message.DateTime });
-                    await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+                   //await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = message.Text, When = message.DateTime });
+                   // await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = message.Text, When = message.DateTime });
 
-                    //await Clients.User(arch.Id).SendAsync("Send", new { IsMe = message.Sender.Id == user.Id ? 1 : 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+                    await Clients.User(arch.Id).SendAsync("Send", new { IsMe = message.Sender.Id == arch.Id ? 1 : 0, Name = user.UName, Message = message.Text, When = message.DateTime });
                 }
 
                 _db.SaveChanges();

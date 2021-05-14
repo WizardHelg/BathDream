@@ -32,7 +32,7 @@
 <script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript">
     var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
-
+    const messages = document.getElementById('msg_history');
     connection.on("Send", function (data) {
 
         var when = new Date(data.when);
@@ -88,7 +88,12 @@
 
         let cr = document.getElementById("chatroom");
         cr.insertAdjacentElement('beforeend', elem);
+        scrollToBottom();
     });
+
+    function scrollToBottom() {
+        messages.scrollTop = messages.scrollHeight;
+    }
 
     connection.on("GetId", function (data) {
         connection.send("GetCustomerMessages", "@Model.UserId")
