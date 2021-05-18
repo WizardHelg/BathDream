@@ -1,7 +1,59 @@
 body {
     padding-top: 30px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Jost', sans-serif;
+    color: #263E44;
 }
+
+h1, h2, h3, h4 {
+    color: #263E44;
+}
+
+.form-control:focus {
+    border-color: #9A8078;
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px #9a8078;
+}
+
+.btn-success {
+    background-color: #263E44;
+    border-color: #263E44;
+}
+
+    .btn-success.focus, .btn-success:focus {
+        color: #fff;
+        background-color: #9A8078;
+        border-color: #9A8078;
+    }
+
+    .btn-success.active, .btn-success:active, .open > .dropdown-toggle.btn-success {
+        color: #fff;
+        background-color: #9A8078;
+        border-color: #9A8078;
+    }
+
+    .btn-success:hover {
+        color: #fff;
+        background-color: #9A8078;
+        border-color: #9A8078;
+    }
+
+    .btn-success.active.focus, .btn-success.active:focus, .btn-success.active:hover, .btn-success:active.focus, .btn-success:active:focus, .btn-success:active:hover, .open > .dropdown-toggle.btn-success.focus, .open > .dropdown-toggle.btn-success:focus, .open > .dropdown-toggle.btn-success:hover {
+        color: #fff;
+        background-color: #9A8078;
+        border-color: #9A8078;
+    }
+
+.panel-success {
+    border-color: #9A8078;
+}
+
+.table > tbody > tr.success > td, .table > tbody > tr.success > th, .table > tbody > tr > td.success, .table > tbody > tr > th.success, .table > tfoot > tr.success > td, .table > tfoot > tr.success > th, .table > tfoot > tr > td.success, .table > tfoot > tr > th.success, .table > thead > tr.success > td, .table > thead > tr.success > th, .table > thead > tr > td.success, .table > thead > tr > th.success {
+    background-color: #263E44;
+    color: #fff;
+}
+.table-hover > tbody > tr.success:hover > td, .table-hover > tbody > tr.success:hover > th, .table-hover > tbody > tr:hover > .success, .table-hover > tbody > tr > td.success:hover, .table-hover > tbody > tr > th.success:hover {
+    background-color: #263e44c9;
+}
+
 
 .nav {
     margin: 7px 0 15px -10px;
@@ -32,12 +84,12 @@ body {
 }
 
 .navbar-default .navbar-nav > li > a:hover {
-    color: #9A9A9A;
+    color: #9A8078;
 }
 
 .navbar-default .navbar-nav > li > a.hover {
-    color: #9A9A9A;
-    border-bottom: 1px solid #9AFF4F;
+    color: #9A8078;
+    border-bottom: 1px solid #9A8078;
     display: table;
 }
 
@@ -60,8 +112,8 @@ body {
     }
 
     li > a:hover {
-        color: #9A9A9A;
-        border-bottom: 1px solid #9AFF4F;
+        color: #9A8078;
+        border-bottom: 1px solid #9A8078;
     }
 
     .nav > li > a {
@@ -97,12 +149,12 @@ body {
 }
 
 .navbar-default .navbar-nav > li > a:hover {
-    color: #9A9A9A;
+    color: #9A8078;
 }
 
 .navbar-default .navbar-nav > li > a.hover {
-    color: #9A9A9A;
-    border-bottom: 1px solid #9AFF4F;
+    color: #9A8078;
+    border-bottom: 1px solid #9A8078;
     display: table;
 }
 
@@ -131,7 +183,7 @@ body {
 
 .install {
     text-align: center;
-    padding-bottom: 5px;
+    padding: 5px;
 }
 
     .install input {
@@ -147,6 +199,24 @@ body {
 }
 
 
+
+    .amount span {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: #ededed;
+        cursor: pointer;
+        text-align: center;
+    }
+
+        .amount span:hover {
+            background: #dfdfdf;
+        }
+
+    .amount input {
+        width: 30px;
+        text-align: center;
+    }
 
 .install-title {
     height: 35px;

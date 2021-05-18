@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/main.css?ver=20210419" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Jost:100,400,700" rel="stylesheet">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="~/css/Contract.css" rel="stylesheet">
@@ -84,6 +84,22 @@
                 $(".page-wrapper").addClass("toggled");
             });
 
+            $(document).ready(function () {
+                $('.down').click(function () {
+                    var $input = $(this).parent().find('input');
+                    var count = parseInt($input.val()) - 1;
+                    count = count < 0 ? 0 : count;
+                    $input.val(count);
+                    $input.change();
+                    return false;
+                });
+                $('.up').click(function () {
+                    var $input = $(this).parent().find('input');
+                    $input.val(parseInt($input.val()) + 1);
+                    $input.change();
+                    return false;
+                });
+            });
 
 
 

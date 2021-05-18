@@ -19,95 +19,99 @@
 
     <h3>Помещения</h3>
 
-
-    <table class="table table-bordered table-hover">
-        <tr class="success">
-            <th>Помещение</th>
-            @foreach (Room room in @Model.Rooms)
-            {
-                <th style="text-align: center;">@room.Name</th>
-            }
-        </tr>
-        <tr>
-            <td>Размеры</td>
-            @foreach (Room room in @Model.Rooms)
-            {
-                <td style="text-align: center;">@room.Width x @room.Length x @room.Height мм</td>
-            }
-        </tr>
-        <tr>
-            <td>Пол</td>
-            @foreach (Room room in @Model.Rooms)
-            {
-                <td style="text-align: center;">@room.FloorArea() кв.м</td>
-            }
-        </tr>
-        <tr>
-            <td>Стены</td>
-            @foreach (Room room in @Model.Rooms)
-            {
-                <td style="text-align: center;">@room.WallsArea() кв.м</td>
-            }
-        </tr>
-        <tr>
-            <td>Потолок</td>
-            @foreach (Room room in @Model.Rooms)
-            {
-                <td style="text-align: center;">@room.CeilingArea() кв.м</td>
-            }
-        </tr>
-        <tr>
-            <td>Дверь</td>
-            @foreach (Room room in @Model.Rooms)
-            {
-                <td style="text-align: center;">@room.DoorArea() кв.м</td>
-            }
-        </tr>
-        <tr></tr>
-    </table>
-
-
-    <h3>Работы</h3>
-    <table class="table table-bordered table-hover">
-        <tr class="success">
-            <th style="text-align: center;">№ п/п</th>
-            <th style="text-align: center;">Тип</th>
-            <th style="text-align: center;">Наименование</th>
-            <th style="text-align: center;">Ед.изм</th>
-            <th style="text-align: center;">Цена</th>
-            <th style="text-align: center;">Кол-во</th>
-            <th style="text-align: center;">Сумма</th>
-        </tr>
-
-        @foreach (Work work in @Model.Works)
-        {
-            @if (sub_caption != work.Group)
-            {
-                sub_caption = work.Group;
-                <tr>
-                    <td colspan="7" class="info" style="text-align: center;"><b>@sub_caption</b></td>
-                </tr>
-            }
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <tr class="success">
+                <th>Помещение</th>
+                @foreach (Room room in @Model.Rooms)
+                {
+                    <th style="text-align: center;">@room.Name</th>
+                }
+            </tr>
             <tr>
-                <td style="text-align: center;">@work.Position</td>
-                <td>@work.FirstWord</td>
-                <td>@work.WithoutFirstWord</td>
-                <td style="text-align: center;">@work.Unit</td>
-                <td style="text-align: right;">
-                    @if (work.Price == 0.0)
-                    {<span>30% от стоимости</span> }
-                    else
-                        @work.Price.ToString("# ##0")
+                <td>Размеры</td>
+                @foreach (Room room in @Model.Rooms)
+                {
+                    <td style="text-align: center;">@room.Width x @room.Length x @room.Height мм</td>
+                }
+            </tr>
+            <tr>
+                <td>Пол</td>
+                @foreach (Room room in @Model.Rooms)
+                {
+                    <td style="text-align: center;">@room.FloorArea() кв.м</td>
+                }
+            </tr>
+            <tr>
+                <td>Стены</td>
+                @foreach (Room room in @Model.Rooms)
+                {
+                    <td style="text-align: center;">@room.WallsArea() кв.м</td>
+                }
+            </tr>
+            <tr>
+                <td>Потолок</td>
+                @foreach (Room room in @Model.Rooms)
+                {
+                    <td style="text-align: center;">@room.CeilingArea() кв.м</td>
+                }
+            </tr>
+            <tr>
+                <td>Дверь</td>
+                @foreach (Room room in @Model.Rooms)
+                {
+                    <td style="text-align: center;">@room.DoorArea() кв.м</td>
+                }
+            </tr>
+            <tr></tr>
+        </table>
+    </div>
+
+    <h3>
+        Работы
+    </h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <tr class="success">
+                <th style="text-align: center;">№ п/п</th>
+                <th style="text-align: center;">Тип</th>
+                <th style="text-align: center;">Наименование</th>
+                <th style="text-align: center;">Ед.изм</th>
+                <th style="text-align: center;">Цена</th>
+                <th style="text-align: center;">Кол-во</th>
+                <th style="text-align: center;">Сумма</th>
+            </tr>
+
+            @foreach (Work work in @Model.Works)
+            {
+                @if (sub_caption != work.Group)
+                {
+                    sub_caption = work.Group;
+                    <tr>
+                        <td colspan="7" class="info" style="text-align: center;"><b>@sub_caption</b></td>
+                    </tr>
+                }
+                <tr>
+                    <td style="text-align: center;">@work.Position</td>
+                    <td>@work.FirstWord</td>
+                    <td>@work.WithoutFirstWord</td>
+                    <td style="text-align: center;">@work.Unit</td>
+                    <td style="text-align: right;">
+                        @if (work.Price == 0.0)
+                        {<span>30% от стоимости</span> }
+                        else
+                            @work.Price.ToString("# ##0")
                     </td>
                     <td style="text-align: center;">@work.Volume</td>
                     <td style="text-align: right;">@work.Total.ToString("# ##0.00")</td>
                 </tr>
             }
-    </table>
-    <h2 style="text-align: right;">Итого: @Model.Total.ToString("# ##0.00")</h2>
-    @if (!@Model.Signed)
-    {
-        <a class="btn btn-success" asp-page-handler="Contract">Подписать</a>
-    }
+        </table>
+    </div>
+        <h2 style="text-align: right;">Итого: @Model.Total.ToString("# ##0.00")</h2>
+        @if (!@Model.Signed)
+        {
+            <a class="btn btn-success" asp-page-handler="Contract">Подписать</a>
+        }
 
-}
+        }
