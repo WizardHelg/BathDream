@@ -9,7 +9,9 @@
 <br />
 @*<p>@Model.Signed &lt;- Временный указатель</p>*@
 <br />
-<p class="contract-center"><span class="contract-bold">ДОГОВОР</span> № @Model.OrderNumber</p>
+
+<p class="contract-center"><span style="font-size:  x-large;">ДОГОВОР №@Model.OrderNumber</span></p>
+<hr />
 <table class="contract-table">
     <tr>
         <td>г. Москва</td>
@@ -104,21 +106,20 @@
         </td>
         <td>
             @Model.FIO<br />
-        Паспорт: @Model.PasportSerial @Model.PasportNumber<br />
-        Выдан: @Model.PasportIssued<br />
-        Дата выдачи: @Model.PasportDate<br />
-        Адрес регистрации: @Model.PasportAddress<br />
-        Тел.: @Model.CustomerPhone<br />
-        E-mail: @Model.CustomerEmail
-    </td>
-</tr>
-<tr>
-    <td>М.П. ______________ Захаревич Д.Б.</td>
-    <td>М.П. __________________ </td>
-</tr>
+            Паспорт: @Model.PasportSerial @Model.PasportNumber<br />
+            Выдан: @Model.PasportIssued<br />
+            Дата выдачи: @Model.PasportDate<br />
+            Адрес регистрации: @Model.PasportAddress<br />
+            Тел.: @Model.CustomerPhone<br />
+            E-mail: @Model.CustomerEmail
+        </td>
+    </tr>
+    <tr>
+        <td>М.П. ______________ Захаревич Д.Б.</td>
+        <td>М.П. __________________ </td>
+    </tr>
 </table>
 
-<br />
 @if (!@Model.Signed)
 {
     <a class="btn btn-success" asp-page-handler="Sign">Подписать</a>

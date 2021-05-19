@@ -46,6 +46,16 @@ h1, h2, h3, h4 {
     border-color: #9A8078;
 }
 
+hr {
+    border: 0;
+    height: 1px;
+    background: #000;
+    background-image: -webkit-linear-gradient(left, #fff, #000, #fff);
+    background-image: -moz-linear-gradient(left, #fff, #000, #fff);
+    background-image: -ms-linear-gradient(left, #fff, #000, #fff);
+    background-image: -o-linear-gradient(left, #fff, #000, #fff);
+}
+
 .table > tbody > tr.success > td, .table > tbody > tr.success > th, .table > tbody > tr > td.success, .table > tbody > tr > th.success, .table > tfoot > tr.success > td, .table > tfoot > tr.success > th, .table > tfoot > tr > td.success, .table > tfoot > tr > th.success, .table > thead > tr.success > td, .table > thead > tr.success > th, .table > thead > tr > td.success, .table > thead > tr > th.success {
     background-color: #263E44;
     color: #fff;
@@ -57,16 +67,19 @@ h1, h2, h3, h4 {
 
 .nav {
     margin: 7px 0 15px -10px;
-    color: #1C1C1C;
+    color: #263E44;
 }
 
 .navbar-default {
-    background-color: #FAFAFA;
-    border: none;
+    background-color: #fff;
+    border-bottom: #263E44;
+    border-bottom-style: solid;
+    border-bottom-width: thin;
 }
 
 .nav li {
-    color: #1C1C1C;
+    color: #263E44;
+    font-weight:600;
 }
 
 .navbar-brand {
@@ -78,7 +91,7 @@ h1, h2, h3, h4 {
     padding-top: 10px;
     line-height: 20px;
     padding-bottom: 0;
-    color: #1C1C1C;
+    color: #263E44;
     font-size: 15px;
     text-decoration: none;
 }
@@ -88,8 +101,7 @@ h1, h2, h3, h4 {
 }
 
 .navbar-default .navbar-nav > li > a.hover {
-    color: #9A8078;
-    border-bottom: 1px solid #9A8078;
+    color: #9A8078; 
     display: table;
 }
 
@@ -98,7 +110,7 @@ h1, h2, h3, h4 {
 }
 
 .navbar-default .navbar-nav > li > a {
-    color: #1C1C1C;
+    color: #263E44;
 }
 
 .navbar-header a:hover, .footer a:hover {
@@ -113,7 +125,6 @@ h1, h2, h3, h4 {
 
     li > a:hover {
         color: #9A8078;
-        border-bottom: 1px solid #9A8078;
     }
 
     .nav > li > a {
@@ -127,39 +138,34 @@ h1, h2, h3, h4 {
 
 .nav {
     margin: 7px 0 15px -10px;
-    color: #1C1C1C;
-}
-
-.navbar-default {
-    background-color: #FAFAFA;
-    border: none;
+    color: #263E44;
 }
 
 .nav li {
-    color: #1C1C1C;
+    color: #263E44;
 }
 
 .navbar-nav > li > a {
     padding-top: 10px;
     line-height: 20px;
     padding-bottom: 0;
-    color: #1C1C1C;
+    color: #263E44;
     font-size: 15px;
     text-decoration: none;
 }
 
 .navbar-default .navbar-nav > li > a:hover {
     color: #9A8078;
+    text-decoration: none;
 }
 
 .navbar-default .navbar-nav > li > a.hover {
     color: #9A8078;
-    border-bottom: 1px solid #9A8078;
     display: table;
 }
 
 .navbar-default .navbar-nav > li > a {
-    color: #1C1C1C;
+    color: #263E44;
 }
 
 .navbar-header a:hover, .footer a:hover {

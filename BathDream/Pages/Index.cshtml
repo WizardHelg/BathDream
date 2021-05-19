@@ -138,7 +138,7 @@
                 </tr>
             </table>
             <div class="text-right">
-                <button type="button" class="btn btn-success add-row">Добавить помещение</button>
+                <button type="button" class="btn btn-success add-row">Добавить еще помещение</button>
             </div>
 
             <hr />
@@ -235,8 +235,12 @@
         <div id="page4" style="display: none;">
             <h2>Электромонтажные работы</h2>
 
-            <simple-form-container label="Колличество розеток и выключателей" col-sm-width="2">
-                <input type="number" class="form-control" name="Order.SwitchAmount" min="0" placeholder="0" />
+            <simple-form-container label="Колличество розеток и выключателей" col-sm-width="4">
+                <div class="amount">
+                    <span class="down">-</span>
+                    <input type="text" name="Order.SwitchAmount" class="form-control" id="InputAmount" value="0" size="5" style="display: initial; width: 50px" />
+                    <span class="up">+</span>
+                </div>
             </simple-form-container>
 
             <simple-form-container label="Теплые полы" col-sm-width="8">
