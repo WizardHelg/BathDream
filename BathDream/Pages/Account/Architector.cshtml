@@ -16,7 +16,6 @@
         <h1>Заказы в работе</h1>
     </div>
 
-
     <table class="table table-bordered table-hover">
         <tr class="success">
             <th style="text-align:center">№ заказа</th>
@@ -25,6 +24,7 @@
             <th style="text-align:center">Статус</th>
             <th style="text-align:center">Чат</th>
             <th style="text-align:center">Новые сообщения</th>
+            <th></th>
         </tr>
         @foreach (var order_info in @Model.Data)
         {
@@ -33,12 +33,22 @@
                 <td style="text-align: center;">@order_info.Order.Id</td>
                 <td style="text-align: center;">@order_info.Order.Date.ToString("dd.MM.yyyy")</td>
                 <td style="text-align: center;">@order_info.Order.Customer.User.FullName</td>
-                <td style="text-align: center;">@order_info.Order.Status</td>
+                <td style="text-align: center;">@order_info.Order.StatusName()</td>
                 <td style="text-align: center;"><a asp-page="/Account/AchChat" asp-route-id="@order_info.Order.Customer.User.Id">Открыть чат</a></td>
                 <td style="text-align: center;">
                     @if (order_info.IsNewMessages)
                     {
                         <span>X</span>
+                    }
+                </td>
+                <td style="text-align: center;">
+                    @if ((order_info.Order.Status & Models.Order.Statuses.ToExecute) == 0)
+                    {
+                        <a class="btn btn-success" asp-page-handler="ToExecute" asp-route-id="@order_info.Order.Id">На исполнение</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-success disabled" asp-page-handler="ToExecute" asp-route-id="@order_info.Order.Id">Исполняется</a>
                     }
                 </td>
             </tr>

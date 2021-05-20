@@ -11,11 +11,27 @@ namespace BathDream.Models
         {
             Temp = 0,
             New = 1,
-            Brief = 2
+            Brief = 2,
+            ToExecute = 4
         }
 
         public int Id { get; set; }
         public Statuses Status { get; set; }
+        public string StatusName()
+        {
+            if ((Status & Statuses.ToExecute) > 0)
+            {
+                if ((Status & Statuses.New) > 0)
+                    return "ToExecute";
+                else
+                    return "Executing";
+            }
+            else
+                return "Brief";
+            //if (Status == (Statuses.Brief | Statuses.New)) statusName = "Brief";
+            //else if (Status == Statuses.ToExecute) statusName = "ToExecute";
+            //else if (Status == Statuses.Executing) statusName = "Executing";
+        }
         public DateTime Date { get; set; }
         public UserProfile Customer { get; set; }
         public ExecutorProfile Executor { get; set; }

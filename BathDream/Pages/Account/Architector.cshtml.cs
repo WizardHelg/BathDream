@@ -27,7 +27,6 @@ namespace BathDream.Pages.Account
         }
         public async Task OnGetAsync()
         {
-
             var orders = await _db.Orders.Where(o => (o.Status & Order.Statuses.Brief) > 0)
                                    .Include(o => o.Customer)
                                    .ThenInclude(c => c.User).ToListAsync();
@@ -39,8 +38,19 @@ namespace BathDream.Pages.Account
 
                 Data.Add((order, is_new_mes));
             }
-        }
 
+            Data.OrderBy(s => s.Order.Status);
+        }
+        public IActionResult OnGetToExecute(int id)
+        {
+            if (_db.Orders.FirstOrDefault(o => o.Id == id) is Order order)
+            {
+                order.Status |= Order.Statuses.ToExecute;
+                _db.SaveChanges();
+            }
+
+            return RedirectToPage();
+        }
 
     }
 }

@@ -23,17 +23,20 @@ namespace BathDream.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly DBApplicationaContext _db;
         private readonly SMSConfirmator _confirmator;
+        private readonly SMSSender _smssender;
 
         public LoginModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             DBApplicationaContext db,
-            SMSConfirmator confirmator)
+            SMSConfirmator confirmator,
+            SMSSender SMSSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
             _confirmator = confirmator;
+            _smssender = SMSSender;
         }
 
         public string ReturnUrl { get; set; }
@@ -59,6 +62,7 @@ namespace BathDream.Pages.Account
 
             public string GUID { get; set; }
             public bool CheckMode { get; set; }
+            public bool DebugMode { get; set; } = false;
             public string ReturnUrl { get; set; }
             public string Role { get; set; }
 
@@ -77,13 +81,19 @@ namespace BathDream.Pages.Account
 
         public IActionResult OnPostSendCodeAsync()
         {
+            int errorCode;
             if (ModelState.TryGetValue("Input.Phone", out ModelStateEntry value)
                 && value.ValidationState == ModelValidationState.Valid)
             {
                 (string guid, string code) = _confirmator.AddNewSMSConfirmation();
                 Input.GUID = guid;
                 Input.CheckMode = true;
+#if DEBUG
                 Input.TempCode = code;
+                Input.DebugMode = true;
+#else
+                errorCode = _smssender.Send(Input.Phone.GetPhoneNumber(), code);
+#endif
             }
             
             ModelState["Input.Code"].Errors.Clear();
