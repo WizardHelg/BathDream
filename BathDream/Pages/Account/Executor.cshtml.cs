@@ -65,6 +65,22 @@ namespace BathDream.Pages.Account
 
         public IActionResult OnGetShowAddress()
         {
+            
+            return Page();
+        }
+
+        public IActionResult OnGetExecuting(int id)
+        {
+            if (_db.Orders.FirstOrDefault(o => o.Id == id) is Order order)
+            {
+                order.Status = Order.Statuses.Executing;
+                var executorprofile = _userManager.GetUserId(User);
+                ///////не доделано еще
+                var profile = _db.UserProfiles.FirstOrDefault(u => u.UserId == executorprofile);
+                order.Executor = (ExecutorProfile)profile;
+                _db.SaveChanges();
+            }
+
             return Page();
         }
     }

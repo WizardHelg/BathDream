@@ -12,7 +12,8 @@ namespace BathDream.Models
             Temp = 0,
             New = 1,
             Brief = 2,
-            ToExecute = 4
+            ToExecute = 4,
+            Executing = 8
         }
 
         public int Id { get; set; }
