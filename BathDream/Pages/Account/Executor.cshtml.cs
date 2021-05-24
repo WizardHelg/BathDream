@@ -19,6 +19,7 @@ namespace BathDream.Pages.Account
         private readonly UserManager<User> _userManager;
 
         public List<Order> Data = new List<Order>();
+        public List<Order> ExecutingOrders = new List<Order>();
         public int sw = 0;
 
         private readonly DBApplicationaContext _db;
@@ -54,18 +55,32 @@ namespace BathDream.Pages.Account
             var orders = await _db.Orders.Where(o => (o.Status == Order.Statuses.New || o.Status == Order.Statuses.ToExecute || o.Status == (Order.Statuses.New | Order.Statuses.ToExecute)))
                                    .Include(o => o.Customer)
                                    .ThenInclude(c => c.User).ToListAsync();
-
             foreach (var order in orders)
             {
                 Data.Add(order);
+            }
+
+            var executingOrders = await _db.Orders.Where(o => o.Executor.UserId == _userManager.GetUserId(User))
+                                    .Include(o => o.Customer)
+                                    .ThenInclude(c => c.User).ToListAsync();
+            foreach (var order in executingOrders)
+            {
+                ExecutingOrders.Add(order);
             }
             sw = 1;
             return Page();
         }
 
-        public IActionResult OnGetShowAddress()
+        public async Task<IActionResult> OnGetShowAddress()
         {
-            
+            var executingOrders = await _db.Orders.Where(o => o.Executor.UserId == _userManager.GetUserId(User))
+                                    .Include(o => o.Customer)
+                                    .ThenInclude(c => c.User).ToListAsync();
+            foreach (var order in executingOrders)
+            {
+                ExecutingOrders.Add(order);
+            }
+            sw = 2;
             return Page();
         }
 
@@ -75,7 +90,6 @@ namespace BathDream.Pages.Account
             {
                 order.Status = Order.Statuses.Executing;
                 var executorprofile = _userManager.GetUserId(User);
-                ///////не доделано еще
                 var profile = _db.UserProfiles.FirstOrDefault(u => u.UserId == executorprofile);
                 order.Executor = (ExecutorProfile)profile;
                 _db.SaveChanges();

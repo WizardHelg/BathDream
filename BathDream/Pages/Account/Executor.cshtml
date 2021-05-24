@@ -28,7 +28,13 @@
                 @foreach (var order_info in @Model.Data)
                 {
                     <tr>
-                        <td style="text-align: center;">@if (order_info.Status == Models.Order.Statuses.New) { <a>New!</a> } @order_info.Customer.User.FullName</td>
+                        <td style="text-align: center;">
+                            @if (order_info.Status == Models.Order.Statuses.New)
+                            {
+                                <a>New!</a>
+                            }
+                            @order_info.Customer.User.FullName
+                        </td>
                         <td style="text-align: center;">@order_info.Id</td>
                         <td style="text-align: center;">@order_info.ObjectAdress</td>
                         <td style="text-align: center;">@order_info.Estimate</td>
@@ -37,118 +43,148 @@
                             {
                                 <a class="btn btn-success" asp-page-handler="Executing" asp-route-id="@order_info.Id">Принять</a>
                             }
-                            @*else
-                            {
-                                <a class="btn btn-success disabled" asp-page-handler="Executing" asp-route-id="@order_info.Id">Исполняется</a>
-                            }*@
                         </td>
+                    </tr>
+                }
+                @foreach (var order_info in @Model.ExecutingOrders)
+                {
+                    <tr>
+                        <td style="text-align: center;">@order_info.Customer.User.FullName</td>
+                        <td style="text-align: center;">@order_info.Id</td>
+                        <td style="text-align: center;">@order_info.ObjectAdress</td>
+                        <td style="text-align: center;">@order_info.Estimate</td>
+                        <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
+                    </tr>
+                }
+            </table>
+            break;
+        case 2:
+            <div class="container-scroller" style="margin-top: 50px">
+                <h1>Принятые заказы</h1>
+            </div>
+            <table class="table table-bordered table-hover">
+                <tr class="success">
+                    <th style="text-align:center">Клиент</th>
+                    <th style="text-align:center">№ заказа</th>
+                    <th style="text-align:center">Адрес</th>
+                    <th style="text-align:center">Смета</th>
+                    <th></th>
+                </tr>
+                @foreach (var order_info in @Model.ExecutingOrders)
+                {
+                    <tr>
+                        <td style="text-align: center;">@order_info.Customer.User.FullName</td>
+                        <td style="text-align: center;">@order_info.Id</td>
+                        <td style="text-align: center;">@order_info.ObjectAdress</td>
+                        <td style="text-align: center;">@order_info.Estimate</td>
+                        <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
                     </tr>
                 }
             </table>
             break;
     }
-<div class="page-wrapper chiller-theme ">
-    @*"page-wrapper chiller-theme toggled" для открытого по умолчанию sidebar*@
-    <a id="show-sidebar" class="btn btn-sm btn-dark" style="color: #333;" href="#">
-        <i class="fas fa-bars"></i>
-    </a>
-    <nav id="sidebar" class="sidebar-wrapper">
-        <div class="sidebar-content">
-            <div class="sidebar-brand">
-                <a href="#">Меню</a>
-                <div id="close-sidebar">
-                    <i class="fas fa-times"></i>
-                </div>
-            </div>
-
-            <div class="sidebar-header">
-
-                <div class="user-pic">
-                    <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                         alt="User picture">
+    <div class="page-wrapper chiller-theme ">
+        @*"page-wrapper chiller-theme toggled" для открытого по умолчанию sidebar*@
+        <a id="show-sidebar" class="btn btn-sm btn-dark" style="color: #333;" href="#">
+            <i class="fas fa-bars"></i>
+        </a>
+        <nav id="sidebar" class="sidebar-wrapper">
+            <div class="sidebar-content">
+                <div class="sidebar-brand">
+                    <a href="#">Меню</a>
+                    <div id="close-sidebar">
+                        <i class="fas fa-times"></i>
+                    </div>
                 </div>
 
-                <div class="user-info">
-                    <span class="user-name">
-                        @Model.Input.NameFamaly
-                        <strong>@Model.Input.NameFamaly</strong>
-                    </span>
-                    <span class="user-role">Исполнитель</span>
-                    <span class="user-status">
-                        <!--<i class="fa fa-circle"></i>-->
-                        <span>Online</span>
-                    </span>
-                </div>
-            </div>
+                <div class="sidebar-header">
 
-            <!-- sidebar-search  -->
-            <div class="sidebar-menu">
-                <ul>
-                    <li class="header-menu" id="close-sidebar">
-                        <span>Доступные действия</span>
-                    </li>
-                    <li class="sidebar-dropdown">
-                        <a asp-page-handler="ShowAvailableOrders">
-                            <i class="fa fa-tachometer"></i>
-                            <span>Доступные заказы</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-dropdown">
-                        <a asp-page-handler="ShowAddress">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>Отобразить адрес</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-dropdown">
-                        <a asp-page-handler="Brief">
-                            <i class="far fa-gem"></i>
-                            <span>Проект</span>
-                        </a>
-                    </li>
-                    @*<li class="sidebar-dropdown">
-                            <a asp-page-handler="Chat">
-                                <i class="far fa-gem"></i>
-                                <span>Чат</span>
+                    <div class="user-pic">
+                        <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                             alt="User picture">
+                    </div>
+
+                    <div class="user-info">
+                        <span class="user-name">
+                            @Model.Input.NameFamaly
+                            <strong>@Model.Input.NameFamaly</strong>
+                        </span>
+                        <span class="user-role">Исполнитель</span>
+                        <span class="user-status">
+                            <!--<i class="fa fa-circle"></i>-->
+                            <span>Online</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- sidebar-search  -->
+                <div class="sidebar-menu">
+                    <ul>
+                        <li class="header-menu" id="close-sidebar">
+                            <span>Доступные действия</span>
+                        </li>
+                        <li class="sidebar-dropdown">
+                            <a asp-page-handler="ShowAvailableOrders">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Доступные заказы</span>
                             </a>
-                        </li>*@
-                    <li class="sidebar-dropdown">
-                        <a href="#">
-                            <i class="fa fa-chart-line"></i>
-                            <span>Материал</span>
-                        </a>
-                        <!--
-                        <div class="sidebar-submenu">
-                            <ul>
-                                <li>
-                                    <a href="#">Pie chart</a>
-                                </li>
-                                <li>
-                                    <a href="#">Line chart</a>
-                                </li>
-                                <li>
-                                    <a href="#">Bar chart</a>
-                                </li>
-                                <li>
-                                    <a href="#">Histogram</a>
-                                </li>
-                            </ul>
-                        </div>-->
-                    </li>
-                    <li class="sidebar-dropdown">
-                        <a href="#">
-                            <i class="fa fa-globe"></i>
-                            <span>Документы</span>
-                        </a>
+                        </li>
+                        <li class="sidebar-dropdown">
+                            <a asp-page-handler="ShowAddress">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Принятые заказы</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-dropdown">
+                            <a asp-page-handler="Brief">
+                                <i class="far fa-gem"></i>
+                                <span>Проект</span>
+                            </a>
+                        </li>
+                        @*<li class="sidebar-dropdown">
+                                <a asp-page-handler="Chat">
+                                    <i class="far fa-gem"></i>
+                                    <span>Чат</span>
+                                </a>
+                            </li>*@
+                        <li class="sidebar-dropdown">
+                            <a href="#">
+                                <i class="fa fa-chart-line"></i>
+                                <span>Материал</span>
+                            </a>
+                            <!--
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    <li>
+                                        <a href="#">Pie chart</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Line chart</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Bar chart</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Histogram</a>
+                                    </li>
+                                </ul>
+                            </div>-->
+                        </li>
+                        <li class="sidebar-dropdown">
+                            <a href="#">
+                                <i class="fa fa-globe"></i>
+                                <span>Документы</span>
+                            </a>
 
-                    </li>
+                        </li>
 
-                </ul>
+                    </ul>
+                </div>
+                <!-- sidebar-menu  -->
             </div>
-            <!-- sidebar-menu  -->
-        </div>
-    </nav>
-    <!-- sidebar-wrapper  -->
-</div>
+        </nav>
+        <!-- sidebar-wrapper  -->
+    </div>
     <!-- partial -->
 
     <div class="container-fluid page-body-wrapper">
