@@ -19,8 +19,10 @@ namespace BathDream.Pages.Account
         private readonly UserManager<User> _userManager;
 
         public List<Order> Data = new List<Order>();
+
         public List<Order> ExecutingOrders = new List<Order>();
-        public int sw = 0;
+
+        public int sw = 1;
 
         private readonly DBApplicationaContext _db;
 
@@ -28,6 +30,9 @@ namespace BathDream.Pages.Account
         public InputModel Input { get; set; } = new InputModel();
         public class InputModel
         {
+            public Estimate Estimate { get; set; } = new Estimate();
+            public Order Order { get; set; } = new Order();
+            public string ContentView { get; set; } = "/Pages/Account/Views/ExecutorEstimatePartialView.cshtml";
             public string NameFamaly { get; set; }
         }
 
@@ -42,6 +47,7 @@ namespace BathDream.Pages.Account
         {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             Input.NameFamaly = $"{user.UName} {user.UFamaly}";
+            await OnGetShowAvailableOrdersAsync();
         }
 
         public async Task<IActionResult> OnGetLogoutAsync()
@@ -71,7 +77,7 @@ namespace BathDream.Pages.Account
             return Page();
         }
 
-        public async Task<IActionResult> OnGetShowAddress()
+        public async Task<IActionResult> OnGetShowAcceptedOrdersAsync()
         {
             var executingOrders = await _db.Orders.Where(o => o.Executor.UserId == _userManager.GetUserId(User))
                                     .Include(o => o.Customer)
@@ -95,7 +101,19 @@ namespace BathDream.Pages.Account
                 _db.SaveChanges();
             }
 
-            return Page();
+            return RedirectToPage();
+        }
+        
+        public IActionResult OnGetShowEstimate(int id)
+        {
+            
+            Input.Estimate = _db.Estimates.FirstOrDefault(e => e.OrderId == id);
+            Input.Estimate.Rooms =  _db.Rooms.Where(r => r.EstimateId == Input.Estimate.Id).ToList();
+            Input.Estimate.Works = _db.Works.Where(w => w.EstimateId == Input.Estimate.Id).ToList();
+
+            Input.Order = _db.Orders.FirstOrDefault(o => o.Id == id);
+
+            return RedirectToPage(Input);
         }
     }
 }

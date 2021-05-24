@@ -91,6 +91,7 @@ namespace BathDream.Pages.Account
 #if DEBUG
                 Input.TempCode = code;
                 Input.DebugMode = true;
+                //errorCode = _smssender.Send(Input.Phone.GetPhoneNumber(), code);
 #else
                 errorCode = _smssender.Send(Input.Phone.GetPhoneNumber(), code);
 #endif

@@ -12,7 +12,7 @@ namespace BathDream.Services
     {
         public int Send(string number, string code)
         {
-            string url = $"http://api.sms-prosto.ru/?method=push_msg&key=XEZ60a63f6146d836f5895001ddb3400f912bddba690fdcb&text={code}&phone={number}&sender_name=BathDream";
+            string url = $"http://api.sms-prosto.ru/?method=push_msg&key=kv260ab6e63ab1281f671b9c8e1f87ba4963dfd67f1997b9&text={code}&phone={number}&sender_name=BathRemont";
 
             using (var webClient = new WebClient())
             {
