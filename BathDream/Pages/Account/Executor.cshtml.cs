@@ -58,7 +58,10 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetShowAvailableOrdersAsync()
         {
-            var orders = await _db.Orders.Where(o => (o.Status == Order.Statuses.New || o.Status == Order.Statuses.ToExecute || o.Status == (Order.Statuses.New | Order.Statuses.ToExecute)))
+            var orders = await _db.Orders.Where(o => (o.Status == Order.Statuses.ToExecute 
+                                                   || o.Status == (Order.Statuses.ToExecute | Order.Statuses.New)
+                                                   || o.Status == (Order.Statuses.ToExecute | Order.Statuses.Brief)
+                                                   || o.Status == (Order.Statuses.ToExecute | Order.Statuses.New | Order.Statuses.Brief)))
                                    .Include(o => o.Customer)
                                    .ThenInclude(c => c.User).ToListAsync();
             foreach (var order in orders)
@@ -94,7 +97,8 @@ namespace BathDream.Pages.Account
         {
             if (_db.Orders.FirstOrDefault(o => o.Id == id) is Order order)
             {
-                order.Status = Order.Statuses.Executing;
+                order.Status ^= Order.Statuses.New;
+                order.Status |= Order.Statuses.Executing;
                 var executorprofile = _userManager.GetUserId(User);
                 var profile = _db.UserProfiles.FirstOrDefault(u => u.UserId == executorprofile);
                 order.Executor = (ExecutorProfile)profile;

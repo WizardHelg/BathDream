@@ -1,0 +1,28 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using BathDream.Models
+@model BathDream.Pages.Account.CustomerModel.InputModel
+@{
+}
+
+<h3>Обсуждение проекта с исполнителем</h3>
+<div class="messaging">
+    <div class="inbox_msg">
+        <div class="mesgs">
+            <div class="msg_history" id="chatroom"></div>
+            <div class="type_msg">
+                <div class="input_msg_write">
+                    <!--<textarea id="message"  class="write_msg" placeholder="Написать сообщение"></textarea>-->
+                    <input type="text" id="message" class="write_msg" placeholder="Написать сообщение" />
+                    <button class="msg_send_btn" id="sendBtn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
+

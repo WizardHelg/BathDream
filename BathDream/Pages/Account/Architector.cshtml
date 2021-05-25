@@ -34,7 +34,7 @@
                 <td style="text-align: center;">@order_info.Order.Date.ToString("dd.MM.yyyy")</td>
                 <td style="text-align: center;">@order_info.Order.Customer.User.FullName</td>
                 <td style="text-align: center;">@order_info.Order.StatusName()</td>
-                <td style="text-align: center;"><a asp-page="/Account/AchChat" asp-route-id="@order_info.Order.Customer.User.Id">Открыть чат</a></td>
+                <td style="text-align: center;"><a asp-page="/Account/AchChat" asp-route-id="@order_info.Order.Customer.User.Id" asp-route-orderId="@order_info.Order.Id">Открыть чат</a></td>
                 <td style="text-align: center;">
                     @if (order_info.IsNewMessages)
                     {

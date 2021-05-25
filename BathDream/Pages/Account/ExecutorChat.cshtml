@@ -1,5 +1,5 @@
 ﻿@page
-@model BathDream.Pages.Account.AchChatModel
+@model BathDream.Pages.Account.ExecutorChatModel
 @{
 }
 @{
@@ -13,6 +13,7 @@
 
 <br />
 <br />
+
 <div class="messaging">
     <div class="inbox_msg">
         <div class="mesgs">
@@ -27,14 +28,6 @@
         </div>
     </div>
 </div>
-<form asp-page-handler="SaveFile" enctype="multipart/form-data" method="post">
-    <input asp-for="Input.OrderId" type="hidden" value="@Model.Input.OrderId"/>
-    <input asp-for="Input.UserId" type="hidden" />
-    <div>
-        <input type="file" name="uploadedFile" /> <input type="submit" class="btn btn-success" value="Сохранить" />
-    </div>
-</form>
-
 
 <script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript">
@@ -99,12 +92,12 @@
     });
 
     connection.on("GetId", function (data) {
-        connection.send("GetCustomerMessages", "@Model.Input.UserId")
+        connection.send("GetCustomerMessages", "@Model.UserId")
     });
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let message = document.getElementById("message").value;
-        connection.invoke("SendToClient", message, "@Model.Input.UserId");
+        connection.invoke("SendToClient", message, "@Model.UserId");
     });
 
     document.getElementById("message").addEventListener("keyup", function (event) {

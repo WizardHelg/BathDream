@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Account\Views\ExecutorEstimatePartialView.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Account\Views\ExecutorEstimatePartialView.cshtml" />
     <Content Remove="wwwroot\ts\file.ts" />
   </ItemGroup>
 
@@ -33,7 +38,7 @@
   <ItemGroup>
     <Folder Include="Controls\" />
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\files\10\" />
   </ItemGroup>
 
   <ItemGroup>
