@@ -1,12 +1,16 @@
-﻿@using BathDream.Models
-@model BathDream.Pages.Account.ExecutorModel.InputModel
+﻿@page
+@using BathDream.Models
+@model BathDream.Pages.Account.EstimateModel
+@section MainMenu
+{
+    <partial name="MainMenu" model="null" />
+}
 @{
+    ViewData["Title"] = "Смета";
     string sub_caption = "";
 }
 
-<br />
-
-<div class="col-xs-12" style="padding: 5px">
+<div class="col-xs-12" style="padding: 60px">
 
     <div class="col-xs-6">
         <img alt="Brand" src="~/img/logo.png">
@@ -16,9 +20,9 @@
         <p>
             <b>
                 Приложение № 1<br />
-                К договору № @Model.Order.Id от @Model.Order.Date.ToShortDateString()<br />
-                Адрес объекта: @Model.Order.ObjectAdress<br />
-                Сметный расчет: @Model.Order.Id
+                К договору № @Model.Input.Order.Id от @Model.Input.Order.Date.ToShortDateString()<br />
+                Адрес объекта: @Model.Input.Order.ObjectAdress<br />
+                Сметный расчет: @Model.Input.Order.Id
             </b>
         </p>
 
@@ -36,48 +40,48 @@
 
     <p style="text-align:center">Помещения</p>
 
-    @if (Model.Estimate.Order != null)
+    @if (Model.Input.Estimate.Order != null)
     {
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-condensed">
                 <tr class="success">
                     <th>Помещение</th>
-                    @foreach (Room room in @Model.Estimate.Rooms)
+                    @foreach (Room room in @Model.Input.Estimate.Rooms)
                     {
                         <th style="text-align: center;">@room.Name</th>
                     }
                 </tr>
                 <tr>
                     <td>Размеры</td>
-                    @foreach (Room room in @Model.Estimate.Rooms)
+                    @foreach (Room room in @Model.Input.Estimate.Rooms)
                     {
                         <td style="text-align: center;">@room.Width x @room.Length x @room.Height мм</td>
                     }
                 </tr>
                 <tr>
                     <td>Пол</td>
-                    @foreach (Room room in @Model.Estimate.Rooms)
+                    @foreach (Room room in @Model.Input.Estimate.Rooms)
                     {
                         <td style="text-align: center;">@room.FloorArea() кв.м</td>
                     }
                 </tr>
                 <tr>
                     <td>Стены</td>
-                    @foreach (Room room in @Model.Estimate.Rooms)
+                    @foreach (Room room in @Model.Input.Estimate.Rooms)
                     {
                         <td style="text-align: center;">@room.WallsArea() кв.м</td>
                     }
                 </tr>
                 <tr>
                     <td>Потолок</td>
-                    @foreach (Room room in @Model.Estimate.Rooms)
+                    @foreach (Room room in @Model.Input.Estimate.Rooms)
                     {
                         <td style="text-align: center;">@room.CeilingArea() кв.м</td>
                     }
                 </tr>
                 <tr>
                     <td>Дверь</td>
-                    @foreach (Room room in @Model.Estimate.Rooms)
+                    @foreach (Room room in @Model.Input.Estimate.Rooms)
                     {
                         <td style="text-align: center;">@room.DoorArea() кв.м</td>
                     }
@@ -99,7 +103,7 @@
                     <th style="text-align: center;">Сумма</th>
                 </tr>
 
-                @foreach (Work work in @Model.Estimate.Works)
+                @foreach (Work work in @Model.Input.Estimate.Works)
                 {
                     @if (sub_caption != work.Group)
                     {
@@ -125,6 +129,6 @@
                 }
             </table>
         </div>
-        <h2 style="text-align: right;">Итого: @Model.Estimate.Works.Where(w => w.EstimateId == Model.Estimate.Id).Sum(s => s.Price).ToString("# ##0.00")</h2>
+        <h2 style="text-align: right;">Итого: @Model.Input.Estimate.Works.Where(w => w.EstimateId == Model.Input.Estimate.Id).Sum(s => s.Price).ToString("# ##0.00")</h2>
     }
 </div>

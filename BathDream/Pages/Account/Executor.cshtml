@@ -140,7 +140,7 @@
                                     <td style="text-align: center;">@order_info.Id</td>
                                     <td style="text-align: center;">@order_info.ObjectAdress</td>
                                     <td style="text-align: center;">
-                                        <a id="showEstimate" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Click me</a>
+                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Click me</a>
                                     </td>
                                     <td style="text-align: center;">
                                         @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
@@ -157,8 +157,8 @@
                                     <td style="text-align: center;">@order_info.Id</td>
                                     <td style="text-align: center;">@order_info.ObjectAdress</td>
                                     <td style="text-align: center;">
-                                        <a id="showEstimate" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Click me</a>
-                                    </td>
+                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Click me</a>
+</td>
                                     <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
                                 </tr>
                             }
@@ -183,8 +183,8 @@
                                     <td style="text-align: center;">@order_info.Id</td>
                                     <td style="text-align: center;">@order_info.ObjectAdress</td>
                                     <td style="text-align: center;">
-                                        <a id="showEstimate" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Click me</a>
-                                    </td>
+                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Click me</a>
+</td>
                                     <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
                                 </tr>
                             }
@@ -197,6 +197,7 @@
     <!-- partial -->
 </div>
 
+
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="~/js/off-canvas.js"></script>
 <script src="~/js/hoverable-collapse.js"></script>
@@ -205,17 +206,16 @@
 <script src="~/js/todolist.js"></script>
 <script src="~/js/dashboard.js"></script>
 
-
-    <main class="page-content">
-        <div class="container-fluid">
-            <partial name="@Model.Input.ContentView" model="Model.Input" />
-            <hr>
-        </div>
-    </main>
-
 @*<script>
-    $("#showEstimate").click(function () {
-        var newTab = window.open("", "_blank", true);
-        newTab.document.body.innerHTML = $("#partialview").html();
-    })
+        function ShowEstimate(e) {
+            var i = e;
+            $.get({
+                url: 'executor?handler=ShowEstimate',
+                data: { id: i },
+                success: function (data) {
+                    var newTab = window.open("", "_blank", true);
+                    newTab.document.body.innerHTML = data;
+                }
+            })
+        }        
 </script>*@
