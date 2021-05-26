@@ -505,9 +505,12 @@ namespace BathDream.Pages
             foreach (var item in Santech)
             {
                 styles.TryGetValue($"style-{item.Name}", out StringValues value);
-                
-                string style = value[0]?.ToString() ?? "";
-                builder.Append($"{item.Name} - количество: {item.Amount}, бюджет: {item.Budget}, стиль: {style}<br />");
+                string style = value.Count > 0 ? value[0]?.ToString() ?? "" : null;
+                builder.Append($"{item.Name} - количество: {item.Amount}, бюджет: {item.Budget}");
+                if (style == null)
+                    builder.Append("<br />");
+                else
+                    builder.Append($", стиль: {style}<br />");
             }
 
             await ChatHub.AddBriefMessage(builder.ToString(), user.Id, _userManager, _db);
