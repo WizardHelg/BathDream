@@ -40,37 +40,40 @@ namespace BathDream.Pages.Account
             Input.UserId = id;
             Input.OrderId = orderid;
         }
-
-        public async Task<IActionResult> OnPostSaveFileAsync(IFormFile uploadedFile)
+        public void OnGetSaveFileAsync(string uploadedFile)
         {
-            FileItem fileItem = new FileItem();
 
-            var file = Guid.NewGuid().ToString();
-            string extension = Path.GetExtension(uploadedFile.FileName);
-            string webRootPath = _webHostEnvironment.WebRootPath;
-
-            string directoryPath = webRootPath + @"\files\" + Input.OrderId + @"\";
-            if (!Directory.Exists(fileItem.Path))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-
-            fileItem.FrendlyName = uploadedFile.FileName;
-            fileItem.Path = directoryPath + file + extension;
-
-            using (var fileStream = new FileStream(fileItem.Path, FileMode.Create))
-            {
-                await uploadedFile.CopyToAsync(fileStream);
-            }
-
-
-            fileItem.Description = "test";
-            fileItem.Order = _db.Orders.FirstOrDefault(o => o.Id == Convert.ToInt32(Input.OrderId));
-
-            _db.FileItems.Add(fileItem);
-            _db.SaveChanges();
-
-            return Page();
         }
+        //public async Task<IActionResult> OnPostSaveFileAsync(IFormFile uploadedFile)
+        //{
+        //    FileItem fileItem = new FileItem();
+
+        //    var file = Guid.NewGuid().ToString();
+        //    string extension = Path.GetExtension(uploadedFile.FileName);
+        //    string webRootPath = _webHostEnvironment.WebRootPath;
+
+        //    string directoryPath = webRootPath + @"\files\" + Input.OrderId + @"\";
+        //    if (!Directory.Exists(fileItem.Path))
+        //    {
+        //        Directory.CreateDirectory(directoryPath);
+        //    }
+
+        //    fileItem.FrendlyName = uploadedFile.FileName;
+        //    fileItem.Path = directoryPath + file + extension;
+
+        //    using (var fileStream = new FileStream(fileItem.Path, FileMode.Create))
+        //    {
+        //        await uploadedFile.CopyToAsync(fileStream);
+        //    }
+
+
+        //    fileItem.Description = "test";
+        //    fileItem.Order = _db.Orders.FirstOrDefault(o => o.Id == Convert.ToInt32(Input.OrderId));
+
+        //    _db.FileItems.Add(fileItem);
+        //    _db.SaveChanges();
+
+        //    return Page();
+        //}
     }
 }
