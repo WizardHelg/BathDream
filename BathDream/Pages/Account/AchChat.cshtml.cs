@@ -28,6 +28,7 @@ namespace BathDream.Pages.Account
 
         public class InputModel
         {
+            public List<FileItem> FileItems = new List<FileItem>();
             public string UserId { get; set; }
             public string OrderId { get; set; }
 
@@ -35,6 +36,7 @@ namespace BathDream.Pages.Account
 
         public void OnGet(string id, string orderid)
         {
+            Input.FileItems = _db.FileItems.Where(o => o.Order.Id == Convert.ToInt32(orderid)).ToList();
             Input.UserId = id;
             Input.OrderId = orderid;
         }
@@ -44,14 +46,18 @@ namespace BathDream.Pages.Account
             FileItem fileItem = new FileItem();
 
             var file = Guid.NewGuid().ToString();
-
-            fileItem.FrendlyName = uploadedFile.FileName;
-
             string extension = Path.GetExtension(uploadedFile.FileName);
-
             string webRootPath = _webHostEnvironment.WebRootPath;
 
-            fileItem.Path = webRootPath + "/files/" + Input.OrderId + "/" + file + extension;
+            string directoryPath = webRootPath + @"\files\" + Input.OrderId + @"\";
+            if (!Directory.Exists(fileItem.Path))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            fileItem.FrendlyName = uploadedFile.FileName;
+            fileItem.Path = directoryPath + file + extension;
+
             using (var fileStream = new FileStream(fileItem.Path, FileMode.Create))
             {
                 await uploadedFile.CopyToAsync(fileStream);
@@ -63,7 +69,6 @@ namespace BathDream.Pages.Account
 
             _db.FileItems.Add(fileItem);
             _db.SaveChanges();
-            
 
             return Page();
         }

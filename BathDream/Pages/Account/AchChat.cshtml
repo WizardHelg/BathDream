@@ -27,12 +27,28 @@
         </div>
     </div>
 </div>
+
 <form asp-page-handler="SaveFile" enctype="multipart/form-data" method="post">
     <input asp-for="Input.OrderId" type="hidden" value="@Model.Input.OrderId"/>
     <input asp-for="Input.UserId" type="hidden" />
-    <div>
-        <input type="file" name="uploadedFile" /> <input type="submit" class="btn btn-success" value="Сохранить" />
-    </div>
+    <input asp-for="Input.FileItems" type="hidden" value="@Model.Input.FileItems"/>
+    <div class="grid">
+        <div class="col-md-3">
+            @foreach (var item in Model.Input.FileItems)
+            {
+                <div class="col-md-3">
+                    <i class="far fa-image">@item.FrendlyName</i>
+                </div>
+                <div class="col-md-3">
+                    <a><i class="fas fa-times"></i></a>
+                </div>
+            }
+        </div>
+        <div class="col-md-3">
+            <input type="file" name="uploadedFile" /> 
+            <input type="submit" class="btn btn-success" value="Сохранить" />
+        </div>
+    </div>  
 </form>
 
 
