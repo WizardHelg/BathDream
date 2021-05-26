@@ -88,17 +88,17 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Ванная 1.jpg"
                     },
-                    new()
-                    {
-                        Text = "Вариант стиля 2",
-                        Img = "img/Bath.jpg"
-                    },
+                    //new()
+                    //{
+                    //    Text = "Вариант стиля 2",
+                    //    Img = "img/brief/other/Ванная 1.png"
+                    //},
                     new()
                     {
                         Text = "Вариант стиля 3",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Ванная 3.2.jpg"
                     }
                 }
             },
@@ -119,7 +119,7 @@ namespace BathDream.Pages
                 {
                     new()
                     {
-                        Img = "img/Bath.jpg",
+                        Img = "img/brief/other/Инсталяция.jpg",
                         IsRadio = false
                     }
                 }
@@ -146,17 +146,17 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Смеситель 1.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 2",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Смеситель 3.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 3",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Смеситель 4.jpg"
                     }
                 }
             },
@@ -181,17 +181,17 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Раковина 2.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 2",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Раковина 3.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 3",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Раковина 4.jpg"
                     }
                 }
             },
@@ -216,17 +216,17 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Тумба 1.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 2",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Тумба 4.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 3",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Тумба вариант 1.png"
                     }
                 }
             },
@@ -252,17 +252,17 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Зеркало  Встроеное под заказ 2.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 2",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Зеркало  подвесное 1.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 3",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/зеркало с посветкой.jpg"
                     }
                 }
             },
@@ -287,17 +287,12 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Полотенцесушитель 2.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 2",
-                        Img = "img/Bath.jpg"
-                    },
-                    new()
-                    {
-                        Text = "Вариант стиля 3",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Полотенцесушитель 3.jpg"
                     }
                 }
             },
@@ -322,17 +317,17 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Обычные двери.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 2",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Обычные двери 2.jpg"
                     },
                     new()
                     {
                         Text = "Вариант стиля 3",
-                        Img = "img/Bath.jpg"
+                        Img = "img/brief/other/Скрытая дверь.jpg"
                     }
                 }
             },

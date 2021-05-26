@@ -39,6 +39,7 @@
     <Folder Include="Controls\" />
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\files\10\" />
+    <Folder Include="wwwroot\img\brief\" />
   </ItemGroup>
 
   <ItemGroup>

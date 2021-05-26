@@ -40,11 +40,14 @@ namespace BathDream.Pages.Account
             Input.UserId = id;
             Input.OrderId = orderid;
         }
-        public void OnGetSaveFileAsync(string uploadedFile)
-        {
 
+        public IActionResult OnGetSaveFileAsync(dynamic uploadedFile)
+        {
+            var qwe = uploadedFile;
+
+            return Page();
         }
-        //public async Task<IActionResult> OnPostSaveFileAsync(IFormFile uploadedFile)
+        //public async Task<IActionResult> OnGetSaveFileAsync(IFormFile uploadedFile)
         //{
         //    FileItem fileItem = new FileItem();
 
