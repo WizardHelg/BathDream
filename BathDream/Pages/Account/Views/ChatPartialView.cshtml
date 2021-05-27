@@ -23,14 +23,21 @@
         {
             <div>
                 <table class="table table-bordered table-hover">
-                    <tr class="success">
-                        <th style="text-align:center">Варианты дизайна</th>
+                    <tr class="">
+                        <th colspan="3" style="text-align:center">Варианты дизайна</th>
+
                     </tr>
                     @foreach (var item in Model.FileItems)
                     {
                         <tr>
+                            <td style="text-align:left;" width="80%">
+                                <i class="far fa-image"> @item.FrendlyName</i>
+                            </td>
+                            <td style="text-align:left;" width="10%">
+                                <a class="btn" asp-page-handler="DownloadFile" asp-route-id="@item.Id">Скачать</a>
+                            </td>
                             <td style="text-align:left;">
-                                <a asp-page-handler="DownloadFile" asp-route-id="@item.Id"><i class="far fa-image">@item.FrendlyName</i></a>
+                                <a class="btn" asp-page-handler="SelectFile" asp-route-id="@item.Id">Выбрать</a>
                             </td>
                         </tr>
                     }
@@ -39,8 +46,6 @@
         }
     </div>
 </div>
-
-
 
 <script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/chat.js"></script>

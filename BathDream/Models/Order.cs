@@ -40,5 +40,6 @@ namespace BathDream.Models
         public string Contract { get; set; }
         public string ObjectAdress { get; set; }
         public bool Signed { get; set; }
+        public int SelectedItemId { get; set; }
     }
 }

@@ -247,5 +247,20 @@ namespace BathDream.Pages.Account
 
             return File(content, contentType, fileName);
         }
+        public void OnGetSelectFile(int? id)
+        {
+            Input.ContentView = "./Views/ChatPartialView";
+
+            FileItem fileItem = _db.FileItems.Include(f => f.Order).FirstOrDefault(f => f.Id == id);
+            if (fileItem == null)
+            {
+                //return NotFound();
+            }
+
+            fileItem.Order.SelectedItemId = (int)id;
+            _db.SaveChanges();
+
+            //return 
+        }
     }
 }
