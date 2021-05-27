@@ -19,8 +19,27 @@
                 </div>
             </div>
         </div>
+        @if (Model.FileItems.Count > 0)
+        {
+            <div>
+                <table class="table table-bordered table-hover">
+                    <tr class="success">
+                        <th style="text-align:center">Варианты дизайна</th>
+                    </tr>
+                    @foreach (var item in Model.FileItems)
+                    {
+                        <tr>
+                            <td style="text-align:left;">
+                                <a asp-page-handler="DownloadFile" asp-route-id="@item.Id"><i class="far fa-image">@item.FrendlyName</i></a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
     </div>
 </div>
+
 
 
 <script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>

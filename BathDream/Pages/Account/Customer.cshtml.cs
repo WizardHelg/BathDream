@@ -11,6 +11,7 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BathDream.Pages.Account
 {
@@ -20,6 +21,7 @@ namespace BathDream.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly DBApplicationaContext _db;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         [BindProperty]
         public InputModel Input { get; set; } = new InputModel();
@@ -45,18 +47,21 @@ namespace BathDream.Pages.Account
             public string PasportNumber { get; set; }
             public string PasportIssued { get; set; }
             public string PasportDate { get; set; }
+            public List<FileItem> FileItems { get; set; }
         }
 
-        public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db)
+        public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db, IWebHostEnvironment webHostEnvironment)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _db = db;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task OnGetAsync()
         {
             Input.ContentView = "./Views/CustomerEstimatePartialView";
+
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
             
@@ -176,12 +181,14 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetBriefAsync()
         {
+
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             //Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
             if(await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order
                && order.Signed)
             {
-                if((order.Status & Order.Statuses.Brief) == 0)
+                Input.FileItems = _db.FileItems.Include(o => o.Order).Where(f => f.Order.Id == order.Id).ToList();
+                if ((order.Status & Order.Statuses.Brief) == 0)
                     return RedirectToPage("/Brief", new { id = order.Id });
                 else
                 {
@@ -225,6 +232,20 @@ namespace BathDream.Pages.Account
         {
             await _signInManager.SignOutAsync();
             return RedirectToPage("/Index");
+        }
+
+        public IActionResult OnGetDownloadFile(int? id)
+        {
+            FileItem fileItem = _db.FileItems.FirstOrDefault(f => f.Id == id);
+            string path = _webHostEnvironment.WebRootPath + fileItem.Path;
+
+            var net = new System.Net.WebClient();
+            var data = net.DownloadData(path);
+            var content = new System.IO.MemoryStream(data);
+            var contentType = "APPLICATION/octet-stream";
+            var fileName = fileItem.FrendlyName;
+
+            return File(content, contentType, fileName);
         }
     }
 }

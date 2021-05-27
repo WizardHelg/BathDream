@@ -28,6 +28,35 @@
         </div>
     </div>
 </div>
+<form asp-page-handler="SaveFile" enctype="multipart/form-data" method="post">
+    <input asp-for="Input.OrderId" type="hidden" value="@Model.Input.OrderId" />
+    <input asp-for="Input.UserId" type="hidden" />
+    <div class="col-lg-5">
+        <table class="table table-bordered table-hover">
+            <tr class="success">
+                <th style="text-align:center">Загруженные файлы</th>
+            </tr>
+            @foreach (var item in Model.Input.FileItems)
+            {
+                <tr>
+                    <td style="text-align:left;">
+                        <i class="far fa-image">@item.FrendlyName</i>
+                        <a asp-page-handler="DeleteFile" asp-route-id="@item.Id"><i class="fas fa-times"></i></a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="grid">
+        <div class="col-md-3">
+            <input type="file" name="uploadedFile" />
+            <br />
+            <input type="submit" class="btn btn-success" value="Сохранить" />
+        </div>
+    </div>
+</form>
+
+
 
 <script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript">
@@ -115,28 +144,6 @@
 
 
 @*
-    <form id="FileUploadForm" asp-page-handler="SaveFile" enctype="multipart/form-data" method="post">
-        <input asp-for="Input.OrderId" type="hidden" value="@Model.Input.OrderId" />
-        <input asp-for="Input.UserId" type="hidden" />
-        <div class="grid">
-            <div class="col-md-3">
-                @foreach (var item in Model.Input.FileItems)
-                {
-                    <div class="col-md-3">
-                        <i class="far fa-image">@item.FrendlyName</i>
-                    </div>
-                    <div class="col-md-3">
-                        <a><i class="fas fa-times"></i></a>
-                    </div>
-                }
-            </div>
-            <div class="col-md-3">
-                <input type="file" id="uploadFile" name="uploadFile" />
-                <input type="submit" id="uploadBtn" class="btn btn-success" value="Сохранить" />
-            </div>
-        </div>
-    </form>
-
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
     <script>

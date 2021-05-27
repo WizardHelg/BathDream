@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages.Account
 {
@@ -16,6 +17,8 @@ namespace BathDream.Pages.Account
     {
         private readonly DBApplicationaContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
+
+        const string filePath = @"\files\";
 
         public AchChatModel(DBApplicationaContext db, IWebHostEnvironment webHostEnvironment)
         {
@@ -41,42 +44,75 @@ namespace BathDream.Pages.Account
             Input.OrderId = orderid;
         }
 
-        public IActionResult OnGetSaveFileAsync(dynamic uploadedFile)
+        public async Task<IActionResult> OnPostSaveFileAsync(IFormFile uploadedFile)
         {
-            var qwe = uploadedFile;
+            FileItem fileItem = new FileItem();
 
-            return Page();
+            var file = Guid.NewGuid().ToString();
+            string extension = Path.GetExtension(uploadedFile.FileName);
+            string webRootPath = _webHostEnvironment.WebRootPath;
+
+            string directoryPath = webRootPath + filePath + Input.OrderId + @"\";
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            fileItem.FrendlyName = uploadedFile.FileName;
+            fileItem.Path = filePath + Input.OrderId + @"\" + file + extension;
+
+            using (var fileStream = new FileStream(directoryPath + file + extension, FileMode.Create))
+            {
+                await uploadedFile.CopyToAsync(fileStream);
+            }
+
+
+            fileItem.Description = "test";
+            fileItem.Order = _db.Orders.FirstOrDefault(o => o.Id == Convert.ToInt32(Input.OrderId));
+
+            _db.FileItems.Add(fileItem);
+            _db.SaveChanges();
+
+            return RedirectToPage(new 
+            {
+                id = Input.UserId,
+                orderid = Input.OrderId
+            });
         }
-        //public async Task<IActionResult> OnGetSaveFileAsync(IFormFile uploadedFile)
-        //{
-        //    FileItem fileItem = new FileItem();
 
-        //    var file = Guid.NewGuid().ToString();
-        //    string extension = Path.GetExtension(uploadedFile.FileName);
-        //    string webRootPath = _webHostEnvironment.WebRootPath;
+        public IActionResult OnGetDeleteFile(int? id)
+        {
+            FileItem file = _db.FileItems.Where(f => f.Id == id)
+                .Include(f => f.Order).
+                ThenInclude(c => c.Customer).FirstOrDefault();
 
-        //    string directoryPath = webRootPath + @"\files\" + Input.OrderId + @"\";
-        //    if (!Directory.Exists(fileItem.Path))
-        //    {
-        //        Directory.CreateDirectory(directoryPath);
-        //    }
+            if (file == null)
+            {
+                return NotFound();
+            }
 
-        //    fileItem.FrendlyName = uploadedFile.FileName;
-        //    fileItem.Path = directoryPath + file + extension;
+            var fileitem = _webHostEnvironment.WebRootPath + file.Path;
 
-        //    using (var fileStream = new FileStream(fileItem.Path, FileMode.Create))
-        //    {
-        //        await uploadedFile.CopyToAsync(fileStream);
-        //    }
+            if (System.IO.File.Exists(fileitem))
+            {
+                System.IO.File.Delete(fileitem);
+            }
 
+            string folder = _webHostEnvironment.WebRootPath + filePath + file.Order.Id;
+            if (!(System.IO.Directory.GetDirectories(folder).Length
+                + System.IO.Directory.GetFiles(folder).Length > 0))
+            {
+                System.IO.Directory.Delete(folder);
+            }
 
-        //    fileItem.Description = "test";
-        //    fileItem.Order = _db.Orders.FirstOrDefault(o => o.Id == Convert.ToInt32(Input.OrderId));
+            _db.FileItems.Remove(file);
+            _db.SaveChanges();
 
-        //    _db.FileItems.Add(fileItem);
-        //    _db.SaveChanges();
-
-        //    return Page();
-        //}
+            return RedirectToPage(new
+            {
+                id = file.Order.Customer.UserId,
+                orderid = file.Order.Id
+            });
+        }
     }
 }
