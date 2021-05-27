@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages.Account
@@ -17,13 +18,15 @@ namespace BathDream.Pages.Account
     {
         private readonly DBApplicationaContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<ChatHub> _hub;
 
         const string filePath = @"\files\";
 
-        public AchChatModel(DBApplicationaContext db, IWebHostEnvironment webHostEnvironment)
+        public AchChatModel(DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub)
         {
             _db = db;
             _webHostEnvironment = webHostEnvironment;
+            _hub = hub;
         }
 
         [BindProperty]
@@ -73,14 +76,19 @@ namespace BathDream.Pages.Account
             _db.FileItems.Add(fileItem);
             _db.SaveChanges();
 
+
+            await _hub.Clients.User(Input.UserId).SendAsync("Refresh");
+
             return RedirectToPage(new 
             {
                 id = Input.UserId,
                 orderid = Input.OrderId
             });
+
+
         }
 
-        public IActionResult OnGetDeleteFile(int? id)
+        public async Task<IActionResult> OnGetDeleteFile(int? id)
         {
             FileItem file = _db.FileItems.Where(f => f.Id == id)
                 .Include(f => f.Order).
@@ -107,6 +115,8 @@ namespace BathDream.Pages.Account
 
             _db.FileItems.Remove(file);
             _db.SaveChanges();
+
+            await _hub.Clients.User(file.Order.Customer.UserId).SendAsync("Refresh");
 
             return RedirectToPage(new
             {

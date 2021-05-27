@@ -2,8 +2,11 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
 const messages = document.getElementById('chatroom');
 
-connection.on("Send", function (data) {
+connection.on("Refresh", function (data) {
+    location.reload();
+});
 
+connection.on("Send", function (data) {
     var when = new Date(data.when);
     var options = {
         year: 'numeric',
@@ -59,6 +62,7 @@ connection.on("Send", function (data) {
     cr.insertAdjacentElement('beforeend', elem);
     messages.scrollTop = messages.scrollHeight;   
 });
+
 
 window.onload = function () {
     document.getElementById("sendBtn").scrollIntoView(false);
