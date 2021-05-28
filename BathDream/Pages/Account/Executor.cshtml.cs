@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BathDream.Data;
 using BathDream.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,6 +18,7 @@ namespace BathDream.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public List<Order> Data = new List<Order>();
 
@@ -36,11 +38,12 @@ namespace BathDream.Pages.Account
             public string NameFamaly { get; set; }
         }
 
-        public ExecutorModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db)
+        public ExecutorModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db, IWebHostEnvironment webHostEnvironment)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _db = db;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task OnGetAsync()
@@ -113,15 +116,20 @@ namespace BathDream.Pages.Account
             return Redirect(url);
         }
 
-        //public PartialViewResult OnGetShowEstimate(int id)
-        //{
+        public IActionResult OnGetDownloadFile(int id)
+        {
+            Order order = _db.Orders.FirstOrDefault(o => o.Id == id);
 
-        //    Input.Estimate = _db.Estimates.FirstOrDefault(e => e.OrderId == id);
-        //    Input.Estimate.Rooms = _db.Rooms.Where(r => r.EstimateId == Input.Estimate.Id).ToList();
-        //    Input.Estimate.Works = _db.Works.Where(w => w.EstimateId == Input.Estimate.Id).ToList();
+            FileItem fileItem = _db.FileItems.FirstOrDefault(f => f.Id == order.SelectedItemId);
+            string path = _webHostEnvironment.WebRootPath + fileItem.Path;
 
-        //    Input.Order = _db.Orders.FirstOrDefault(o => o.Id == id);
-        //    return Partial(Input.ContentView, Input);
-        //}
+            var net = new System.Net.WebClient();
+            var data = net.DownloadData(path);
+            var content = new System.IO.MemoryStream(data);
+            var contentType = "APPLICATION/octet-stream";
+            var fileName = fileItem.FrendlyName;
+
+            return File(content, contentType, fileName);
+        }
     }
 }

@@ -126,6 +126,7 @@
                                 <th style="text-align:center">Адрес</th>
                                 <th style="text-align:center">Смета</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                             @foreach (var order_info in @Model.Data)
                             {
@@ -141,6 +142,8 @@
                                     <td style="text-align: center;">@order_info.ObjectAdress</td>
                                     <td style="text-align: center;">
                                         <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
+                                    </td>
+                                    <td style="text-align: center;">
                                     </td>
                                     <td style="text-align: center;">
                                         @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
@@ -159,6 +162,9 @@
                                     <td style="text-align: center;">
                                         <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
                                     </td>
+                                    <td style="text-align: center;">
+                                        <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image"></i></a>
+                                    </td>
                                     <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
                                 </tr>
                             }
@@ -174,6 +180,7 @@
                                 <th style="text-align:center">№ заказа</th>
                                 <th style="text-align:center">Адрес</th>
                                 <th style="text-align:center">Смета</th>
+                                <th></th>
                                 @*<th></th>*@
                             </tr>
                             @foreach (var order_info in @Model.ExecutingOrders)
@@ -185,8 +192,11 @@
                             <td style="text-align: center;">
                                 <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
                             </td>
+                            <td style="text-align: center;">
+                                <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image"></i></a>
+                            </td>
                             @*<td style="text-align: center;">
-                                <a target="_blank" asp-page="/Account/ExecutorChat" asp-route-id="@order_info.Customer.User.Id">Открыть чат</a>
+                                     <a target="_blank" asp-page="/Account/ExecutorChat" asp-route-id="@order_info.Customer.User.Id">Открыть чат</a>
                             </td>*@
                             @*<td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>*@
                         </tr>
