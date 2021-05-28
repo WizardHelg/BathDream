@@ -247,7 +247,7 @@ namespace BathDream.Pages.Account
 
             return File(content, contentType, fileName);
         }
-        public void OnGetSelectFile(int? id)
+        public IActionResult OnPostSelectFile(int? id)
         {
             Input.ContentView = "./Views/ChatPartialView";
 
@@ -260,7 +260,7 @@ namespace BathDream.Pages.Account
             fileItem.Order.SelectedItemId = (int)id;
             _db.SaveChanges();
 
-            //return 
+            return new JsonResult("");
         }
     }
 }
