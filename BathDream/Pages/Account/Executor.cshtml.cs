@@ -121,6 +121,11 @@ namespace BathDream.Pages.Account
             Order order = _db.Orders.FirstOrDefault(o => o.Id == id);
 
             FileItem fileItem = _db.FileItems.FirstOrDefault(f => f.Id == order.SelectedItemId);
+            if (fileItem == null)
+            {
+                return NotFound();
+            }
+
             string path = _webHostEnvironment.WebRootPath + fileItem.Path;
 
             var net = new System.Net.WebClient();

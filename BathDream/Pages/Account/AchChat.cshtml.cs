@@ -7,6 +7,7 @@ using BathDream.Data;
 using BathDream.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
@@ -19,14 +20,16 @@ namespace BathDream.Pages.Account
         private readonly DBApplicationaContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHubContext<ChatHub> _hub;
+        private readonly UserManager<User> _user_manager;
 
         const string filePath = @"\files\";
 
-        public AchChatModel(DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub)
+        public AchChatModel(DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub, UserManager<User> userManager)
         {
             _db = db;
             _webHostEnvironment = webHostEnvironment;
             _hub = hub;
+            _user_manager = userManager;
         }
 
         [BindProperty]
@@ -49,6 +52,15 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnPostSaveFileAsync(IFormFile uploadedFile)
         {
+            if (uploadedFile == null)
+            {
+                return RedirectToPage(new
+                {
+                    id = Input.UserId,
+                    orderid = Input.OrderId
+                });
+            }
+
             FileItem fileItem = new FileItem();
 
             var file = Guid.NewGuid().ToString();
@@ -78,14 +90,13 @@ namespace BathDream.Pages.Account
 
 
             await _hub.Clients.User(Input.UserId).SendAsync("Refresh");
+            await SendToClient("Прислал вам новый вариант дизайна!", Input.UserId);
 
             return RedirectToPage(new 
             {
                 id = Input.UserId,
                 orderid = Input.OrderId
             });
-
-
         }
 
         public async Task<IActionResult> OnGetDeleteFile(int? id)
@@ -113,6 +124,9 @@ namespace BathDream.Pages.Account
                 System.IO.Directory.Delete(folder);
             }
 
+            file.Order.SelectedItemId = 0;
+
+
             _db.FileItems.Remove(file);
             _db.SaveChanges();
 
@@ -124,5 +138,33 @@ namespace BathDream.Pages.Account
                 orderid = file.Order.Id
             });
         }
+
+        public async Task SendToClient(string message, string userId)
+        {
+            DateTime cur_time = DateTime.Now;
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+
+            message = message.TrimEnd('\n').Replace("\n", "<br />");
+
+            if (await _user_manager.FindByNameAsync(userId) is User user)
+            {
+                User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == "70000000000");
+                Message temp_message = new Message
+                {
+                    DateTime = cur_time,
+                    Text = message,
+                    Sender = arch,
+                    Recipient = user,
+                };
+
+                _db.Messages.Add(temp_message);
+                _db.SaveChanges();
+
+                await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+            }
+        }
+
     }
 }

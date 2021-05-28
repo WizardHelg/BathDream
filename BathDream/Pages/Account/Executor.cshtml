@@ -125,7 +125,7 @@
                                 <th style="text-align:center">№ заказа</th>
                                 <th style="text-align:center">Адрес</th>
                                 <th style="text-align:center">Смета</th>
-                                <th></th>
+                                <th style="text-align:center">Дизайн</th>
                                 <th></th>
                             </tr>
                             @foreach (var order_info in @Model.Data)
@@ -163,7 +163,10 @@
                                         <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
                                     </td>
                                     <td style="text-align: center;">
-                                        <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image"></i></a>
+                                        @if (order_info.SelectedItemId > 0)
+                                        {
+                                            <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image"></i></a>
+                                        }
                                     </td>
                                     <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
                                 </tr>

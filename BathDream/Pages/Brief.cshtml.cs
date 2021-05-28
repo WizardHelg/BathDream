@@ -353,7 +353,7 @@ namespace BathDream.Pages
         public InputModel Input { get; set; }
         public class InputModel
         {
-            public string DesignStyle { get; set; }
+            public string[] DesignStyle { get; set; }
             public string FloorColor { get; set; }
             public string FloorTileBudget { get; set; }
             public string FloorLayingTilesType { get; set; }

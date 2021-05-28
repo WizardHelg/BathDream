@@ -22,6 +22,7 @@ namespace BathDream.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly DBApplicationaContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<ChatHub> _hub;
 
         [BindProperty]
         public InputModel Input { get; set; } = new InputModel();
@@ -50,12 +51,14 @@ namespace BathDream.Pages.Account
             public List<FileItem> FileItems { get; set; }
         }
 
-        public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db, IWebHostEnvironment webHostEnvironment)
+        public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, 
+            DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _db = db;
             _webHostEnvironment = webHostEnvironment;
+            _hub = hub;
         }
 
         public async Task OnGetAsync()
@@ -247,20 +250,50 @@ namespace BathDream.Pages.Account
 
             return File(content, contentType, fileName);
         }
-        public IActionResult OnPostSelectFile(int? id)
+
+        public async Task<IActionResult> OnPostSelectFile(int? id)
         {
             Input.ContentView = "./Views/ChatPartialView";
 
-            FileItem fileItem = _db.FileItems.Include(f => f.Order).FirstOrDefault(f => f.Id == id);
+            FileItem fileItem = await _db.FileItems.Include(f => f.Order).ThenInclude(c => c.Customer).FirstOrDefaultAsync(f => f.Id == id);
             if (fileItem == null)
             {
-                //return NotFound();
+                return NotFound();
             }
 
             fileItem.Order.SelectedItemId = (int)id;
             _db.SaveChanges();
 
+
+            await Send($"Я выбрал(а) вариант дизайна {fileItem.FrendlyName}", fileItem.Order.Customer.UserId);
+
             return new JsonResult("");
+        }
+        public async Task Send(string message, string userId)
+        {
+            DateTime cur_time = DateTime.Now;
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+
+            message = message.TrimEnd('\n').Replace("\n", "<br />");
+
+            if (await _userManager.FindByNameAsync(userId) is User user)
+            {
+                User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == "70000000000");
+                Message temp_message = new Message
+                {
+                    DateTime = cur_time,
+                    Text = message,
+                    Sender = user,
+                    Recipient = arch
+                };
+
+                await _db.Messages.AddAsync(temp_message);
+                await _db.SaveChangesAsync();
+
+                await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+            }
         }
     }
 }
