@@ -351,9 +351,15 @@ namespace BathDream.Pages
         #region Биндинг основных данных
         [BindProperty]
         public InputModel Input { get; set; }
+
+        public class Style
+        {
+            public string Name { get; set; }
+            public bool IsSelect { get; set; }
+        }
         public class InputModel
         {
-            public string[] DesignStyle { get; set; }
+            public List<Style> DesignStyle { get; set; } 
             public string FloorColor { get; set; }
             public string FloorTileBudget { get; set; }
             public string FloorLayingTilesType { get; set; }
@@ -460,13 +466,29 @@ namespace BathDream.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            
+
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             //await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
 
             StringBuilder builder = new();
 
             StringBuilder size_builder = new();
-            builder.Append($"Общий стиль: {Input.DesignStyle}<br />");
+
+            for (int i = 0; i < Input.DesignStyle.Count; i++)
+            {
+                if (Input.DesignStyle[i].IsSelect)
+                {
+                    size_builder.Append($"{Input.DesignStyle[i].Name}, ");
+                }
+            }
+            if (size_builder.Length > 0)
+            {
+                size_builder.Remove(size_builder.Length - 2, 2);
+                builder.Append($"Стили: {size_builder}<br />");
+                size_builder.Clear();
+            }
+
             builder.Append("<br />");
 
             builder.Append($"Цвет пола: {Input.FloorColor}<br />");

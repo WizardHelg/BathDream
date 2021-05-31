@@ -203,28 +203,16 @@ namespace BathDream.Pages.Account
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnGetExecutorBriefAsync()
+        public IActionResult OnGetMaterial()
         {
-            User user = await _userManager.FindByNameAsync(User.Identity.Name);
-            //Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
-            if (await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order
-               && order.Signed)
-            {
-                if ((order.Status & Order.Statuses.Executing) == 0)
-                    return RedirectToPage("/Brief", new { id = order.Id });
-                else
-                {
-                    Input.ContentView = "./Views/ChatWithExecPartialView";
-                    return Page();
-                }
-            }
-
-            return RedirectToPage();
+            Input.ContentView = "./Views/MaterialPartialView";
+            return Page();
         }
-        //public async void OnPostAddFiles(IFormFileCollection uploads, string[] descriptions)
-        //{
-        //    Input.ContentView = "./Views/ChatPartialView";
-        //}
+        public IActionResult OnGetDocuments()
+        {
+            Input.ContentView = "./Views/DocumentsPartialView";
+            return Page();
+        }
 
         public void OnGetChat()
         {
@@ -297,3 +285,22 @@ namespace BathDream.Pages.Account
         }
     }
 }
+
+//public async Task<IActionResult> OnGetExecutorBriefAsync()
+//{
+//    User user = await _userManager.FindByNameAsync(User.Identity.Name);
+//    //Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
+//    if (await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order
+//       && order.Signed)
+//    {
+//        if ((order.Status & Order.Statuses.Executing) == 0)
+//            return RedirectToPage("/Brief", new { id = order.Id });
+//        else
+//        {
+//            Input.ContentView = "./Views/ChatWithExecPartialView";
+//            return Page();
+//        }
+//    }
+
+//    return RedirectToPage();
+//}
