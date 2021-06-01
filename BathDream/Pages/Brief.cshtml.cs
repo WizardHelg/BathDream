@@ -31,37 +31,127 @@ namespace BathDream.Pages
         }
 
         #region Данные для вывода сантехники
-        public List<string> TileColors { get; init; } = new List<string>()
+        public List<Color> TileColors { get; init; } = new List<Color>()
         {
-            "Бежево-коричневый",
-            "Бирюзовый",
-            "Графитовый",
-            "Многоцветный",
-            "Светло-бежевый",
-            "Светло-серый",
-            "Светло-коричневый",
-            "Темно-серый",
-            "Темно-бежевый",
-            "Бежевый",
-            "Белый",
-            "Бордовый",
-            "Голубой",
-            "Желтый",
-            "Зеленый",
-            "Золотой",
-            "Коричневый",
-            "Красный",
-            "Кремовый",
-            "Оранжевый",
-            "Разноцветный",
-            "Розовый",
-            "Серебрянный",
-            "Серый",
-            "Синий",
-            "Сиреневый",
-            "Фиолетовый",
-            "Черный"
+            new Color{
+                Name = "Бежево-коричневый",
+                Code = "#79553d"
+            },
+            new Color{
+                Name = "Бирюзовый",
+                Code = "#30d5c8"
+            },
+            new Color{
+                Name = "Графитовый",
+                Code = "#474A51"
+            },
+            new Color{
+                Name = "Многоцветный",
+                Code = "#79553d"
+            },
+            new Color{
+                Name = "Светло-бежевый",
+                Code = "#f5f5dc"
+            },
+            new Color{
+                Name = "Светло-серый",
+                Code = "#bbbbbb"
+            },
+            new Color{
+                Name = "Светло-коричневый",
+                Code = "#987654"
+            },
+            new Color{
+                Name = "Темно-серый",
+                Code = "#49423d"
+            },
+            new Color{
+                Name = "Темно-бежевый",
+                Code = "#ac9362 "
+            },
+            new Color{
+                Name = "Бежевый",
+                Code = "#f5f5dc"
+            },
+            new Color{
+                Name = "Белый",
+                Code = "#ffffff"
+            },
+            new Color{
+                Name = "Бордовый",
+                Code = "#9b2d30"
+            },
+            new Color{
+                Name = "Голубой",
+                Code = "#42aaff"
+            },
+            new Color{
+                Name = "Желтый",
+                Code = "#ffff00"
+            },
+            new Color{
+                Name = "Зеленый",
+                Code = "#008000"
+            },
+            new Color{
+                Name = "Золотой",
+                Code = "#ffd700"
+            },
+            new Color{
+                Name = "Коричневый",
+                Code = "#964b00"
+            },
+            new Color{
+                Name = "Красный",
+                Code = "#ff0000"
+            },
+            new Color{
+                Name = "Кремовый",
+                Code = "#fdf4e3"
+            },
+            new Color{
+                Name = "Оранжевый",
+                Code = "#ffa500"
+            },
+            new Color{
+                Name = "Разноцветный",
+                Code = "#79553d"
+            },
+            new Color{
+                Name = "Розовый",
+                Code = "#ffc0cb"
+            },
+            new Color{
+                Name = "Серебряный",
+                Code = "#c0c0c0 "
+            },
+            new Color{
+                Name = "Серый",
+                Code = "#808080"
+            },
+            new Color{
+                Name = "Синий",
+                Code = "#0000ff"
+            },
+            new Color{
+                Name = "Сиреневый",
+                Code = "#c8a2c8"
+            },
+            new Color{
+                Name = "Фиолетовый",
+                Code = "#8b00ff"
+            },
+            new Color{
+                Name = "Черный",
+                Code = "#000000"
+            }
         };
+
+        public class Color
+        {
+            public string Name { get; set; }
+            public string Code { get; set; }
+        }
 
         public List<SantechItem> SantechItems { get; set; }
 
@@ -90,11 +180,11 @@ namespace BathDream.Pages
                         Text = "Вариант стиля 1",
                         Img = "img/brief/other/Ванная 1.jpg"
                     },
-                    //new()
-                    //{
-                    //    Text = "Вариант стиля 2",
-                    //    Img = "img/brief/other/Ванная 1.png"
-                    //},
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Ванная 1.png"
+                    },
                     new()
                     {
                         Text = "Вариант стиля 3",
@@ -102,34 +192,11 @@ namespace BathDream.Pages
                     }
                 }
             },
-            ["Инсталяция"] = new()
+            ["ДушеваяКабина"] = new()
             {
-                Name = "Инсталяция",
+                Name = "Душевая кабина",
                 Prices = new()
                 {
-                    "15 000 - 30 000",
-                    "30 000 - 45 000",
-                    "45 000 - 60 000",
-                    "60 000 - 75 000",
-                    "75 000 - 90 000",
-                    "90 000 - 105 000",
-                    "105 000 - ..."
-                },
-                ChoiseItems = new()
-                {
-                    new()
-                    {
-                        Img = "img/brief/other/Инсталяция.jpg",
-                        IsRadio = false
-                    }
-                }
-            },
-            ["Смеситель"] = new()
-            {
-                Name = "Смеситель",
-                Prices = new()
-                {
-                    "1 000 - 10 000",
                     "10 000 - 20 000",
                     "20 000 - 30 000",
                     "30 000 - 40 000",
@@ -146,17 +213,247 @@ namespace BathDream.Pages
                     new()
                     {
                         Text = "Вариант стиля 1",
-                        Img = "img/brief/other/Смеситель 1.jpg"
+                        Img = "img/brief/other/Душевая кабина 1.png"
                     },
                     new()
                     {
                         Text = "Вариант стиля 2",
-                        Img = "img/brief/other/Смеситель 3.jpg"
+                        Img = "img/brief/other/Душевая кабина 2.png"
                     },
                     new()
                     {
                         Text = "Вариант стиля 3",
-                        Img = "img/brief/other/Смеситель 4.jpg"
+                        Img = "img/brief/other/Душевая кабина 3.png"
+                    }
+                }
+            },
+            ["ДушевойУголок"] = new()
+            {
+                Name = "Душевой уголок",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Душевой уголок 1.png"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Душевой уголок 2.png"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 3",
+                        Img = "img/brief/other/Душевой уголок 3.png"
+                    }
+                }
+            },
+            ["Джакузи"] = new()
+            {
+                Name = "Джакузи",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Джакузи 1.png"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Джакузи 2.png"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 3",
+                        Img = "img/brief/other/Джакузи 3.png"
+                    }
+                }
+            },
+            ["ВаннаяГидромассажем"] = new()
+            {
+                Name = "Ванная с функцией гидромассажа",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Ванна с функцией гидромассажа 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Ванна с функцией гидромассажа 2.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 3",
+                        Img = "img/brief/other/Ванна с функцией гидромассажа 3.jpg"
+                    }
+                }
+            },
+            ["УнитазНапольный"] = new()
+            {
+                Name = "Унитаз напольный",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Унитаз 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Унитаз 2.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 3",
+                        Img = "img/brief/other/Унитаз 3.jpg"
+                    }
+                }
+            },
+            ["Инсталляция"] = new()
+            {
+                Name = "Инсталляция",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Инсталляция подвесной унитаз 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Инсталляция подвесной унитаз 2.jpg"
+                    }
+                }
+            },
+            ["ГигиеническийДуш"] = new()
+            {
+                Name = "Гигиенический душ",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Гигиенический душ 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Гигиенический душ 2.jpg"
+                    }
+                }
+            },
+            ["Биде"] = new()
+            {
+                Name = "Биде",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Биде 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Биде 2.jpg"
                     }
                 }
             },
@@ -195,9 +492,9 @@ namespace BathDream.Pages
                     }
                 }
             },
-            ["Тумба"] = new()
+            ["ТумбаПодРаковину"] = new()
             {
-                Name = "Тумба",
+                Name = "Тумба под раковину",
                 Prices = new()
                 {
                     "5 000 - 10 000",
@@ -296,9 +593,69 @@ namespace BathDream.Pages
                     }
                 }
             },
-            ["Дверь"] = new()
+            ["СантехническийЛюк"] = new()
             {
-                Name = "Дверь",
+                Name = "Сантехнический люк",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Сантехнический люк 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Сантехнический люк 2.jpg"
+                    }
+                }
+            },
+            ["Аксессуары"] = new()
+            {
+                Name = "Аксессуары",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Ванные принадлежности 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Ванные принадлежности 2.jpg"
+                    }
+                }
+            },
+            ["УстановкаДверей"] = new()
+            {
+                Name = "Установка дверей",
                 Prices = new()
                 {
                     "5 000 - 10 000",
@@ -331,6 +688,73 @@ namespace BathDream.Pages
                     }
                 }
             },
+
+            ///уточнить
+            ["Смеситель"] = new()
+            {
+                Name = "Смеситель",
+                Prices = new()
+                {
+                    "1 000 - 10 000",
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/Смеситель 1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/Смеситель 3.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 3",
+                        Img = "img/brief/other/Смеситель 4.jpg"
+                    }
+                }
+            },
+
+            #region Инсталляция подвесное биде
+            //["Инсталляция Подвесное биде"] = new()
+            //{
+            //    Name = "Инсталляция Подвесное биде",
+            //    Prices = new()
+            //    {
+            //        "15 000 - 30 000",
+            //        "30 000 - 45 000",
+            //        "45 000 - 60 000",
+            //        "60 000 - 75 000",
+            //        "75 000 - 90 000",
+            //        "90 000 - 105 000",
+            //        "105 000 - ..."
+            //    },
+            //    ChoiseItems = new()
+            //    {
+            //        new()
+            //        {
+            //            Img = "img/brief/other/Инсталляция биде 1.jpg",
+            //            IsRadio = false
+            //        },
+            //        new()
+            //        {
+            //            Text = "Вариант стиля 2",
+            //            Img = "img/brief/other/Инсталляция биде 2.jpg",
+            //        }
+            //    }
+            #endregion
         };
 
         public class SantechItem
@@ -429,33 +853,9 @@ namespace BathDream.Pages
                                          .Where(o => o.Id == id)
                                          .FirstOrDefaultAsync() is Order order)
             {
-                foreach(var work in order.Estimate.Works)
+                foreach (var work in order.Estimate.Works)
                 {
-                    switch (work.InnerName)
-                    {
-                        case "Ванная":
-                            AddSantech("Ванная", $"{work.Volume:F0}");
-                            AddSantech("Смеситель", $"{work.Volume:F0}");
-                            break;
-                        case "Инсталляция":
-                            AddSantech("Инсталяция", $"{work.Volume:F0}");
-                            break;
-                        case "Раковина":
-                            AddSantech("Раковина", $"{work.Volume:F0}");
-                            break;
-                        case "ТумбаПодРаковину":
-                            AddSantech("Тумба", $"{work.Volume:F0}");
-                            break;
-                        case "Зеркало":
-                            AddSantech("Зеркало", $"{work.Volume:F0}");
-                            break;
-                        case "Полотенцесушитель":
-                            AddSantech("Полотенцесушитель", $"{work.Volume:F0}");
-                            break;
-                        case "УстановкаДверей":
-                            AddSantech("Дверь", $"{work.Volume:F0}");
-                            break;
-                    }
+                    AddSantech(work.InnerName, $"{work.Volume:F0}");
                 }
 
                 return Page();

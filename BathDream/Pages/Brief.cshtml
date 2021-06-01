@@ -75,7 +75,7 @@
         <hr />
         <button type="button" class="btn btn-success" onclick="
             document.getElementById('page1').style.display = 'none';
-            document.getElementById('page10').style.display = 'block';
+            document.getElementById('page2').style.display = 'block';
             window.scrollTo(0, 0);
         ">
             Далее
@@ -88,7 +88,7 @@
             <select asp-for="Input.FloorColor" class="form-control">
                 @foreach (var color in Model.TileColors)
                 {
-                    <option>@color</option>
+                    <option style="background: @color.Code">@color.Name</option>
                 }
             </select>
         </p>
@@ -193,14 +193,16 @@
             <select asp-for="Input.WallColor" class="form-control">
                 @foreach (var color in Model.TileColors)
                 {
-                    <option>@color</option>
+                    <option style="background: @color.Code">@color.Name</option>
                 }
             </select>
         </p>
         <p>
             Выбирете бюджет плитки за м&sup2; в руб.:
             <select asp-for="Input.WallTileBudget" class="form-control">
-                <option>1 000 - 10 000</option>
+                <option>500 - 1 000</option>
+                <option>1 000 - 5 000</option>
+                <option>5 000 - 10 000</option>
                 <option>10 000 - 20 000</option>
                 <option>20 000 - 30 000</option>
                 <option>30 000 - 40 000</option>
