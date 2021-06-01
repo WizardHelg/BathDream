@@ -75,7 +75,7 @@
         <hr />
         <button type="button" class="btn btn-success" onclick="
             document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'block';
+            document.getElementById('page10').style.display = 'block';
             window.scrollTo(0, 0);
         ">
             Далее
@@ -336,7 +336,7 @@
     <div id="page10" style="display: none;">
         <p><b>4. Сантехника</b></p>
         <table id="santex" class="table table-hover table-condensed table-responsive">
-            <tr>
+            <tr style="white-space: nowrap;">
                 <th class="col-md-1">Наименование</th>
                 <th class="col-md-1">Количество</th>
                 <th class="col-md-2">Бюджет</th>
@@ -344,16 +344,16 @@
             </tr>
             @foreach (var item in Model.SantechItems)
             {
-                <tr>
-                    <td>
+                <tr name="row" style="">
+                    <td name="Td" style="">
                         <input hidden name="name" value="@item.Name" />
                         <label name="name">@item.Name</label>
                     </td>
-                    <td>
+                    <td name="Td" style="">
                         <input hidden name="amount" value="@item.Amount" />
                         <label name="amount">@item.Amount</label>
                     </td>
-                    <td>
+                    <td name="Td" style="">
                         <select name="budget" class="form-control">
                             @foreach (var price in item.Prices)
                             {
@@ -361,7 +361,7 @@
                             }
                         </select>
                     </td>
-                    <td>
+                    <td name="lastTd" style="">
                         <div class="container-fluid">
                             <div class="row">
                                 @{
@@ -370,23 +370,24 @@
                                     @foreach (var c_item in item.ChoiseItems)
                                     {
                                         string style_name = $"style-{item.Name}";
-                                        <div class="col-md-4" name="adaptiveImage">
+                                        <div class="col-md-4" style="width:100%" name="adaptiveImage">
                                             @if (c_item.IsRadio)
                                             {
                                                 <span class="radio-inline">
                                                     @if (IsCheked)
                                                     {
-                                                        <input type="radio" name="@style_name" value="@c_item.Text" checked />
+                                                        <input id="@c_item.Img" type="radio" name="@style_name" value="@c_item.Text" checked />
                                                         IsCheked = false;
                                                     }
                                                     else
                                                     {
-                                                        <input type="radio" name="@style_name" value="@c_item.Text" />
+                                                        <input id="@c_item.Img" type="radio" name="@style_name" value="@c_item.Text" />
                                                     }
                                                     @c_item.Text
                                                 </span>
                                             }
-                                            <img alt="Brand" src="@c_item.Img" />
+                                            <br />
+                                            <img alt="Brand" src="@c_item.Img" style="width:100%" name="@c_item.Img" onclick="ClickToCheck(this)" />
                                         </div>
                                     }
                                 }
@@ -419,7 +420,6 @@
         var elements = document.getElementsByName("adaptiveImage");
         var tileAngle = document.getElementsByName("tileAngle");
 
-
         for (var i = 0; i < elements.length; i++) {
             let width = window.innerWidth; //Ширина окна
             //Если вы хотите проверять по размеру экрана, то вам нужно свойство window.screen.width
@@ -439,7 +439,43 @@
                 tileAngle[i].style.cssText = "width: 40%";
             }
             else if (width < 720) {
+
                 tileAngle[i].style.cssText = "width: 100%";
+            }
+        }
+
+        var row = document.getElementsByName("row");
+        var Td = document.getElementsByName("Td");
+        var lastTd = document.getElementsByName("lastTd");
+
+        for (var i = 0; i < row.length; i++) {
+            let width = window.innerWidth; //Ширина окна
+            if (width > 1280) {
+                row[i].style.cssText = "";
+            }
+            else if (width < 720) {
+                row[i].style.cssText = "white-space: nowrap;";
+            }
+        }
+
+        for (var i = 0; i < Td.length; i++) {
+            let width = window.innerWidth; //Ширина окна
+            if (width > 1280) {
+                Td[i].style.cssText = "";
+            }
+            else if (width < 720) {
+                Td[i].style.cssText = "display: inline-block;";
+            }
+        }
+
+        for (var i = 0; i < lastTd.length; i++) {
+            let width = window.innerWidth; //Ширина окна
+            if (width > 1280) {
+                lastTd[i].style.cssText = "";
+            }
+            else if (width < 720) {
+                lastTd[i].style.cssText = "display: block";
+                lastTd[i].width = 350;
             }
         }
     }
