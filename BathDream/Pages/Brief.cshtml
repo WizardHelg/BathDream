@@ -80,7 +80,7 @@
         <hr />
         <button type="button" class="btn btn-success" onclick="
             document.getElementById('page1').style.display = 'none';
-            document.getElementById('page10').style.display = 'block';
+            document.getElementById('page2').style.display = 'block';
             window.scrollTo(0, 0);
         ">
             Далее
@@ -360,22 +360,26 @@
             Далее
         </button>
     </div>
-    <div id="page10" style="display: none;">
-        <p><b>4. Сантехника</b></p>
-        <table id="santex" class="table table-hover table-condensed table-responsive">
-            <tr>
-                @*<th class="col-md-1">Наименование</th>
-                <th class="col-md-1">Количество</th>
-                <th class="col-md-2">Бюджет</th>
-                <th class="col-md-8">Варианты стиля</th>*@
-            </tr>
-            @foreach (var item in Model.SantechItems)
-            {
+    @for (int i = 0; i < Model.SantechItems.Count; i++)
+    {
+        BriefModel.SantechItem item = Model.SantechItems[i];
+        string currentPage = $"page{10 + i}";
+        string nextPage = $"page{10 + i + 1}";
+        <div id="@currentPage" style="display: none;">
+            <p><b>4. Сантехника</b></p>
+            <table id="santex" class="table table-hover table-condensed table-responsive">
+                <tr>
+                    @*<th class="col-md-1">Наименование</th>
+                        <th class="col-md-1">Количество</th>
+                        <th class="col-md-2">Бюджет</th>
+                        <th class="col-md-8">Варианты стиля</th>*@
+                </tr>
+
                 <tr style="">
                     <td name="Td" style="">
                         <input hidden name="name" value="@item.Name" />
                         <label name="name">@item.Name</label>
-
+                        <label>, Количество: </label>
                         <input hidden name="amount" value="@item.Amount" />
                         <label name="amount">@item.Amount</label>
 
@@ -420,10 +424,24 @@
                         </div>
                     </td>
                 </tr>
+            </table>
+            @if (i < Model.SantechItems.Count - 1)
+            {
+                <button type="button" class="btn btn-success" onclick="
+                document.getElementById('@currentPage').style.display = 'none';
+                document.getElementById('@nextPage').style.display = 'block';
+                window.scrollTo(0, 0);
+                ">
+                    Далее
+                </button>
             }
-        </table>
-        <button type="submit" class="btn btn-success">Отправить</button>
-    </div>
+            else
+            {
+                <button type="submit" class="btn btn-success">Отправить</button>
+            }
+        </div>
+    }
+
 </form>
 <tr />
 <p> </p>
