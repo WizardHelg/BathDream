@@ -30,7 +30,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" asp-page="/Index"><img alt="Brand" src="~/img/logo.png"></a>
+                <a id="adaptiveImage" class="navbar-brand" asp-page="/Index"><img alt="Brand" src="~/img/logo.png" ></a>
             </div>
             <div id="navbar" class="collapse navbar-collapse pull-right">
                 @RenderSection("MainMenu", false)
@@ -52,7 +52,29 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
 
+
+    <script>
+        //window.addEventListener("resize", AutoScale); //Масштабируем страницу при растягивании окна
+
+        //AutoScale(); //Масштабируем страницу после загрузки
+
+        //function AutoScale() {
+
+        //    var element = document.getElementById("adaptiveImage");
+
+        //    let width = window.innerWidth; //Ширина окна
+        //    //Если вы хотите проверять по размеру экрана, то вам нужно свойство window.screen.width
+
+        //    if (width > 1280) {
+        //        element.style.cssText = "width: 100%";
+        //    }
+        //    else if (width < 720) {
+        //        element.style.cssText = "width: 50%";
+        //    }
+        //}
+    </script>
     <script type="text/javascript">
+        style = "width: 70%";
         jQuery(function ($) {
 
             $(".sidebar-dropdown > a").click(function () {

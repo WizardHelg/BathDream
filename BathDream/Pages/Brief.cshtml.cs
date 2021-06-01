@@ -35,122 +35,136 @@ namespace BathDream.Pages
         {
             new Color{
                 Name = "Бежево-коричневый",
-                Code = "#79553d"
+                CodeBackground = "#79553d",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Бирюзовый",
-                Code = "#30d5c8"
+                CodeBackground = "#30d5c8"
             },
             new Color{
                 Name = "Графитовый",
-                Code = "#474A51"
+                CodeBackground = "#474A51",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Многоцветный",
-                Code = "#79553d"
+                CodeBackground = "#ffffff"
             },
             new Color{
                 Name = "Светло-бежевый",
-                Code = "#f5f5dc"
+                CodeBackground = "#f5f5dc"
             },
             new Color{
                 Name = "Светло-серый",
-                Code = "#bbbbbb"
+                CodeBackground = "#bbbbbb"
             },
             new Color{
                 Name = "Светло-коричневый",
-                Code = "#987654"
+                CodeBackground = "#987654",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Темно-серый",
-                Code = "#49423d"
+                CodeBackground = "#49423d",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Темно-бежевый",
-                Code = "#ac9362 "
+                CodeBackground = "#ac9362",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Бежевый",
-                Code = "#f5f5dc"
+                CodeBackground = "#f5f5dc"
             },
             new Color{
                 Name = "Белый",
-                Code = "#ffffff"
+                CodeBackground = "#ffffff"
             },
             new Color{
                 Name = "Бордовый",
-                Code = "#9b2d30"
+                CodeBackground = "#9b2d30",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Голубой",
-                Code = "#42aaff"
+                CodeBackground = "#42aaff"
             },
             new Color{
                 Name = "Желтый",
-                Code = "#ffff00"
+                CodeBackground = "#ffff00"
             },
             new Color{
                 Name = "Зеленый",
-                Code = "#008000"
+                CodeBackground = "#008000",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Золотой",
-                Code = "#ffd700"
+                CodeBackground = "#ffd700"
             },
             new Color{
                 Name = "Коричневый",
-                Code = "#964b00"
+                CodeBackground = "#964b00",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Красный",
-                Code = "#ff0000"
+                CodeBackground = "#ff0000",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Кремовый",
-                Code = "#fdf4e3"
+                CodeBackground = "#fdf4e3"
             },
             new Color{
                 Name = "Оранжевый",
-                Code = "#ffa500"
+                CodeBackground = "#ffa500"
             },
             new Color{
                 Name = "Разноцветный",
-                Code = "#79553d"
+                CodeBackground = "#ffffff"
             },
             new Color{
                 Name = "Розовый",
-                Code = "#ffc0cb"
+                CodeBackground = "#ffc0cb"
             },
             new Color{
                 Name = "Серебряный",
-                Code = "#c0c0c0 "
+                CodeBackground = "#c0c0c0 "
             },
             new Color{
                 Name = "Серый",
-                Code = "#808080"
+                CodeBackground = "#808080",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Синий",
-                Code = "#0000ff"
+                CodeBackground = "#0000ff",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Сиреневый",
-                Code = "#c8a2c8"
+                CodeBackground = "#c8a2c8"
             },
             new Color{
                 Name = "Фиолетовый",
-                Code = "#8b00ff"
+                CodeBackground = "#8b00ff",
+                CodeText = "#ffffff"
             },
             new Color{
                 Name = "Черный",
-                Code = "#000000"
+                CodeBackground = "#000000",
+                CodeText = "#ffffff"
             }
         };
 
         public class Color
         {
             public string Name { get; set; }
-            public string Code { get; set; }
+            public string CodeBackground { get; set; }
+            public string CodeText { get; set; }
         }
 
         public List<SantechItem> SantechItems { get; set; }

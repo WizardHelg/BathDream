@@ -28,6 +28,7 @@
                         Классика
                     </span>
                     <img name="1" alt="Brand" src="img/brief/styles/classic/12168d27aee173956409b7b163783c32.jpg" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -36,6 +37,7 @@
                         Модерн
                     </span>
                     <img name="2" alt="Brand" src="img/brief/styles/modern/1584444667_23-p-vannie-komnati-v-stile-khai-tek-33.jpg" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -44,6 +46,7 @@
                         Хайтек
                     </span>
                     <img name="3" alt="Brand" src="img/brief/styles/high-tech/7.jpg" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -52,6 +55,7 @@
                         Прованс
                     </span>
                     <img name="4" alt="Brand" src="img/brief/styles/provence/5-117.jpg" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -60,6 +64,7 @@
                         Кантри
                     </span>
                     <img name="5" alt="Brand" src="img/brief/styles/country/vannaya-komnata-v-stile-kantri2.jpg" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -75,7 +80,7 @@
         <hr />
         <button type="button" class="btn btn-success" onclick="
             document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'block';
+            document.getElementById('page10').style.display = 'block';
             window.scrollTo(0, 0);
         ">
             Далее
@@ -88,7 +93,14 @@
             <select asp-for="Input.FloorColor" class="form-control">
                 @foreach (var color in Model.TileColors)
                 {
-                    <option style="background: @color.Code">@color.Name</option>
+                    @if (color.CodeText != null)
+                    {
+                        <option style="background: @color.CodeBackground; color: @color.CodeText;">@color.Name</option>
+                    }
+                    else
+                    {
+                        <option style="background: @color.CodeBackground; color: #000000">@color.Name</option>
+                    }
                 }
             </select>
         </p>
@@ -130,6 +142,7 @@
                         По диагонали
                     </span>
                     <img alt="Brand" src="img/brief/other/по диагонали.jpg" name="floorTileDiagonal" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -160,6 +173,7 @@
                         Широкоформатная
                     </span>
                     <img alt="Brand" src="img/brief/other/Широформатная плитка.jpg" name="floorTileWide" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -167,6 +181,7 @@
                         Мелкоформатная
                     </span>
                     <img alt="Brand" src="img/brief/other/мелкоформатная плитка 1.jpg" name="floorTileSmall" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -193,7 +208,14 @@
             <select asp-for="Input.WallColor" class="form-control">
                 @foreach (var color in Model.TileColors)
                 {
-                    <option style="background: @color.Code">@color.Name</option>
+                    @if (color.CodeText != null)
+                    {
+                        <option style="background: @color.CodeBackground; color: @color.CodeText;">@color.Name</option>
+                    }
+                    else
+                    {
+                        <option style="background: @color.CodeBackground; color: #000000">@color.Name</option>
+                    }
                 }
             </select>
         </p>
@@ -235,6 +257,7 @@
                         По диагонали
                     </span>
                     <img alt="Brand" src="img/brief/other/по диагонали.jpg" name="wallTileDiagonal" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -265,6 +288,7 @@
                         Широкоформатная
                     </span>
                     <img alt="Brand" src="img/brief/other/Широформатная плитка.jpg" name="wallTileWide" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -272,6 +296,7 @@
                         Мелкоформатная
                     </span>
                     <img alt="Brand" src="img/brief/other/мелкоформатная плитка 1.jpg" name="wallTileSmall" onclick="ClickToCheck(this)" />
+                    <hr />
                 </div>
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
                     <span class="radio-inline">
@@ -338,32 +363,29 @@
     <div id="page10" style="display: none;">
         <p><b>4. Сантехника</b></p>
         <table id="santex" class="table table-hover table-condensed table-responsive">
-            <tr style="white-space: nowrap;">
-                <th class="col-md-1">Наименование</th>
+            <tr>
+                @*<th class="col-md-1">Наименование</th>
                 <th class="col-md-1">Количество</th>
                 <th class="col-md-2">Бюджет</th>
-                <th class="col-md-8">Варианты стиля</th>
+                <th class="col-md-8">Варианты стиля</th>*@
             </tr>
             @foreach (var item in Model.SantechItems)
             {
-                <tr name="row" style="">
+                <tr style="">
                     <td name="Td" style="">
                         <input hidden name="name" value="@item.Name" />
                         <label name="name">@item.Name</label>
-                    </td>
-                    <td name="Td" style="">
+
                         <input hidden name="amount" value="@item.Amount" />
                         <label name="amount">@item.Amount</label>
-                    </td>
-                    <td name="lastTd" style="">
+
                         <select name="budget" class="form-control">
                             @foreach (var price in item.Prices)
                             {
                                 <option>@price</option>
                             }
                         </select>
-                    </td>
-                    <td name="lastTd" style="">
+
                         <div class="container-fluid">
                             <div class="row">
                                 @{
@@ -372,7 +394,7 @@
                                     @foreach (var c_item in item.ChoiseItems)
                                     {
                                         string style_name = $"style-{item.Name}";
-                                        <div class="col-md-4" style="width:100%" name="adaptiveImage">
+                                        <div class="col-md-4" style="width:100%" name="adaptiveSantechImage">
                                             @if (c_item.IsRadio)
                                             {
                                                 <span class="radio-inline">
@@ -390,6 +412,7 @@
                                             }
                                             <br />
                                             <img alt="Brand" src="@c_item.Img" style="width:100%" name="@c_item.Img" onclick="ClickToCheck(this)" />
+                                            <hr />
                                         </div>
                                     }
                                 }
@@ -410,17 +433,25 @@
     function ClickToCheck(e){
         var eName = e.name;
         var checkbox = document.getElementById(eName);
-        if (checkbox.checked == true) checkbox.checked = false;
-        else if (checkbox.checked == false) checkbox.checked = true;
+        if (checkbox.type == "radio") {
+            if (checkbox.checked == false) checkbox.checked = true;
+        }
+        if (checkbox.type == "checkbox") {
+            if (checkbox.checked == true) checkbox.checked = false;
+            else if (checkbox.checked == false) checkbox.checked = true;
+        }
     }
 
+
+
     window.addEventListener("resize", AutoScale); //Масштабируем страницу при растягивании окна
-    
+
     AutoScale(); //Масштабируем страницу после загрузки
 
     function AutoScale() {
         var elements = document.getElementsByName("adaptiveImage");
         var tileAngle = document.getElementsByName("tileAngle");
+        var adaptiveSantechImage = document.getElementsByName("adaptiveSantechImage");
 
         for (var i = 0; i < elements.length; i++) {
             let width = window.innerWidth; //Ширина окна
@@ -445,41 +476,55 @@
                 tileAngle[i].style.cssText = "width: 100%";
             }
         }
-
-        var row = document.getElementsByName("row");
-        var Td = document.getElementsByName("Td");
-        var lastTd = document.getElementsByName("lastTd");
-
-        for (var i = 0; i < row.length; i++) {
+        for (var i = 0; i < adaptiveSantechImage.length; i++) {
             let width = window.innerWidth; //Ширина окна
+            //Если вы хотите проверять по размеру экрана, то вам нужно свойство window.screen.width
+
             if (width > 1280) {
-                row[i].style.cssText = "";
+                adaptiveSantechImage[i].style.cssText = "width: 60%";
             }
             else if (width < 720) {
-                row[i].style.cssText = "white-space: nowrap;";
+
+                adaptiveSantechImage[i].style.cssText = "width: 100%";
             }
         }
 
-        for (var i = 0; i < Td.length; i++) {
-            let width = window.innerWidth; //Ширина окна
-            if (width > 1280) {
-                Td[i].style.cssText = "";
-            }
-            else if (width < 720) {
-                Td[i].style.cssText = "display: inline-block;";
-            }
-        }
 
-        for (var i = 0; i < lastTd.length; i++) {
-            let width = window.innerWidth; //Ширина окна
-            if (width > 1280) {
-                lastTd[i].style.cssText = "";
-            }
-            else if (width < 720) {
-                lastTd[i].style.cssText = "display: block";
-                lastTd[i].width = 350;
-            }
-        }
+
+        //var row = document.getElementsByName("row");
+        //var Td = document.getElementsByName("Td");
+        //var lastTd = document.getElementsByName("lastTd");
+
+        //for (var i = 0; i < row.length; i++) {
+        //    let width = window.innerWidth; //Ширина окна
+        //    if (width > 1280) {
+        //        row[i].style.cssText = "";
+        //    }
+        //    else if (width < 720) {
+        //        row[i].style.cssText = "white-space: nowrap;";
+        //    }
+        //}
+
+        //for (var i = 0; i < Td.length; i++) {
+        //    let width = window.innerWidth; //Ширина окна
+        //    if (width > 1280) {
+        //        Td[i].style.cssText = "";
+        //    }
+        //    else if (width < 720) {
+        //        Td[i].style.cssText = "display: inline-block;";
+        //    }
+        //}
+
+        //for (var i = 0; i < lastTd.length; i++) {
+        //    let width = window.innerWidth; //Ширина окна
+        //    if (width > 1280) {
+        //        lastTd[i].style.cssText = "";
+        //    }
+        //    else if (width < 720) {
+        //        lastTd[i].style.cssText = "display: block";
+        //        lastTd[i].width = 350;
+        //    }
+        //}
     }
 
 </script>
