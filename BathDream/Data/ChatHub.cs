@@ -24,6 +24,30 @@ namespace BathDream.Data
             _db = db;
         }
 
+        public async Task<Order> GetOrder(string id)
+        {
+            UserProfile userProfile = await _db.UserProfiles.FirstOrDefaultAsync(u => u.UserId == id);
+            Order order = await _db.Orders.Include(o => o.Customer).Include(o => o.Executor).FirstOrDefaultAsync(o => o.Customer.Id == userProfile.Id);
+            return order;
+        }
+
+        public bool OnExecution(Order order)
+        {
+            if ((order.Status & Order.Statuses.Executing) > 0) return true;
+            return false;
+        }
+
+        public Message CreateMessage(DateTime dateTime, string message, User sender, User recipient)
+        {
+            return new Message
+            {
+                DateTime = dateTime,
+                Text = message,
+                Sender = sender,
+                Recipient = recipient
+            };
+        }
+
         //Сообщение от клиента архитектору
         public async Task Send(string message)
         {
@@ -35,23 +59,37 @@ namespace BathDream.Data
 
             if (await _user_manager.FindByNameAsync(Context.User.Identity.Name) is User user)
             {
-                User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == _arch_number);
-                Message temp_message = new Message
+                Order order = await GetOrder(user.Id);
+
+                User arch = await _user_manager.FindByNameAsync(Context.User.Identity.Name);
+                if (arch.PhoneNumber == _arch_number)
                 {
-                    DateTime = cur_time,
-                    Text = message,
-                    Sender = user,
-                    Recipient = arch
-                };
+                    Message temp_message = CreateMessage(cur_time, message, user, arch);
 
-                if (_online_userId.Contains(arch.Id))
-                    temp_message.IsReaded = true;
+                    if (_online_userId.Contains(arch.Id))
+                        temp_message.IsReaded = true;
 
-                await _db.Messages.AddAsync(temp_message);
-                await _db.SaveChangesAsync();
+                    await _db.Messages.AddAsync(temp_message);
+                    await _db.SaveChangesAsync();
 
-                await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName,  Message = temp_message.Text, When = temp_message.DateTime });
-                await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                    await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                    await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                }
+                else if (OnExecution(order))
+                {
+                    UserProfile userProfile = await _db.UserProfiles.Include(u => u.User).FirstOrDefaultAsync(u => u.Id == order.Executor.Id);
+                    User executor = userProfile.User;
+                    Message temp_message = CreateMessage(cur_time, message, user, executor);
+                    if (_online_userId.Contains(executor.Id))
+                        temp_message.IsReaded = true;
+
+                    await _db.Messages.AddAsync(temp_message);
+                    await _db.SaveChangesAsync();
+
+                    await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                    await Clients.User(executor.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                }
+           
             } 
         }
 
@@ -66,23 +104,37 @@ namespace BathDream.Data
 
             if (await _user_manager.FindByNameAsync(userId) is User user)
             {
-                User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == _arch_number);
-                Message temp_message = new Message
+                Order order = await GetOrder(user.Id);
+
+                User arch = await _user_manager.FindByNameAsync(Context.User.Identity.Name);
+                if (arch.PhoneNumber == _arch_number)
                 {
-                    DateTime = cur_time,
-                    Text = message,
-                    Sender = arch,
-                    Recipient = user,
-                };
+                    Message temp_message = CreateMessage(cur_time, message, arch, user);
 
-                if (_online_userId.Contains(user.Id))
-                    temp_message.IsReaded = true;
+                    if (_online_userId.Contains(user.Id))
+                        temp_message.IsReaded = true;
 
-                _db.Messages.Add(temp_message);
-                _db.SaveChanges();
+                    _db.Messages.Add(temp_message);
+                    _db.SaveChanges();
 
-                await Clients.User(user.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
-                await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                    await Clients.User(user.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                    await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                }            
+                else if (OnExecution(order))
+                {
+                    UserProfile userProfile = await _db.UserProfiles.Include(u => u.User).FirstOrDefaultAsync(u => u.Id == order.Executor.Id);
+                    User executor = userProfile.User;
+                    Message temp_message = CreateMessage(cur_time, message, executor, user);
+                    if (_online_userId.Contains(user.Id))
+                        temp_message.IsReaded = true;
+
+                    await _db.Messages.AddAsync(temp_message);
+                    await _db.SaveChangesAsync();
+
+                    await Clients.User(user.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                    await Clients.User(executor.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                }
+             
             }
         }
 
@@ -91,26 +143,57 @@ namespace BathDream.Data
         {
             if(await _user_manager.FindByNameAsync(id) is User user)
             {
-                User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == _arch_number);
-                var messages = (from message in _db.Messages
-                               where message.Sender.Id == id || message.Recipient.Id == id
-                               orderby message.DateTime
-                               select message)
-                               .Include(message => message.Sender)
-                               .Include(message => message.Recipient);
+                Order order = await GetOrder(user.Id);
 
-                foreach (var message in messages)
+                User arch = await _user_manager.FindByNameAsync(Context.User.Identity.Name);
+
+                if (arch.PhoneNumber == _arch_number)
                 {
-                    if (message.Sender.Id != arch.Id)
-                        message.IsReaded = true;
+                    var messages = (from message in _db.Messages
+                                    where message.Sender.Id == id || message.Recipient.Id == id
+                                    orderby message.DateTime
+                                    select message)
+                                   .Include(message => message.Sender)
+                                   .Include(message => message.Recipient);
 
-                   //await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = message.Text, When = message.DateTime });
-                   // await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+                    foreach (var message in messages)
+                    {
+                        if (message.Sender.Id != arch.Id)
+                            message.IsReaded = true;
 
-                    await Clients.User(arch.Id).SendAsync("Send", new { IsMe = message.Sender.Id == arch.Id ? 1 : 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+                        //await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = message.Text, When = message.DateTime });
+                        // await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+
+                        await Clients.User(arch.Id).SendAsync("Send", new { IsMe = message.Sender.Id == arch.Id ? 1 : 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+                    }
+
+                    _db.SaveChanges();
                 }
+                else if(OnExecution(order))
+                {
+                    UserProfile userProfile = await _db.UserProfiles.Include(u => u.User).FirstOrDefaultAsync(u => u.Id == order.Executor.Id);
+                    User executor = userProfile.User;
 
-                _db.SaveChanges();
+                    var messages = (from message in _db.Messages
+                                    where message.Sender.Id == id || message.Recipient.Id == id
+                                    orderby message.DateTime
+                                    select message)
+                                   .Include(message => message.Sender)
+
+                                   .Include(message => message.Recipient);
+                    foreach (var message in messages)
+                    {
+                        if (message.Sender.Id != executor.Id)
+                            message.IsReaded = true;
+
+                        //await Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = message.Text, When = message.DateTime });
+                        // await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+
+                        await Clients.User(executor.Id).SendAsync("Send", new { IsMe = message.Sender.Id == executor.Id ? 1 : 0, Name = user.UName, Message = message.Text, When = message.DateTime });
+                    }
+
+                    _db.SaveChanges();
+                }               
             }
         }
 
@@ -126,26 +209,31 @@ namespace BathDream.Data
                 {
                     await Clients.Caller.SendAsync("GetId");
                     return;
+                } 
+                else if (Context.User.IsInRole("executor"))
+                {
+                    await Clients.Caller.SendAsync("GetId");
+                    return;
                 }
 
                 var messanges = (from message in _db.Messages
-                                where message.Recipient.Id == user.Id || message.Sender.Id == user.Id
-                                orderby message.DateTime
-                                select message)
+                                    where message.Recipient.Id == user.Id || message.Sender.Id == user.Id
+                                    orderby message.DateTime
+                                    select message)
                                 .Include(message => message.Sender)
                                 .Include(message => message.Recipient);
 
                 foreach (var message in messanges)
                 {
-                    if(message.Sender.Id != user.Id) 
+                    if (message.Sender.Id != user.Id)
                         message.IsReaded = true;
 
                     await Clients.User(user.Id).SendAsync("Send", new { IsMe = message.Sender.Id == user.Id ? 1 : 0, Name = user.UName, Message = message.Text, When = message.DateTime });
                 }
 
                 _db.SaveChanges();
-            }
-            
+                
+            }         
             await base.OnConnectedAsync();
         }
 

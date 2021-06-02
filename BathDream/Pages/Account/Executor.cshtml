@@ -130,28 +130,28 @@
                             </tr>
                             @foreach (var order_info in @Model.Data)
                             {
-                                <tr>
-                                    <td style="text-align: center;">
-                                        @if (order_info.Status == Models.Order.Statuses.New)
-                                        {
-                                            <a>New!</a>
-                                        }
-                                        @order_info.Customer.User.FullName
-                                    </td>
-                                    <td style="text-align: center;">@order_info.Id</td>
-                                    <td style="text-align: center;">@order_info.ObjectAdress</td>
-                                    <td style="text-align: center;">
-                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
-                                    </td>
-                                    <td style="text-align: center;">
-                                    </td>
-                                    <td style="text-align: center;">
-                                        @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
-                                        {
-                                            <a class="btn btn-success" asp-page-handler="Executing" asp-route-id="@order_info.Id">Принять</a>
-                                        }
-                                    </td>
-                                </tr>
+                        <tr>
+                            <td style="text-align: center;">
+                                @if (order_info.Status == Models.Order.Statuses.New)
+                                {
+                                    <a>New!</a>
+                                }
+                                @order_info.Customer.User.FullName
+                            </td>
+                            <td style="text-align: center;">@order_info.Id</td>
+                            <td style="text-align: center;">@order_info.ObjectAdress</td>
+                            <td style="text-align: center;">
+                                <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
+                            </td>
+                            <td style="text-align: center;">
+                            </td>
+                            <td style="text-align: center;">
+                                @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
+                                {
+                                    <a class="btn btn-success" asp-page-handler="Executing" asp-route-id="@order_info.Id">Принять</a>
+                                }
+                            </td>
+                        </tr>
                             }
                             @foreach (var order_info in @Model.ExecutingOrders)
                             {
@@ -182,6 +182,7 @@
                                 <th style="text-align:center">Клиент</th>
                                 <th style="text-align:center">№ заказа</th>
                                 <th style="text-align:center">Адрес</th>
+                                <th style="text-align:center">Чат</th>
                                 <th style="text-align:center">Смета</th>
                                 <th style="text-align:center">Дизайнн</th>
                                 @*<th></th>*@
@@ -192,6 +193,7 @@
                             <td style="text-align: center;">@order_info.Customer.User.FullName</td>
                             <td style="text-align: center;">@order_info.Id</td>
                             <td style="text-align: center;">@order_info.ObjectAdress</td>
+                            <td style="text-align: center;"><a asp-page="/Account/ExecutorChat" asp-route-id="@order_info.Customer.User.Id" asp-route-orderId="@order_info.Id">Открыть чат</a></td>
                             <td style="text-align: center;">
                                 <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
                             </td>
@@ -202,8 +204,8 @@
                                 }
                             </td>
                             @*<td style="text-align: center;">
-                                     <a target="_blank" asp-page="/Account/ExecutorChat" asp-route-id="@order_info.Customer.User.Id">Открыть чат</a>
-                            </td>*@
+                 <a target="_blank" asp-page="/Account/ExecutorChat" asp-route-id="@order_info.Customer.User.Id">Открыть чат</a>
+        </td>*@
                             @*<td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>*@
                         </tr>
                             }
