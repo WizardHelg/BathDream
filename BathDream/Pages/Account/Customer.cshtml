@@ -66,6 +66,12 @@
                         <span>Этапы работы</span>
                     </li>
                     <li class="sidebar-dropdown">
+                        <a asp-page-handler="ShowOrders">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Заказы</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-dropdown">
                         <a asp-page-handler="#">
                             <i class="fa fa-tachometer"></i>
                             <span>Смета</span>
@@ -84,40 +90,40 @@
                         </a>
                     </li>
                     @*<li class="sidebar-dropdown">
-                        <a asp-page-handler="ExecutorBrief">
-                            <i class="far fa-gem"></i>
-                            <span>Выполнение работ</span>
-                        </a>
-                    </li>*@
+            <a asp-page-handler="ExecutorBrief">
+                <i class="far fa-gem"></i>
+                <span>Выполнение работ</span>
+            </a>
+        </li>*@
                     @*<li class="sidebar-dropdown">
-                        <a asp-page-handler="Chat">
-                            <i class="far fa-gem"></i>
-                            <span>Чат</span>
-                        </a>
-                    </li>*@
+            <a asp-page-handler="Chat">
+                <i class="far fa-gem"></i>
+                <span>Чат</span>
+            </a>
+        </li>*@
                     <li class="sidebar-dropdown">
                         <a asp-page-handler="Material">
                             <i class="fa fa-chart-line"></i>
                             <span>Материал</span>
                         </a>
                     </li>
-                        <!--
-        <div class="sidebar-submenu">
-            <ul>
-                <li>
-                    <a href="#">Pie chart</a>
-                </li>
-                <li>
-                    <a href="#">Line chart</a>
-                </li>
-                <li>
-                    <a href="#">Bar chart</a>
-                </li>
-                <li>
-                    <a href="#">Histogram</a>
-                </li>
-            </ul>
-        </div>-->
+                    <!--
+    <div class="sidebar-submenu">
+        <ul>
+            <li>
+                <a href="#">Pie chart</a>
+            </li>
+            <li>
+                <a href="#">Line chart</a>
+            </li>
+            <li>
+                <a href="#">Bar chart</a>
+            </li>
+            <li>
+                <a href="#">Histogram</a>
+            </li>
+        </ul>
+    </div>-->
 
                     <li class="sidebar-dropdown">
                         <a asp-page-handler="Documents">

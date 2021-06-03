@@ -18,6 +18,7 @@ namespace BathDream.Models
         public string PasportAddress { get; set; }
         public string Address { get; set; }
         public string Photo { get; set; }
+        public int CurrentOrderId { get; set; }
         public List<FeedBack> FeedBacks { get; set; }
         public List<Order> Orders { get; set; }
         public bool IsFilled()

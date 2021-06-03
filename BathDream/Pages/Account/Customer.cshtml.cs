@@ -49,6 +49,8 @@ namespace BathDream.Pages.Account
             public string PasportIssued { get; set; }
             public string PasportDate { get; set; }
             public List<FileItem> FileItems { get; set; }
+            public List<Order> Orders { get; set; }
+            public Order CurrentOrder { get; set; }
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, 
@@ -282,6 +284,31 @@ namespace BathDream.Pages.Account
                 await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
                 await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
             }
+        }
+
+        public async Task<IActionResult> OnGetShowOrders()
+        {
+            Input.ContentView = "./Views/SelectOrderPartialView";
+
+            User user = await _userManager.GetUserAsync(User);
+            UserProfile userProfile = await _db.UserProfiles.FirstOrDefaultAsync(u => u.UserId == user.Id);
+            Input.Orders = await _db.Orders.Where(o => o.Customer.Id == userProfile.Id).ToListAsync();
+
+            return Page();
+        }
+        public async Task<IActionResult> OnGetSelectOrder(int id)
+        {
+            Order order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id);
+
+            Input.CurrentOrder = order;
+
+            User user = await _userManager.GetUserAsync(User);
+            UserProfile userProfile = await _db.UserProfiles.FirstOrDefaultAsync(u => u.UserId == user.Id);
+            userProfile.CurrentOrderId = order.Id;
+
+            _db.SaveChanges();
+
+            return RedirectToPage();
         }
     }
 }
