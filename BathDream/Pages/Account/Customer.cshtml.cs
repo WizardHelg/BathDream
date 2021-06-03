@@ -285,22 +285,3 @@ namespace BathDream.Pages.Account
         }
     }
 }
-
-//public async Task<IActionResult> OnGetExecutorBriefAsync()
-//{
-//    User user = await _userManager.FindByNameAsync(User.Identity.Name);
-//    //Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
-//    if (await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order
-//       && order.Signed)
-//    {
-//        if ((order.Status & Order.Statuses.Executing) == 0)
-//            return RedirectToPage("/Brief", new { id = order.Id });
-//        else
-//        {
-//            Input.ContentView = "./Views/ChatWithExecPartialView";
-//            return Page();
-//        }
-//    }
-
-//    return RedirectToPage();
-//}

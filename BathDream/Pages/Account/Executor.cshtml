@@ -62,48 +62,24 @@
                                 <span>Принятые заказы</span>
                             </a>
                         </li>
-                        <li class="sidebar-dropdown">
+                        @*<li class="sidebar-dropdown">
                             <a asp-page-handler="Brief">
                                 <i class="far fa-gem"></i>
                                 <span>Проект</span>
                             </a>
                         </li>
-                        @*<li class="sidebar-dropdown">
-                                <a asp-page-handler="Chat">
-                                    <i class="far fa-gem"></i>
-                                    <span>Чат</span>
-                                </a>
-                            </li>*@
                         <li class="sidebar-dropdown">
                             <a href="#">
                                 <i class="fa fa-chart-line"></i>
                                 <span>Материал</span>
                             </a>
-                            <!--
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="#">Pie chart</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Line chart</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Bar chart</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Histogram</a>
-                                    </li>
-                                </ul>
-                            </div>-->
                         </li>
                         <li class="sidebar-dropdown">
                             <a href="#">
                                 <i class="fa fa-globe"></i>
                                 <span>Документы</span>
                             </a>
-
-                        </li>
+                        </li>*@
 
                     </ul>
                 </div>
@@ -203,10 +179,6 @@
                                     <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image">Скачать</i></a>
                                 }
                             </td>
-                            @*<td style="text-align: center;">
-                 <a target="_blank" asp-page="/Account/ExecutorChat" asp-route-id="@order_info.Customer.User.Id">Открыть чат</a>
-        </td>*@
-                            @*<td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>*@
                         </tr>
                             }
                         </table>

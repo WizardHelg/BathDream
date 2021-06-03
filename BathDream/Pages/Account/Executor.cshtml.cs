@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages.Account
@@ -19,6 +20,7 @@ namespace BathDream.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<ChatHub> _hub;
 
         public List<Order> Data = new List<Order>();
 
@@ -38,20 +40,28 @@ namespace BathDream.Pages.Account
             public string NameFamaly { get; set; }
         }
 
-        public ExecutorModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db, IWebHostEnvironment webHostEnvironment)
+        public ExecutorModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _db = db;
             _webHostEnvironment = webHostEnvironment;
+            _hub = hub;
         }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? flag)
         {
+            if (flag != null)
+            {
+                await OnGetShowAcceptedOrdersAsync();
+                return;
+            }
+
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             Input.NameFamaly = $"{user.UName} {user.UFamaly}";
             await OnGetShowAvailableOrdersAsync();
         }
+
 
         public async Task<IActionResult> OnGetLogoutAsync()
         {
@@ -96,18 +106,28 @@ namespace BathDream.Pages.Account
             return Page();
         }
 
-        public IActionResult OnGetExecuting(int id)
+        public async Task<IActionResult> OnGetExecutingAsync(int id)
         {
             if (_db.Orders.FirstOrDefault(o => o.Id == id) is Order order)
             {
+                _db.Entry(order).Reference(o => o.Customer).Load();
                 order.Status ^= Order.Statuses.New;
                 order.Status |= Order.Statuses.Executing;
                 var executorprofile = _userManager.GetUserId(User);
                 var profile = _db.UserProfiles.FirstOrDefault(u => u.UserId == executorprofile);
                 order.Executor = (ExecutorProfile)profile;
+
+                if (profile?.User is User user)
+                {
+                    await SendToClient($"Вам назначен исполнитель - {profile.User.FullName}", order.Customer.UserId);
+                }
+                else
+                {
+                    await SendToClient($"Вам назначен исполнитель.", order.Customer.UserId);
+                }
+
                 _db.SaveChanges();
             }
-
             return RedirectToPage();
         }
         public IActionResult OnGetShowEstimate(int id)
@@ -135,6 +155,33 @@ namespace BathDream.Pages.Account
             var fileName = fileItem.FrendlyName;
 
             return File(content, contentType, fileName);
+        }
+
+        public async Task SendToClient(string message, string userId)
+        {
+            DateTime cur_time = DateTime.Now;
+            if (string.IsNullOrWhiteSpace(message))
+                return;
+
+            message = message.TrimEnd('\n').Replace("\n", "<br />");
+
+            if (await _userManager.FindByNameAsync(userId) is User user)
+            {
+                User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == "70000000000");
+                Message temp_message = new Message
+                {
+                    DateTime = cur_time,
+                    Text = message,
+                    Sender = arch,
+                    Recipient = user,
+                };
+
+                _db.Messages.Add(temp_message);
+                _db.SaveChanges();
+
+                await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+            }
         }
     }
 }

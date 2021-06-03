@@ -133,14 +133,14 @@ namespace BathDream.Pages.Account
                         };
                         await _db.ExecutorProfiles.AddAsync(profile);
                     }
-                    if (Input.Role == "architector")
-                    {
-                        UserProfile profile = new()
-                        {
-                            User = user
-                        };
-                        await _db.UserProfiles.AddAsync(profile);
-                    }
+                    //if (Input.Role == "architector")
+                    //{
+                    //    UserProfile profile = new()
+                    //    {
+                    //        User = user
+                    //    };
+                    //    await _db.UserProfiles.AddAsync(profile);
+                    //}
                     else
                     {
                         UserProfile profile = new()

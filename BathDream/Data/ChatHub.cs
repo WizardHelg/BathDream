@@ -146,11 +146,12 @@ namespace BathDream.Data
                 Order order = await GetOrder(user.Id);
 
                 User arch = await _user_manager.FindByNameAsync(Context.User.Identity.Name);
+                
 
                 if (arch.PhoneNumber == _arch_number)
                 {
                     var messages = (from message in _db.Messages
-                                    where message.Sender.Id == id || message.Recipient.Id == id
+                                    where (message.Sender.Id == arch.Id && message.Recipient.Id == id) || (message.Sender.Id == id && message.Recipient.Id == arch.Id)
                                     orderby message.DateTime
                                     select message)
                                    .Include(message => message.Sender)
@@ -175,7 +176,7 @@ namespace BathDream.Data
                     User executor = userProfile.User;
 
                     var messages = (from message in _db.Messages
-                                    where message.Sender.Id == id || message.Recipient.Id == id
+                                    where (message.Sender.Id == executor.Id && message.Recipient.Id == id) || (message.Sender.Id == id && message.Recipient.Id == executor.Id)
                                     orderby message.DateTime
                                     select message)
                                    .Include(message => message.Sender)
