@@ -76,6 +76,11 @@ namespace BathDream.Pages.Account
             Input.CustomerPhone = user.PhoneNumber;
             Input.CustomerEmail = user.Email;
 
+            //if (user.Profile.CurrentOrderId == 0)
+            //{
+            //    user.Profile.CurrentOrderId = order.Id;
+            //}
+
             //Order order = null;
             if (TempData["OrderId"] is int orid
                 && await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid) is Order order)
@@ -84,10 +89,13 @@ namespace BathDream.Pages.Account
                 //order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid);
                 order.Customer = user.Profile;
                 order.Status = Order.Statuses.New;
+
+                user.Profile.CurrentOrderId = order.Id;
+
                 await _db.SaveChangesAsync();
             }
             
-            order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id)
+            order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId)
                                     .Include(o => o.Estimate)
                                     .ThenInclude(e => e.Rooms)
                                     .Include(x => x.Estimate)
@@ -123,7 +131,7 @@ namespace BathDream.Pages.Account
                 Input.PasportDate = dt.ToShortDateString();
 
             int order_id = 0;
-            if (await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order)
+            if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync() is Order order)
             {
                 Input.SignText = order.Signed ? "Подписан" : "Не подписан";
                 Input.OrderDate = order.Date.ToShortDateString();
@@ -147,8 +155,9 @@ namespace BathDream.Pages.Account
         {
             Input.ContentView = "./Views/CustomerContractPartialView";
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
-            Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+            Order order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
+
 
             Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
             Input.CustomerPhone = user.PhoneNumber;
@@ -177,8 +186,11 @@ namespace BathDream.Pages.Account
         public async Task<IActionResult> OnGetDeleteOrderAsync()
         {
             Input.ContentView = "./Views/CustomerEstimatePartialView";
+
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
-            Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
+            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
+            Order order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
             _db.Orders.Remove(order);
             await _db.SaveChangesAsync();
             return RedirectToAction("OnGetAsync");
@@ -188,8 +200,10 @@ namespace BathDream.Pages.Account
         {
 
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
             //Order order = await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync();
-            if(await _db.Orders.Where(o => o.Customer.User.Id == user.Id).FirstOrDefaultAsync() is Order order
+            if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync() is Order order
                && order.Signed)
             {
                 Input.FileItems = _db.FileItems.Include(o => o.Order).Where(f => f.Order.Id == order.Id).ToList();
@@ -227,6 +241,34 @@ namespace BathDream.Pages.Account
             return RedirectToPage("/Index");
         }
 
+        public async Task<IActionResult> OnGetShowOrders()
+        {
+            Input.ContentView = "./Views/SelectOrderPartialView";
+
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
+            Input.Orders = await _db.Orders.Where(o => o.Customer.Id == user.Profile.Id).ToListAsync();
+            Input.CurrentOrder = Input.Orders.FirstOrDefault(o => o.Id == user.Profile.CurrentOrderId);
+
+            return Page();
+        }
+        public async Task<IActionResult> OnGetSelectOrder(int id)
+        {
+            Order order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id);
+
+            Input.CurrentOrder = order;
+
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
+            user.Profile.CurrentOrderId = order.Id;
+
+            _db.SaveChanges();
+
+            return RedirectToPage();
+        }
+
         public IActionResult OnGetDownloadFile(int? id)
         {
             FileItem fileItem = _db.FileItems.FirstOrDefault(f => f.Id == id);
@@ -259,6 +301,7 @@ namespace BathDream.Pages.Account
 
             return new JsonResult("");
         }
+
         public async Task Send(string message, string userId)
         {
             DateTime cur_time = DateTime.Now;
@@ -284,31 +327,6 @@ namespace BathDream.Pages.Account
                 await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
                 await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
             }
-        }
-
-        public async Task<IActionResult> OnGetShowOrders()
-        {
-            Input.ContentView = "./Views/SelectOrderPartialView";
-
-            User user = await _userManager.GetUserAsync(User);
-            UserProfile userProfile = await _db.UserProfiles.FirstOrDefaultAsync(u => u.UserId == user.Id);
-            Input.Orders = await _db.Orders.Where(o => o.Customer.Id == userProfile.Id).ToListAsync();
-
-            return Page();
-        }
-        public async Task<IActionResult> OnGetSelectOrder(int id)
-        {
-            Order order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id);
-
-            Input.CurrentOrder = order;
-
-            User user = await _userManager.GetUserAsync(User);
-            UserProfile userProfile = await _db.UserProfiles.FirstOrDefaultAsync(u => u.UserId == user.Id);
-            userProfile.CurrentOrderId = order.Id;
-
-            _db.SaveChanges();
-
-            return RedirectToPage();
         }
     }
 }

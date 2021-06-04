@@ -2,7 +2,7 @@
 @model BathDream.Pages.Account.CustomerModel.InputModel
 @{
 }
-<h3>Обсуждение проекта с архитектором</h3>
+<h3>Все заказы</h3>
 <div>
     <table class="table table-bordered table-hover">
         <tr class="success">
@@ -21,7 +21,14 @@
                 <td style="text-align: center;">@order_info.ObjectAdress</td>
                 <td style="text-align: center;">@order_info.StatusName()</td>
                 <td style="text-align: center;">
-                    <a class="btn btn-success" asp-page-handler="SelectOrder" asp-route-id="@order_info.Id">Принять</a>
+                    @if (Model.CurrentOrder.Id == order_info.Id)
+                    {
+                        <a class="btn btn-success disabled" asp-page-handler="SelectOrder" asp-route-id="@order_info.Id">Текущий</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-success" asp-page-handler="SelectOrder" asp-route-id="@order_info.Id">Выбрать</a>
+                    }
                 </td>
             </tr>
         }
