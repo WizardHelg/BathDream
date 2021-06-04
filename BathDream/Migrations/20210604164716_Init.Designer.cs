@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    [Migration("20210604083127_Init")]
+    [Migration("20210604164716_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,6 +106,9 @@ namespace BathDream.Migrations
                     b.Property<bool>("IsReaded")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RecipientId")
                         .HasColumnType("nvarchar(450)");
 
@@ -116,6 +119,8 @@ namespace BathDream.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("RecipientId");
 
@@ -558,6 +563,10 @@ namespace BathDream.Migrations
 
             modelBuilder.Entity("BathDream.Models.Message", b =>
                 {
+                    b.HasOne("BathDream.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("BathDream.Models.User", "Recipient")
                         .WithMany()
                         .HasForeignKey("RecipientId");
@@ -565,6 +574,8 @@ namespace BathDream.Migrations
                     b.HasOne("BathDream.Models.User", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId");
+
+                    b.Navigation("Order");
 
                     b.Navigation("Recipient");
 
