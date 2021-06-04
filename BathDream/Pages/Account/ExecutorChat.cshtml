@@ -172,13 +172,13 @@
         messages.scrollTop = messages.scrollHeight;
     });
 
-    connection.on("GetId", function (data) {
-        connection.send("GetCustomerMessages", "@Model.UserId")
+     connection.on("GetId", function (data) {
+         connection.send("GetCustomerMessages", "@Model.UserId", "@Model.OrderId")
     });
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let message = document.getElementById("message").value;
-        connection.invoke("SendToClient", message, "@Model.UserId");
+        connection.invoke("SendToClient", message, "@Model.UserId", "@Model.OrderId");
     });
 
     document.getElementById("message").addEventListener("keyup", function (event) {
@@ -190,4 +190,4 @@
     });
 
     connection.start();
-</script>
+ </script>

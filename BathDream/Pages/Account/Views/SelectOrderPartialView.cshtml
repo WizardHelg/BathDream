@@ -21,7 +21,7 @@
                 <td style="text-align: center;">@order_info.ObjectAdress</td>
                 <td style="text-align: center;">@order_info.StatusName()</td>
                 <td style="text-align: center;">
-                    @if (Model.CurrentOrder.Id == order_info.Id)
+                    @if (Model.CurrentOrder?.Id == order_info.Id)
                     {
                         <a class="btn btn-success disabled" asp-page-handler="SelectOrder" asp-route-id="@order_info.Id">Текущий</a>
                     }

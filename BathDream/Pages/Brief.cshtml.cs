@@ -949,15 +949,17 @@ namespace BathDream.Pages
                     builder.Append($", стиль: {style}<br />");
             }
 
-            await ChatHub.AddBriefMessage(builder.ToString(), user.Id, _userManager, _db);
+            Order submitOrder = new Order();
 
             if (OrderId > 0 && await _db.Orders.FirstOrDefaultAsync(o => o.Id == OrderId) is Order order)
             {
                 order.Status |= Order.Statuses.Brief;
+                submitOrder = order;
+                await ChatHub.AddBriefMessage(builder.ToString(), user.Id, _userManager, _db, order);
                 await _db.SaveChangesAsync();
             }
 
-            return RedirectToPage("/Account/Customer", "Chat");
+            return RedirectToPage("/Account/Customer", "Chat", submitOrder);
         }
     }
 }

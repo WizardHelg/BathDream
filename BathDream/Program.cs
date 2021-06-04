@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BathDream.Models;
+using BathDream.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +27,8 @@ namespace BathDream
                 {
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await UserAndRolesInitializer.InitializeAsync(userManager, roleManager);
+                    var db = services.GetRequiredService<DBApplicationaContext>();
+                    await UserAndRolesInitializer.InitializeAsync(userManager, roleManager, db);
                 }
                 catch { }
             }

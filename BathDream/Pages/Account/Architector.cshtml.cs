@@ -20,10 +20,12 @@ namespace BathDream.Pages.Account
         public List<(Order Order, bool IsNewMessages)> Data = new List<(Order Order, bool IsNewMessages)>();
 
         private readonly DBApplicationaContext _db;
+        private readonly UserManager<User> _user_manager;
 
-        public ArchitectorModel(DBApplicationaContext db)
+        public ArchitectorModel(DBApplicationaContext db, UserManager<User> user_manager)
         {
             _db = db;
+            _user_manager = user_manager;
         }
         public async Task OnGetAsync()
         {
@@ -33,8 +35,9 @@ namespace BathDream.Pages.Account
 
             foreach(var order in orders)
             {
-                string id = order.Customer.User.Id;
-                var is_new_mes = _db.Messages.Any(m => m.Sender.Id == id && !m.IsReaded);
+                string senderId = order.Customer.User.Id;
+                string recipientId = _user_manager.GetUserId(User);
+                var is_new_mes = await _db.Messages.AnyAsync(m => (m.Sender.Id == senderId) && (m.Recipient.Id == recipientId) && (m.Order == order ) && !m.IsReaded);
 
                 Data.Add((order, is_new_mes));
             }

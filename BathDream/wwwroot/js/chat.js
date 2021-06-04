@@ -69,10 +69,6 @@ window.onload = function () {
     window.scrollBy(0, 10);
 }
 
-document.getElementById("sendBtn").addEventListener("click", function (e) {
-    let message = document.getElementById("message").value;
-    connection.invoke("Send", message);
-});
 
 document.getElementById("message").addEventListener("keyup", function (event) {
     if (!event.shiftKey && event.keyCode === 13) {

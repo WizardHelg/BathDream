@@ -14,6 +14,7 @@ namespace BathDream.Models
         public string Text { get; set; }
         public User Sender { get; set; }
         public User Recipient { get; set; }
+        public Order Order { get; set; }
         public bool IsReaded { get; set; } = false;
     }
 }

@@ -119,7 +119,8 @@ namespace BathDream.Pages.Account
             Input.ContentView = "./Views/CustomerContractPartialView";
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
-
+            Input.UserName = user.UName;
+            Input.UserFamaly = user.UFamaly;
             Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
             Input.CustomerPhone = user.PhoneNumber;
             Input.CustomerEmail = user.Email;
@@ -206,7 +207,10 @@ namespace BathDream.Pages.Account
             if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync() is Order order
                && order.Signed)
             {
-                Input.FileItems = _db.FileItems.Include(o => o.Order).Where(f => f.Order.Id == order.Id).ToList();
+                Input.UserName = user.UName;
+                Input.UserFamaly = user.UFamaly;
+                Input.FileItems = await _db.FileItems.Include(o => o.Order).Where(f => f.Order.Id == order.Id).ToListAsync();
+                Input.CurrentOrder = order;
                 if ((order.Status & Order.Statuses.Brief) == 0)
                     return RedirectToPage("/Brief", new { id = order.Id });
                 else
@@ -230,9 +234,10 @@ namespace BathDream.Pages.Account
             return Page();
         }
 
-        public void OnGetChat()
+        public void OnGetChat(Order orderId)
         {
             Input.ContentView = "./Views/ChatPartialView";
+            Input.CurrentOrder = orderId;
         }
 
         public async Task<IActionResult> OnGetLogoutAsync()
@@ -247,6 +252,9 @@ namespace BathDream.Pages.Account
 
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
+            Input.UserName = user.UName;
+            Input.UserFamaly = user.UFamaly;
 
             Input.Orders = await _db.Orders.Where(o => o.Customer.Id == user.Profile.Id).ToListAsync();
             Input.CurrentOrder = Input.Orders.FirstOrDefault(o => o.Id == user.Profile.CurrentOrderId);
@@ -297,12 +305,12 @@ namespace BathDream.Pages.Account
             _db.SaveChanges();
 
 
-            await Send($"Я выбрал(а) вариант дизайна {fileItem.FrendlyName}", fileItem.Order.Customer.UserId);
+            await Send($"Я выбрал(а) вариант дизайна {fileItem.FrendlyName}", fileItem.Order.Customer.UserId, fileItem.Order);
 
             return new JsonResult("");
         }
 
-        public async Task Send(string message, string userId)
+        public async Task Send(string message, string userId, Order order)
         {
             DateTime cur_time = DateTime.Now;
             if (string.IsNullOrWhiteSpace(message))
@@ -318,7 +326,8 @@ namespace BathDream.Pages.Account
                     DateTime = cur_time,
                     Text = message,
                     Sender = user,
-                    Recipient = arch
+                    Recipient = arch,
+                    Order = order
                 };
 
                 await _db.Messages.AddAsync(temp_message);

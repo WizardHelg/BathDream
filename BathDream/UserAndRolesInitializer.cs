@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BathDream.Data;
 using System.Threading.Tasks;
 using BathDream.Models;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +11,7 @@ namespace BathDream
 {
     public class UserAndRolesInitializer
     {
-        public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, DBApplicationaContext db)
         {
             //string adminEmail = "root@admin.com";
             //string adminPassword = "Qq1945!";
@@ -44,6 +45,13 @@ namespace BathDream
                     await userManager.AddToRoleAsync(architector, "architect");
                     await userManager.UpdateAsync(architector);
                 }
+
+                UserProfile userProfile = new()
+                {
+                    User = architector
+                };
+                await db.UserProfiles.AddAsync(userProfile);
+                await db.SaveChangesAsync();
             }
 
 

@@ -36,18 +36,19 @@
                                     <td style="text-align:left;" width="80%">
                                         <i id="@item.Id" class="far fa-image"> @item.FrendlyName (вы выбрали данный варинат)</i>
                                     </td>
-                                } else 
-                                { 
+                                }
+                                else
+                                {
                                     <td style="text-align:left;" width="80%">
                                         <i id="@item.Id" class="far fa-image"> @item.FrendlyName</i>
                                     </td>
-                                }                             
+                                }
                                 <td style="text-align:left;" width="10%">
                                     <a class="btn" asp-page-handler="DownloadFile" asp-route-id="@item.Id">Скачать</a>
                                 </td>
                                 <td style="text-align:left;">
-                                    <input id="dataId" value="@item.Id" name="id" hidden/>
-                                    <input type="submit" asp-page-handler="SelectFile" onclick="Select(this)" name="@item.Id" value="Выбрать"/>
+                                    <input id="dataId" value="@item.Id" name="id" hidden />
+                                    <input type="submit" asp-page-handler="SelectFile" onclick="Select(this)" name="@item.Id" value="Выбрать" />
                                 </td>
                             </tr>
                         }
@@ -71,6 +72,9 @@
         });
     });
 </script>
+
+<script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
 
 <script>
     function Select(event) {
@@ -96,9 +100,16 @@
             return false;
         })
     }
-   
+
+        document.getElementById("sendBtn").addEventListener("click", function (e) {
+        let message = document.getElementById("message").value;
+        connection.invoke("Send", message, "@(Model.CurrentOrder.Id)");
+    });
+
+    connection.on("GetItCustomer", function (data) {
+        connection.send("GetMessagesForCustomer", "@(Model.CurrentOrder.Id)");
+    });
 </script>
 
-<script src="/js/microsoft/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/chat.js"></script>
+
 

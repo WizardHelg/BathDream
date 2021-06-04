@@ -43,11 +43,16 @@ namespace BathDream.Pages.Account
 
         }
 
-        public void OnGet(string id, string orderid)
+        public async Task OnGet(string userId, string orderId)
         {
-            Input.FileItems = _db.FileItems.Where(o => o.Order.Id == Convert.ToInt32(orderid)).ToList();
-            Input.UserId = id;
-            Input.OrderId = orderid;
+            string id = _user_manager.GetUserId(User);
+            UserProfile userProfile = await _db.UserProfiles.FirstOrDefaultAsync(u => u.UserId == id);
+            userProfile.CurrentOrderId = Convert.ToInt32(orderId);
+            await _db.SaveChangesAsync();
+
+            Input.FileItems = _db.FileItems.Where(o => o.Order.Id == Convert.ToInt32(orderId)).ToList();
+            Input.UserId = userId;
+            Input.OrderId = orderId;
         }
 
         public async Task<IActionResult> OnPostSaveFileAsync(IFormFile uploadedFile)
@@ -90,7 +95,7 @@ namespace BathDream.Pages.Account
 
 
             await _hub.Clients.User(Input.UserId).SendAsync("Refresh");
-            await SendToClient("Прислал вам новый вариант дизайна!", Input.UserId);
+            await SendToClient("Прислал вам новый вариант дизайна!", Input.UserId, fileItem.Order);
 
             return RedirectToPage(new 
             {
@@ -139,7 +144,7 @@ namespace BathDream.Pages.Account
             });
         }
 
-        public async Task SendToClient(string message, string userId)
+        public async Task SendToClient(string message, string userId, Order order)
         {
             DateTime cur_time = DateTime.Now;
             if (string.IsNullOrWhiteSpace(message))
@@ -156,6 +161,7 @@ namespace BathDream.Pages.Account
                     Text = message,
                     Sender = arch,
                     Recipient = user,
+                    Order = order
                 };
 
                 _db.Messages.Add(temp_message);

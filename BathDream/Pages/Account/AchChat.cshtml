@@ -2,9 +2,6 @@
 @Html.AntiForgeryToken()
 @model BathDream.Pages.Account.AchChatModel
 @{
-    int i = 1;
-}
-@{
     ViewData["Title"] = "Чат с пользователем";
 }
 
@@ -125,12 +122,12 @@
     });
 
     connection.on("GetId", function (data) {
-        connection.send("GetCustomerMessages", "@Model.Input.UserId")
+        connection.send("GetCustomerMessages", "@Model.Input.UserId", "@Model.Input.OrderId");
     });
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let message = document.getElementById("message").value;
-        connection.invoke("SendToClient", message, "@Model.Input.UserId");
+        connection.invoke("SendToClient", message, "@Model.Input.UserId", "@Model.Input.OrderId");
     });
 
     document.getElementById("message").addEventListener("keyup", function (event) {
@@ -144,78 +141,3 @@
     connection.start();
 </script>
 
-
-
-
-@*
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-
-    <script>
-        $("#FileUploadForm").submit(function (e) {
-            e.preventDefault();
-
-            console.log('Doing ajax submit');
-            var formAction = $(this).attr("action");
-            var fdata = new FormData();
-
-            var fileInput = $('#uploadFile')[0];
-            var uploadedFile = fileInput.files[0];
-            fdata.append("file", uploadedFile);
-
-            $.ajax({
-                type: 'get',
-                url: "AchChat?handler=SaveFile",
-                data: {
-                    uploadedFile: fdata
-                },
-                processData: false,
-                contentType: false
-            }).done(function (result) {
-                console.log(result);
-                if (result.status === "success") {
-                    alert(result.url);
-                } else {
-                    alert(result.message);
-                }
-            });
-        });
-    </script>
-*@
-
-<!--Тестовый код для себя-->
-<!--Get - работает-->
-<!--<script>
-    $("#GETbtn").click(function (e) {
-        var str = "test1";
-        $.ajax({
-            type: 'get',
-            url: 'AchChat?handler=Test',
-            data: {
-                test: str
-            },
-            success: function (data) {
-                console.log('Success');
-            }
-        });
-    });
-</script>-->
-<!--Post - не работает!!!-->
-<!--<script>
-    $("#POSTbtn").click(function (e) {
-        var str = "test";
-        $.ajax({
-            type: 'post',
-            url: 'AchChat?handler=Test',
-            headers:
-            {
-                "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
-            },
-            data: {
-                test: 'testestest'
-            },
-            success: function (data) {
-                console.log('Success');
-            }
-        });
-    });
-</script>-->

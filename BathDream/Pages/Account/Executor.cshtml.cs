@@ -119,11 +119,11 @@ namespace BathDream.Pages.Account
 
                 if (profile?.User is User user)
                 {
-                    await SendToClient($"Вам назначен исполнитель - {profile.User.FullName}", order.Customer.UserId);
+                    await SendToClient($"Вам назначен исполнитель - {profile.User.FullName}", order.Customer.UserId, order);
                 }
                 else
                 {
-                    await SendToClient($"Вам назначен исполнитель.", order.Customer.UserId);
+                    await SendToClient($"Вам назначен исполнитель.", order.Customer.UserId, order);
                 }
 
                 _db.SaveChanges();
@@ -157,7 +157,7 @@ namespace BathDream.Pages.Account
             return File(content, contentType, fileName);
         }
 
-        public async Task SendToClient(string message, string userId)
+        public async Task SendToClient(string message, string userId, Order order)
         {
             DateTime cur_time = DateTime.Now;
             if (string.IsNullOrWhiteSpace(message))
@@ -174,6 +174,7 @@ namespace BathDream.Pages.Account
                     Text = message,
                     Sender = arch,
                     Recipient = user,
+                    Order = order
                 };
 
                 _db.Messages.Add(temp_message);
