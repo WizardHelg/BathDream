@@ -91,7 +91,7 @@ namespace BathDream.Data
                     await _db.Messages.AddAsync(temp_message);
                     await _db.SaveChangesAsync();
 
-                    if (arch.Profile.CurrentOrderId == Convert.ToInt32(orderId))
+                    if (arch?.Profile?.CurrentOrderId == Convert.ToInt32(orderId))
                     {
                         await Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
                     }
@@ -219,6 +219,7 @@ namespace BathDream.Data
             }
         }
 
+        //Получить сообщение Клиентом
         public async Task GetMessagesForCustomer(string orderId)
         {
             User user = await _user_manager.FindByNameAsync(Context.User.Identity.Name);
@@ -241,7 +242,7 @@ namespace BathDream.Data
             _db.SaveChanges();
             await base.OnConnectedAsync();
         }
-        //Получить сообщение Клиентом
+
         public override async Task OnConnectedAsync()
         {
             if (await _user_manager.FindByNameAsync(Context.User.Identity.Name) is User user)
