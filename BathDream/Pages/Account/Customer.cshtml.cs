@@ -51,6 +51,8 @@ namespace BathDream.Pages.Account
             public List<FileItem> FileItems { get; set; }
             public List<Order> Orders { get; set; }
             public Order CurrentOrder { get; set; }
+
+            public List<WorkPrice> UniqueWorks { get; set; }
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, 
@@ -99,7 +101,9 @@ namespace BathDream.Pages.Account
                                     .Include(o => o.Estimate)
                                     .ThenInclude(e => e.Rooms)
                                     .Include(x => x.Estimate)
-                                    .ThenInclude(x => x.Works).FirstOrDefaultAsync();
+                                    .ThenInclude(x => x.Works)
+                                    .ThenInclude(w => w.WorkPrice)
+                                    .ThenInclude(w => w.WorkType).FirstOrDefaultAsync();
 
             if(order != null)
             {
@@ -111,6 +115,17 @@ namespace BathDream.Pages.Account
                 Input.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
                 Input.Total = Input.Works.Sum(w => w.Total);
                 Input.Signed = order.Signed;
+
+                Input.UniqueWorks = new List<WorkPrice>();
+                foreach (var item in Input.Works)
+                {
+                    if (Input.UniqueWorks.Any(w => w.WorkType.Id == item.WorkPrice.WorkType.Id))
+                    {
+                        continue;
+                    } 
+                    Input.UniqueWorks.Add(item.WorkPrice);
+                }
+                Input.UniqueWorks = Input.UniqueWorks.OrderBy(w => w.WorkType.Priority).ToList();
             }
         }
 

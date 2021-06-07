@@ -120,7 +120,7 @@
                     <td style="text-align: center;">@work.Position</td>
                     <td>@work.FirstWord</td>
                     <td>@work.WithoutFirstWord</td>
-                    <td style="text-align: center;">@work.Unit</td>
+                    <td style="text-align: center;">@work.WorkPrice.Unit</td>
                     <td style="text-align: right;">
                         @if (work.Price == 0.0)
                         {<span>30% от стоимости</span> }
@@ -138,5 +138,39 @@
     {
         <a class="btn btn-success" asp-page-handler="Contract">Подписать</a>
     }
+</div>
+<div>
+    @{ 
+        int totalTime = Model.UniqueWorks.Sum(w => w.WorkType.Time);
+        int count = 0;
+    } 
+    <table class="table table-bordered table-hover table-condensed">
+        <tr>
+            <th>
+                Наименование работ 
+            </th>
+            @for (int i = 1; i <= totalTime; i++)
+            {
+                <th>
+                     @i день
+                </th>
+            }
+        </tr>
+        @foreach (var item in Model.UniqueWorks)
+        {
+            <tr>
+                <td>@item.WorkType.Name</td>
+                @if (count != 0)
+                {
+                    <td colspan="@count"></td>
+                }
+                <td colspan="@item.WorkType.Time" style="background: #ff6a00;"></td>
+                @{ 
+                    count += item.WorkType.Time;
+                } 
+            </tr>
+        }
+    </table>
+
 </div>
 }

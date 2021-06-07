@@ -16,6 +16,7 @@ namespace BathDream.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Estimate> Estimates { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<WorkType> WorkTypes { get; set; }
         public DbSet<WorkPrice> WorkPrices { get; set; }
         public DbSet<Work> Works { get; set; }
         public DbSet<Message> Messages { get; set; }

@@ -4,14 +4,16 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    partial class DBApplicationaContextModelSnapshot : ModelSnapshot
+    [Migration("20210607094654_WorkTypeToDatabase")]
+    partial class WorkTypeToDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,23 +334,27 @@ namespace BathDream.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("InnerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Position")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Volume")
                         .HasColumnType("float");
-
-                    b.Property<int?>("WorkPriceId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EstimateId");
-
-                    b.HasIndex("WorkPriceId");
 
                     b.ToTable("Works");
                 });
@@ -645,13 +651,7 @@ namespace BathDream.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BathDream.Models.WorkPrice", "WorkPrice")
-                        .WithMany()
-                        .HasForeignKey("WorkPriceId");
-
                     b.Navigation("Estimate");
-
-                    b.Navigation("WorkPrice");
                 });
 
             modelBuilder.Entity("BathDream.Models.WorkPrice", b =>
