@@ -50,19 +50,18 @@ namespace BathDream.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WorkPrices",
+                name: "WorkTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InnerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: false)
+                    Time = table.Column<int>(type: "int", nullable: false),
+                    Priority = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkPrices", x => x.Id);
+                    table.PrimaryKey("PK_WorkTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,6 +193,29 @@ namespace BathDream.Migrations
                         name: "FK_UserProfiles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WorkPrices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WorkTypeId = table.Column<int>(type: "int", nullable: true),
+                    InnerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkPrices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WorkPrices_WorkTypes_WorkTypeId",
+                        column: x => x.WorkTypeId,
+                        principalTable: "WorkTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -384,12 +406,10 @@ namespace BathDream.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InnerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkPriceId = table.Column<int>(type: "int", nullable: true),
                     EstimateId = table.Column<int>(type: "int", nullable: false),
                     Position = table.Column<int>(type: "int", nullable: false),
                     Group = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Volume = table.Column<double>(type: "float", nullable: false)
                 },
@@ -402,6 +422,12 @@ namespace BathDream.Migrations
                         principalTable: "Estimates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Works_WorkPrices_WorkPriceId",
+                        column: x => x.WorkPriceId,
+                        principalTable: "WorkPrices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -502,9 +528,19 @@ namespace BathDream.Migrations
                 filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_WorkPrices_WorkTypeId",
+                table: "WorkPrices",
+                column: "WorkTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Works_EstimateId",
                 table: "Works",
                 column: "EstimateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Works_WorkPriceId",
+                table: "Works",
+                column: "WorkPriceId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -537,9 +573,6 @@ namespace BathDream.Migrations
                 name: "Rooms");
 
             migrationBuilder.DropTable(
-                name: "WorkPrices");
-
-            migrationBuilder.DropTable(
                 name: "Works");
 
             migrationBuilder.DropTable(
@@ -549,7 +582,13 @@ namespace BathDream.Migrations
                 name: "Estimates");
 
             migrationBuilder.DropTable(
+                name: "WorkPrices");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "WorkTypes");
 
             migrationBuilder.DropTable(
                 name: "ExecutorProfiles");

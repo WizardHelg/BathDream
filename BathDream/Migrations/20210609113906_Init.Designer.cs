@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    [Migration("20210604164716_Init")]
+    [Migration("20210609113906_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -334,27 +334,23 @@ namespace BathDream.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InnerName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Position")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<string>("Unit")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Volume")
                         .HasColumnType("float");
+
+                    b.Property<int?>("WorkPriceId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EstimateId");
+
+                    b.HasIndex("WorkPriceId");
 
                     b.ToTable("Works");
                 });
@@ -378,9 +374,35 @@ namespace BathDream.Migrations
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("WorkTypeId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("WorkTypeId");
+
                     b.ToTable("WorkPrices");
+                });
+
+            modelBuilder.Entity("BathDream.Models.WorkType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Time")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WorkTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -625,7 +647,22 @@ namespace BathDream.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BathDream.Models.WorkPrice", "WorkPrice")
+                        .WithMany()
+                        .HasForeignKey("WorkPriceId");
+
                     b.Navigation("Estimate");
+
+                    b.Navigation("WorkPrice");
+                });
+
+            modelBuilder.Entity("BathDream.Models.WorkPrice", b =>
+                {
+                    b.HasOne("BathDream.Models.WorkType", "WorkType")
+                        .WithMany()
+                        .HasForeignKey("WorkTypeId");
+
+                    b.Navigation("WorkType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

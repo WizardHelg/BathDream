@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using BathDream.Acquiring;
 
 namespace BathDream.Pages.Account
 {
@@ -351,6 +352,13 @@ namespace BathDream.Pages.Account
                 await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
                 await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
             }
+        }
+
+        public IActionResult OnGetPayment(string orderId)
+        {
+            Payment payment = new Payment();
+            payment.CreatePayment();
+            return RedirectToPage();
         }
     }
 }
