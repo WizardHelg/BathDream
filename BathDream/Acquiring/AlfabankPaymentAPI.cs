@@ -18,17 +18,16 @@ namespace BathDream.Acquiring
         public string ReturnUrl { get; private set; }
 
         public string Response { get; private set; }
+        public string ErrorCode { get; private set; }
         public string ErrorMessage { get; private set; }
 
         public string PaymentId { get; private set; }
         public string PaymentUrl { get; private set; }
         public string OrderStatus { get; private set; }
 
-        public AlfabankPaymentAPI(string username, string password)
+        public AlfabankPaymentAPI()
         {
             GatewayUrl = "https://web.rbsuat.com/ab/";
-            Username = username;
-            Password = password;
         }
 
         private string Gateway(string method, Dictionary<string, string> data)
@@ -59,6 +58,7 @@ namespace BathDream.Acquiring
             JObject JsonDoc = JObject.Parse(response);
             if (JsonDoc["errorCode"].ToString() != "0")
             {
+                ErrorCode = JsonDoc["errorCode"].ToString();
                 ErrorMessage = JsonDoc["errorMessage"].ToString();
             }
             else

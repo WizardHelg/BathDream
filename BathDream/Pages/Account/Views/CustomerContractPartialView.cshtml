@@ -10,6 +10,16 @@
 @*<p>@Model.Signed &lt;- Временный указатель</p>*@
 <br />
 
+@if (Model.PaymentMessage != "")
+{
+    <div id="my-alert" class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        @Model.PaymentMessage
+    </div>
+}
+
 <p class="contract-center"><span style="font-size:  x-large;">ДОГОВОР №@Model.OrderNumber</span></p>
 <hr />
 <table class="contract-table">
@@ -125,7 +135,33 @@
     <a class="btn btn-success" asp-page-handler="Sign">Подписать</a>
 }
 
+<!-- 1 ищем оплаты -->
 
-<a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.CurrentOrder">Оплата</a>
+@if (Model.Payment == null)
+{
+    <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить аванс 10%</a>
+}
+else
+{
+    <!-- Цикл по всем оплатам. Все по DB -->
+    <!-- Проверяем статусы. Если статус оплачен - все ок -->
+    <!-- Если статус не оплачен -->
 
-@*<a class="btn btn-success" asp-page-handler="" asp-route-orderId="@Model.CurrentOrder"></a>*@
+    if (Model.PaymentHandler.OnPaid(Model.Payment.PaymentId, out string status))
+    {
+        <label>Заказ оплачен</label>
+    }
+    else
+    {
+        <label>@status</label>
+    }
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(function () {
+        window.setTimeout(function () {
+            $('#my-alert').alert('close');
+        }, 5000);
+    });
+</script>

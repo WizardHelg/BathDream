@@ -52,8 +52,10 @@ namespace BathDream.Pages.Account
             public List<FileItem> FileItems { get; set; }
             public List<Order> Orders { get; set; }
             public Order CurrentOrder { get; set; }
-
             public List<WorkPrice> UniqueWorks { get; set; }
+            public Payment Payment { get; set; }
+            public PaymentHandler PaymentHandler { get; set; }
+            public string PaymentMessage { get; set; }
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, 
@@ -127,11 +129,15 @@ namespace BathDream.Pages.Account
                     Input.UniqueWorks.Add(item.WorkPrice);
                 }
                 Input.UniqueWorks = Input.UniqueWorks.OrderBy(w => w.WorkType.Priority).ToList();
+
+                Input.Payment = await _db.Payments.FirstOrDefaultAsync(p => p.Order.Id == order.Id);
             }
         }
 
-        public async Task<IActionResult> OnGetContractAsync()
+        public async Task<IActionResult> OnGetContractAsync(string paymentMessage = "")
         {
+            Input.PaymentMessage = paymentMessage;
+
             Input.ContentView = "./Views/CustomerContractPartialView";
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
@@ -354,11 +360,55 @@ namespace BathDream.Pages.Account
             }
         }
 
-        public IActionResult OnGetPayment(string orderId)
+        public async Task<IActionResult> OnGetPayment(int orderId)
         {
-            Payment payment = new Payment();
-            payment.CreatePayment();
-            return RedirectToPage();
+            Order order = await _db.Orders.Include(o => o.Estimate).ThenInclude(e => e.Works).FirstOrDefaultAsync(o => o.Id == orderId);
+            Input.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
+            Input.Total = Input.Works.Sum(w => w.Total);
+
+
+            string paymentNumber = GeneratePaymentNumber();
+            int amount = Convert.ToInt32(Input.Total * 100);
+            string returnUrl = Url.PageLink();
+
+            Input.PaymentHandler = new PaymentHandler();
+            Input.PaymentHandler.CreatePayment(paymentNumber, amount, returnUrl);
+
+            if (Input.PaymentHandler.AlfabankPayment.ErrorCode != "0")
+            {
+                Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage;
+                return RedirectToPage("/Account/Customer", "Contract", 
+                    new {
+                        paymentMessage = Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage
+                        });
+            }
+
+            string paymentUrl = Input.PaymentHandler.AlfabankPayment.PaymentUrl;
+            string paymentId = Input.PaymentHandler.AlfabankPayment.PaymentId;
+
+            Payment payment = new Payment()
+            {
+                PaymentId = paymentId,
+                PaymentStatus = Input.PaymentHandler.GetPaymentStatus(paymentId),
+                PaymentNumber = paymentNumber,
+                Amount = amount,
+                Order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orderId)
+            };
+
+            _db.Payments.Add(payment);
+            _db.SaveChanges();
+
+            return Redirect(paymentUrl);
+        }
+
+        public string GeneratePaymentNumber()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        public IActionResult OnGetNewOrder()
+        {
+            return RedirectToPage("/Index");
         }
     }
 }
