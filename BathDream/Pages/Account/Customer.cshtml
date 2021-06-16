@@ -17,15 +17,6 @@
 <a asp-page-handler="Logout">Выход</a>-->
 
 
-
-
-
-
-
-
-
-
-
 <div class="page-wrapper chiller-theme toggled">
     <a id="show-sidebar" class="btn btn-sm btn-dark" style="color: #333;" href="#">
         <i class="fas fa-bars"></i>
@@ -84,52 +75,99 @@
     <!-- sidebar-wrapper  -->
     <main class="page-content">
         <div class="container-fluid">
+            <h1 style="text-align:center">Заказ №@Model.Input.CurrentOrder.Id от @Model.Input.CurrentOrder.Date.ToString("dd MMMM yyyy г.")</h1>
+            <hr />
             @if (Model.Input.Flag == 1)
             {
                 <partial name="@Model.Input.ContentView" model="Model.Input" />
             }
             else if (Model.Input.Flag == 2)
             {
-                <a class="btn btn-success" name="Estimate" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Смета</a>
-                if (Model.Input.FlagContract == 1)
-                {
-                    <a class="btn btn-success" asp-page-handler="Contract">Детали заказа</a>
-                }
-                else
-                {
-                    <a class="btn btn-success" name="Contract" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Договор</a>
-                }
-                if (Model.Input.FlagBrief == 1)
-                {
-                    <a class="btn btn-success" asp-page-handler="Brief">Бриф</a>
-                }
-                else
-                {
-                    <a class="btn btn-success" name="Brief" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Чат</a>
-                }
-                <a class="btn btn-success" name="Material" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Материалы</a>
-                <a class="btn btn-success" name="Documents" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Документы</a>
+
                 
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+
+
+                <div class="install panel panel-success" style="background-color: #FAFAFA">
+                    <div class="install-title"><b>Смета</b></div>
+                    <img alt="Brand" src=/img/icons8-invoice-100.png />
+                    <a class="btn btn-success" name="Estimate" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
+                </div>
+
+
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+
+                <div class="install panel panel-success" style="background-color: #FAFAFA">
+
+
+                    @if (Model.Input.FlagContract == 1)
+                    {
+                        <div class="install-title"><b>Детали заказа</b></div>
+                        <img alt="Brand" src=/img/icons8-agreement-100.png />
+                        <a class="btn btn-success" asp-page-handler="Contract">Открыть</a>
+                    }
+                    else
+                    {
+                        <div class="install-title"><b>Договор</b></div>
+                        <img alt="Brand" src=/img/icons8-agreement-100.png />
+                        <a class="btn btn-success" name="Contract" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
+                    }
+
+                </div>
+
+            </div>
+
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <div class="install panel panel-success" style="background-color: #FAFAFA">
+                    @if (Model.Input.FlagBrief == 1)
+                    {
+                        <div class="install-title"><b>Бриф</b></div>
+                        <img alt="Brand" src=/img/icons8-design-100.png />
+                        <a class="btn btn-success" asp-page-handler="Brief">Заполнить</a>
+                    }
+                    else
+                    {
+                        <div class="install-title"><b>Дизайн</b></div>
+                        <img alt="Brand" src=/img/icons8-design-100.png  />
+                        <a class="btn btn-success" name="Brief" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Чат</a>
+                    }
+                </div>
+                </div>
+
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <div class="install panel panel-success" style="background-color: #FAFAFA">
+                    <div class="install-title"><b>Материалы</b></div>
+                    <img alt="Brand" src=/img/icons8-drill-100.png />
+                    <a class="btn btn-success" name="Material" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
+                </div>
+                </div>
+
+            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                <div class="install panel panel-success" style="background-color: #FAFAFA">
+                    <div class="install-title"><b>Документы</b></div>
+                    <img alt="Brand" src=/img/icons8-finish-flag-100.png />
+                    <a class="btn btn-success" name="Documents" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
+
+                </div>
+                </div>
+
+
+
                 <div aria-hidden="true" class="modal fade" id="modal-order" role="dialog">
-                    <div class="modal-dialog modal-lg">
-                        " role="document">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-
-                            </div>
                             <div class="modal-body">
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                                 <div id="partial"></div>
-                            </div>
-                            <div class="modal-footer">
-
                             </div>
                         </div>
                     </div>
                 </div>
-            }
-            <hr>
-        </div>
-    </main>
+                }
+
+            </div>
+</main>
     <!-- page-content" -->
 </div>
  @*+ e.target.name*@
