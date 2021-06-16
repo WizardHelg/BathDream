@@ -40,7 +40,7 @@
             </div>
 
             <div class="sidebar-header">
-                
+
                 <div class="user-pic">
                     <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
                          alt="User picture">
@@ -71,67 +71,11 @@
                         </a>
                     </li>
                     <li class="sidebar-dropdown">
-                        <a asp-page-handler="#">
+                        <a asp-page-handler="Project">
                             <i class="fa fa-tachometer"></i>
-                            <span>Смета</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-dropdown">
-                        <a asp-page-handler="Contract">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span>Договор</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-dropdown">
-                        <a asp-page-handler="Brief">
-                            <i class="far fa-gem"></i>
                             <span>Проект</span>
                         </a>
                     </li>
-                    @*<li class="sidebar-dropdown">
-            <a asp-page-handler="ExecutorBrief">
-                <i class="far fa-gem"></i>
-                <span>Выполнение работ</span>
-            </a>
-        </li>*@
-                    @*<li class="sidebar-dropdown">
-            <a asp-page-handler="Chat">
-                <i class="far fa-gem"></i>
-                <span>Чат</span>
-            </a>
-        </li>*@
-                    <li class="sidebar-dropdown">
-                        <a asp-page-handler="Material">
-                            <i class="fa fa-chart-line"></i>
-                            <span>Материал</span>
-                        </a>
-                    </li>
-                    <!--
-    <div class="sidebar-submenu">
-        <ul>
-            <li>
-                <a href="#">Pie chart</a>
-            </li>
-            <li>
-                <a href="#">Line chart</a>
-            </li>
-            <li>
-                <a href="#">Bar chart</a>
-            </li>
-            <li>
-                <a href="#">Histogram</a>
-            </li>
-        </ul>
-    </div>-->
-
-                    <li class="sidebar-dropdown">
-                        <a asp-page-handler="Documents">
-                            <i class="fa fa-globe"></i>
-                            <span>Документы</span>
-                        </a>
-
-                    </li>
-
                 </ul>
             </div>
             <!-- sidebar-menu  -->
@@ -140,12 +84,92 @@
     <!-- sidebar-wrapper  -->
     <main class="page-content">
         <div class="container-fluid">
-            <partial name="@Model.Input.ContentView" model="Model.Input" />
+            @if (Model.Input.Flag == 1)
+            {
+                <partial name="@Model.Input.ContentView" model="Model.Input" />
+            }
+            else if (Model.Input.Flag == 2)
+            {
+                <a class="btn btn-success" name="Estimate" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Смета</a>
+                if (Model.Input.FlagContract == 1)
+                {
+                    <a class="btn btn-success" asp-page-handler="Contract">Детали заказа</a>
+                }
+                else
+                {
+                    <a class="btn btn-success" name="Contract" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Договор</a>
+                }
+                if (Model.Input.FlagBrief == 1)
+                {
+                    <a class="btn btn-success" asp-page-handler="Brief">Бриф</a>
+                }
+                else
+                {
+                    <a class="btn btn-success" name="Brief" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Чат</a>
+                }
+                <a class="btn btn-success" name="Material" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Материалы</a>
+                <a class="btn btn-success" name="Documents" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Документы</a>
+                <div aria-hidden="true" class="modal fade" id="modal-order" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        " role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                            </div>
+                            <div class="modal-body">
+                                <div id="partial"></div>
+                            </div>
+                            <div class="modal-footer">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
             <hr>
         </div>
     </main>
     <!-- page-content" -->
 </div>
+ @*+ e.target.name*@
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function LoadPartialView(e) {
+        var hand = e.name;
+        var url = "/Account/Customer?handler=" + hand;
+
+        $("#partial").load("/Account/Customer?handler=" + hand);
+
+        //fetch('/Account/Customer?handler=' + hand)
+        //    .then((response) => {
+        //        return response.text();
+        //    })
+        //    .then((result) => {
+        //        document.getElementById('partial').innerHTML = result;
+        //    });
+
+
+
+        //$(document).ready(function () {
+        //    $("a").click(function () {
+        //        $.ajax({
+        //            type: "GET",
+        //            url: url,
+        //        })
+        //            .done(function (response) {
+        //                console.log("SUCCESS");
+        //                $("#partial").load(response);
+        //            })
+        //            .fail(function (response) {
+        //                console.log("FAIL");
+        //            })
+        //        //$("#partial").load("/Account/Customer?handler=" + hand);
+        //    })
+        //})
+    }
+</script>
+
+
 <!-- page-wrapper -->
 <!--
 
@@ -157,9 +181,3 @@
         <li><a asp-page-handler="Logout">Выход</a></li>
     </ul>
 </div>-->
-
-
-
-
-
-

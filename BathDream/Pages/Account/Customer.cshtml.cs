@@ -56,6 +56,11 @@ namespace BathDream.Pages.Account
             public Payment Payment { get; set; }
             public PaymentHandler PaymentHandler { get; set; }
             public string PaymentMessage { get; set; }
+
+            public int Flag { get; set; } = 2;
+            public int FlagContract { get; set; } = 0;
+            public int FlagBrief { get; set; } = 0;
+
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, 
@@ -70,11 +75,47 @@ namespace BathDream.Pages.Account
 
         public async Task OnGetAsync()
         {
+
+            User user = await _userManager.FindByNameAsync(User.Identity.Name);
+            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
+
+            if (TempData["OrderId"] is int orid
+                && await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid) is Order order)
+            {
+                order.Customer = user.Profile;
+                order.Status = Order.Statuses.New;
+
+                user.Profile.CurrentOrderId = order.Id;
+
+                await _db.SaveChangesAsync();
+            }
+
+            order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
+
+            Input.UserName = user.UName;
+            Input.UserFamaly = user.UFamaly;
+
+            Input.CurrentOrder = order;
+
+            Input.OrderAddress = order.ObjectAdress;
+            if (!Input.Signed && (string.IsNullOrEmpty(Input.OrderAddress) || !user.Profile.IsFilled()))
+            {
+                Input.FlagContract = 1;
+            }
+            if ((order.Status & Order.Statuses.Brief) == 0)
+            {
+                Input.FlagBrief = 1;
+            }
+            //Input.Payment = await _db.Payments.FirstOrDefaultAsync(p => p.Order.Id == order.Id);
+        }
+
+        public async Task<IActionResult> OnGetEstimate()
+        {
             Input.ContentView = "./Views/CustomerEstimatePartialView";
 
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
-            
+
             Input.UserName = user.UName;
             Input.UserFamaly = user.UFamaly;
             Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
@@ -87,20 +128,8 @@ namespace BathDream.Pages.Account
             //}
 
             //Order order = null;
-            if (TempData["OrderId"] is int orid
-                && await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid) is Order order)
-            {
-                //int orid = (int)TempData["OrderId"];
-                //order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orid);
-                order.Customer = user.Profile;
-                order.Status = Order.Statuses.New;
 
-                user.Profile.CurrentOrderId = order.Id;
-
-                await _db.SaveChangesAsync();
-            }
-            
-            order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId)
+            Order order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId)
                                     .Include(o => o.Estimate)
                                     .ThenInclude(e => e.Rooms)
                                     .Include(x => x.Estimate)
@@ -108,7 +137,7 @@ namespace BathDream.Pages.Account
                                     .ThenInclude(w => w.WorkPrice)
                                     .ThenInclude(w => w.WorkType).FirstOrDefaultAsync();
 
-            if(order != null)
+            if (order != null)
             {
                 Input.Display = true;
                 Input.OrderDate = order.Date.ToShortDateString();
@@ -125,13 +154,17 @@ namespace BathDream.Pages.Account
                     if (Input.UniqueWorks.Any(w => w.WorkType.Id == item.WorkPrice.WorkType.Id))
                     {
                         continue;
-                    } 
+                    }
                     Input.UniqueWorks.Add(item.WorkPrice);
                 }
                 Input.UniqueWorks = Input.UniqueWorks.OrderBy(w => w.WorkType.Priority).ToList();
 
-                Input.Payment = await _db.Payments.FirstOrDefaultAsync(p => p.Order.Id == order.Id);
             }
+            return new PartialViewResult
+            {
+                ViewName = "./Views/CustomerEstimatePartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
         }
 
         public async Task<IActionResult> OnGetContractAsync(string paymentMessage = "")
@@ -171,8 +204,14 @@ namespace BathDream.Pages.Account
             if (!Input.Signed && (string.IsNullOrEmpty(Input.OrderAddress) || !user.Profile.IsFilled()))
                 return RedirectToPage("/OrderDetails", new { OrderId = order_id });
 
-            return Page();
+            return new PartialViewResult
+            {
+                ViewName = "./Views/CustomerContractPartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
         }
+
+
 
         public async Task<IActionResult> OnGetSignAsync()
         {
@@ -221,7 +260,6 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetBriefAsync()
         {
-
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
 
@@ -238,7 +276,11 @@ namespace BathDream.Pages.Account
                 else
                 {
                     Input.ContentView = "./Views/ChatPartialView";
-                    return Page();
+                    return new PartialViewResult
+                    {
+                        ViewName = "./Views/ChatPartialView",
+                        ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+                    };
                 }
             }
 
@@ -248,14 +290,26 @@ namespace BathDream.Pages.Account
         public IActionResult OnGetMaterial()
         {
             Input.ContentView = "./Views/MaterialPartialView";
-            return Page();
+            return new PartialViewResult
+            {
+                ViewName = "./Views/MaterialPartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
         }
         public IActionResult OnGetDocuments()
         {
             Input.ContentView = "./Views/DocumentsPartialView";
-            return Page();
+            return new PartialViewResult
+            {
+                ViewName = "./Views/DocumentsPartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
         }
 
+        /// <summary>
+        /// ???????
+        /// </summary>
+        /// <param name="orderId"></param>
         public void OnGetChat(Order orderId)
         {
             Input.ContentView = "./Views/ChatPartialView";
@@ -270,6 +324,8 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetShowOrders()
         {
+            Input.Flag = 1;
+
             Input.ContentView = "./Views/SelectOrderPartialView";
 
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -409,6 +465,12 @@ namespace BathDream.Pages.Account
         public IActionResult OnGetNewOrder()
         {
             return RedirectToPage("/Index");
+        }
+
+        public IActionResult OnGetProject()
+        {
+            Input.Flag = 2;
+            return RedirectToPage();
         }
     }
 }

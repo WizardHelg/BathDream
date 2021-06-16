@@ -22,9 +22,12 @@ namespace BathDream.Models
         /// <summary>
         /// Номер заказа в системе магазина
         /// </summary>
-        public string PaymentNumber { get; set; } //убрать
+        public string PaymentNumber { get; set; }
 
-                                                    //дата платежа добавить
+        /// <summary>
+        /// Дата и время заказа
+        /// </summary>
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Сумма платежа в копейках
@@ -35,5 +38,10 @@ namespace BathDream.Models
         /// Заказ (Order)
         /// </summary>
         public Order Order { get; set; }
+
+        /// <summary>
+        /// Описание заказа
+        /// </summary>
+        public string Description { get; set; }
     }
 }

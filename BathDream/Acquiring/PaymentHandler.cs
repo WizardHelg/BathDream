@@ -8,6 +8,7 @@ namespace BathDream.Acquiring
     public class PaymentHandler
     {
         public AlfabankPaymentAPI AlfabankPayment { get; set; }
+        public int StatusCode { get; set; }
 
         private readonly Dictionary<string, string> Status = new Dictionary<string, string>()
         {

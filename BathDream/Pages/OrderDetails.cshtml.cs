@@ -171,7 +171,7 @@ namespace BathDream.Pages
 
                     _db.Orders.Update(order);
                     await _db.SaveChangesAsync();
-                    return RedirectToPage("/Account/Customer", "Contract");
+                    return RedirectToPage("/Account/Customer");
                 }
             }
             return Page();
