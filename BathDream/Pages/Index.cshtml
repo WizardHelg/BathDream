@@ -146,7 +146,9 @@
                 document.getElementById('page1').style.display = 'none';
                 document.getElementById('page2').style.display = 'block';
                 window.scrollTo(0, 0);
-            ">Далее</button>
+            ">
+                Далее
+            </button>
         </div>
 
         @*<simple-form-container label="Санузен совмещенный?" col-sm-width="8">
@@ -192,11 +194,28 @@
 
             <hr />
 
-            <button type="button" class="btn btn-success" onclick="
-                    document.getElementById('page2').style.display = 'none';
-                    document.getElementById('page3').style.display = 'block';
-                    window.scrollTo(0, 0);
-                ">Далее</button>
+            <table style="border: 0; width: 100%">
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page1').style.display = 'block';
+                            document.getElementById('page2').style.display = 'none';
+                            window.scrollTo(0, 0);
+                            ">
+                            Назад
+                        </button>
+                    </td>
+                    <td align="right">
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page2').style.display = 'none';
+                            document.getElementById('page3').style.display = 'block';
+                            window.scrollTo(0, 0);
+                            ">
+                            Далее
+                        </button>
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <div id="page3" style="display: none;">
@@ -225,11 +244,31 @@
             </div>
 
             <hr />
-            <button type="button" class="btn btn-success" onclick="
-                    document.getElementById('page3').style.display = 'none';
-                    document.getElementById('page4').style.display = 'block';
-                    window.scrollTo(0, 0);
-                ">Далее</button>
+
+
+            <table style="border: 0; width: 100%">
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page2').style.display = 'block';
+                            document.getElementById('page3').style.display = 'none';
+                            window.scrollTo(0, 0);
+                            ">
+                            Назад
+                        </button>
+                    </td>
+                    <td align="right">
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page3').style.display = 'none';
+                            document.getElementById('page4').style.display = 'block';
+                            window.scrollTo(0, 0);
+                            ">
+                            Далее
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
         </div>
 
         <div id="page4" style="display: none;">
@@ -249,13 +288,32 @@
             </simple-form-container>
 
             <hr />
-            <button type="button" class="btn btn-success" onclick="
-                    document.getElementById('page4').style.display = 'none';
-                    document.getElementById('page5').style.display = 'block';
-                    window.scrollTo(0, 0);
-                ">Далее</button>
+
+            <table style="border: 0; width: 100%">
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page3').style.display = 'block';
+                            document.getElementById('page4').style.display = 'none';
+                            window.scrollTo(0, 0);
+                            ">
+                            Назад
+                        </button>
+                    </td>
+                    <td align="right">
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page4').style.display = 'none';
+                            document.getElementById('page5').style.display = 'block';
+                            window.scrollTo(0, 0);
+                            ">
+                            Далее
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
         </div>
-        
+
 
         <div id="page5" style="display: none;">
             <h2>Отделка</h2>
@@ -281,6 +339,14 @@
                 <radio-form-element element-name="Order.InstallDoor" element-value="true">Да</radio-form-element>
                 <radio-form-element element-name="Order.InstallDoor" element-value="false" element-checked="true">Нет</radio-form-element>
             </simple-form-container>
+            <hr />
+            <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page4').style.display = 'block';
+                            document.getElementById('page5').style.display = 'none';
+                            window.scrollTo(0, 0);
+                            ">
+                Назад
+            </button>
             <hr />
             <button class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету</button>
         </div>

@@ -105,6 +105,10 @@
                 <th style="text-align: center;">Цена</th>
                 <th style="text-align: center;">Кол-во</th>
                 <th style="text-align: center;">Сумма</th>
+                @if (!Model.Signed)
+                {
+                    <th></th>
+                }
             </tr>
 
             @foreach (Work work in @Model.Works)
@@ -112,9 +116,19 @@
                 @if (sub_caption != work.Group)
                 {
                     sub_caption = work.Group;
-                    <tr>
-                        <td colspan="7" class="info" style="text-align: center;"><b>@sub_caption</b></td>
-                    </tr>
+                    @if (!Model.Signed)
+                    {
+                        <tr>
+                            <td colspan="8" class="info" style="text-align: center;"><b>@sub_caption</b></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="info" style="text-align: center;"><b>@sub_caption</b></td>
+                        </tr>
+                    }
+
                 }
                 <tr>
                     <td style="text-align: center;">@work.Position</td>
@@ -129,15 +143,17 @@
                     </td>
                     <td style="text-align: center;">@work.Volume</td>
                     <td style="text-align: right;">@work.Total.ToString("# ##0.00")</td>
+                    @if (!Model.Signed)
+                    {
+                        <td>
+                            <a asp-page-handler="DeleteWork" asp-route-workid="@work.Id"><i class="fas fa-times"></i></a>
+                        </td>
+                    }
                 </tr>
             }
         </table>
     </div>
     <h2 style="text-align: right;">Итого: @Model.Total.ToString("# ##0.00")</h2>
-    @if (!@Model.Signed)
-    {
-        <a class="btn btn-success" asp-page-handler="Contract">Подписать</a>
-    }
 </div>
 <div>
     <p style="text-align:center"><span style="font-size: large;">График работ</span></p>
@@ -153,7 +169,7 @@
             @for (int i = 1; i <= totalTime; i++)
             {
                 <th>
-                    @i день
+                    @i-й день
                 </th>
             }
         </tr>

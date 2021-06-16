@@ -79,12 +79,13 @@
         </div>
         <hr />
         <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
+                        document.getElementById('page1').style.display = 'none';
+                        document.getElementById('page2').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
             Далее
         </button>
+
     </div>
     <div id="page2" style="display: none;">
         <p><b>2. Выберите пол</b></p>
@@ -123,13 +124,29 @@
             </select>
         </p>
         <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page2').style.display = 'none';
-            document.getElementById('page3').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
+        <table style="border: 0; width: 100%">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page1').style.display = 'block';
+                        document.getElementById('page2').style.display = 'none';
+                        window.scrollTo(0, 0);
+                        ">
+                        Назад
+                    </button>
+                </td>
+                <td align="right">
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page2').style.display = 'none';
+                        document.getElementById('page3').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
+                        Далее
+                    </button>
+                </td>
+            </tr>
+        </table>
+
     </div>
     <div id="page3" style="display: none;">
         <p><b>2. Выберите пол</b></p>
@@ -154,13 +171,30 @@
             </div>
         </div>
         <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page3').style.display = 'none';
-            document.getElementById('page4').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
+
+        <table style="border: 0; width: 100%">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page2').style.display = 'block';
+                        document.getElementById('page3').style.display = 'none';
+                        window.scrollTo(0, 0);
+                        ">
+                        Назад
+                    </button>
+                </td>
+                <td align="right">
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page3').style.display = 'none';
+                        document.getElementById('page4').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
+                        Далее
+                    </button>
+                </td>
+            </tr>
+        </table>
+
     </div>
     <div id="page4" style="display: none;">
         <p><b>2. Выберите пол</b></p>
@@ -193,13 +227,29 @@
             </div>
         </div>
         <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page4').style.display = 'none';
-            document.getElementById('page5').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
+
+        <table style="border: 0; width: 100%">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page3').style.display = 'block';
+                        document.getElementById('page4').style.display = 'none';
+                        window.scrollTo(0, 0);
+                        ">
+                        Назад
+                    </button>
+                </td>
+                <td align="right">
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page4').style.display = 'none';
+                        document.getElementById('page5').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
+                        Далее
+                    </button>
+                </td>
+            </tr>
+        </table>
     </div>
     <div id="page5" style="display: none;">
         <p><b>2. Выберите стены</b></p>
@@ -238,45 +288,60 @@
             </select>
         </p>
         <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page5').style.display = 'none';
-            document.getElementById('page6').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
+        <table style="border: 0; width: 100%">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page4').style.display = 'block';
+                        document.getElementById('page5').style.display = 'none';
+                        window.scrollTo(0, 0);
+                        ">
+                        Назад
+                    </button>
+                </td>
+                <td align="right">
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page5').style.display = 'none';
+                        document.getElementById('page7').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
+                        Далее
+                    </button>
+                </td>
+            </tr>
+        </table>
     </div>
-    <div id="page6" style="display: none;">
-        <p><b>2. Выберите стены</b></p>
-        <p><b>Укладка плитки</b></p>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
-                    <span class="radio-inline">
-                        <input id="wallTileDiagonal" asp-for="Input.WallLayingTilesType" type="radio" value="По диагонали" checked />
-                        По диагонали
-                    </span>
-                    <img alt="Brand" src="img/brief/other/по диагонали.jpg" name="wallTileDiagonal" onclick="ClickToCheck(this)" />
-                    <hr />
-                </div>
-                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
-                    <span class="radio-inline">
-                        <input id="wallTileLine" asp-for="Input.WallLayingTilesType" type="radio" value="Линейно" />
-                        Линейно
-                    </span>
-                    <img alt="Brand" src="img/brief/other/вертикаль укладка.jpg" name="wallTileLine" onclick="ClickToCheck(this)" />
+    @*<div id="page6" style="display: none;">
+            <p><b>2. Выберите стены</b></p>
+            <p><b>Укладка плитки</b></p>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
+                        <span class="radio-inline">
+                            <input id="wallTileDiagonal" asp-for="Input.WallLayingTilesType" type="radio" value="По диагонали" checked />
+                            По диагонали
+                        </span>
+                        <img alt="Brand" src="img/brief/other/по диагонали.jpg" name="wallTileDiagonal" onclick="ClickToCheck(this)" />
+                        <hr />
+                    </div>
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3" style="width: 70%" name="adaptiveImage">
+                        <span class="radio-inline">
+                            <input id="wallTileLine" asp-for="Input.WallLayingTilesType" type="radio" value="Линейно" />
+                            Линейно
+                        </span>
+                        <img alt="Brand" src="img/brief/other/вертикаль укладка.jpg" name="wallTileLine" onclick="ClickToCheck(this)" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page6').style.display = 'none';
-            document.getElementById('page7').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
-    </div>
+            <hr />
+            <button type="button" class="btn btn-success" onclick="
+                document.getElementById('page6').style.display = 'none';
+                document.getElementById('page7').style.display = 'block';
+                window.scrollTo(0, 0);
+            ">
+                Далее
+            </button>
+        </div>*@
     <div id="page7" style="display: none;">
         <p><b>2. Выберите стены</b></p>
         <p><b>Размер плитки</b></p>
@@ -308,13 +373,29 @@
             </div>
         </div>
         <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page7').style.display = 'none';
-            document.getElementById('page8').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
+        <table style="border: 0; width: 100%">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page5').style.display = 'block';
+                        document.getElementById('page7').style.display = 'none';
+                        window.scrollTo(0, 0);
+                        ">
+                        Назад
+                    </button>
+                </td>
+                <td align="right">
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page7').style.display = 'none';
+                        document.getElementById('page8').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
+                        Далее
+                    </button>
+                </td>
+            </tr>
+        </table>
+
     </div>
     <div id="page8" style="display: none;">
         <p><b>2. Выберите стены</b></p>
@@ -338,31 +419,69 @@
             </div>
         </div>
         <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page8').style.display = 'none';
-            document.getElementById('page9').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
+        <table style="border: 0; width: 100%">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page7').style.display = 'block';
+                        document.getElementById('page8').style.display = 'none';
+                        window.scrollTo(0, 0);
+                        ">
+                        Назад
+                    </button>
+                </td>
+                <td align="right">
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page8').style.display = 'none';
+                        document.getElementById('page9').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
+                        Далее
+                    </button>
+                </td>
+            </tr>
+        </table>
     </div>
     <div id="page9" style="display: none;">
         <p><b>3. Электрика</b></p>
-        <p><a href="http://www.google.com" target="_blank" class="btn btn-success">Выбор электрики</a></p>
-
+        @*<p><a href="http://www.google.com" target="_blank" class="btn btn-success">Выбор электрики</a></p>*@
+        <p><b>Вставьте в данное поле ссылку на товар</b></p>
         <textarea asp-for="Input.Electric" class="form-control"></textarea>
         <hr />
-        <button type="button" class="btn btn-success" onclick="
-            document.getElementById('page9').style.display = 'none';
-            document.getElementById('page10').style.display = 'block';
-            window.scrollTo(0, 0);
-        ">
-            Далее
-        </button>
+        <table style="border: 0; width: 100%">
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page8').style.display = 'block';
+                        document.getElementById('page9').style.display = 'none';
+                        window.scrollTo(0, 0);
+                        ">
+                        Назад
+                    </button>
+                </td>
+                <td align="right">
+                    @if (Model.SantechItems.Count == 0)
+                    {
+                        <button type="submit" class="btn btn-success">Отправить</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-success" onclick="
+                        document.getElementById('page9').style.display = 'none';
+                        document.getElementById('page10').style.display = 'block';
+                        window.scrollTo(0, 0);
+                        ">
+                            Далее
+                        </button>
+                    }
+                </td>
+            </tr>
+        </table>
     </div>
     @for (int i = 0; i < Model.SantechItems.Count; i++)
     {
         BriefModel.SantechItem item = Model.SantechItems[i];
+        string previousPage = $"page{10 + i - 1}";
         string currentPage = $"page{10 + i}";
         string nextPage = $"page{10 + i + 1}";
         <div id="@currentPage" style="display: none;">
@@ -427,13 +546,28 @@
             </table>
             @if (i < Model.SantechItems.Count - 1)
             {
-                <button type="button" class="btn btn-success" onclick="
-                document.getElementById('@currentPage').style.display = 'none';
-                document.getElementById('@nextPage').style.display = 'block';
-                window.scrollTo(0, 0);
-                ">
-                    Далее
-                </button>
+                <table style="border: 0; width: 100%">
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-success" onclick="
+                                document.getElementById('@previousPage').style.display = 'block';
+                                document.getElementById('@currentPage').style.display = 'none';
+                                window.scrollTo(0, 0);
+                                ">
+                                Назад
+                            </button>
+                        </td>
+                        <td align="right">
+                            <button type="button" class="btn btn-success" onclick="
+                                document.getElementById('@currentPage').style.display = 'none';
+                                document.getElementById('@nextPage').style.display = 'block';
+                                window.scrollTo(0, 0);
+                                ">
+                                Далее
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             }
             else
             {

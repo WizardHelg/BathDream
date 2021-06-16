@@ -101,9 +101,10 @@
         })
     }
 
-        document.getElementById("sendBtn").addEventListener("click", function (e) {
+    document.getElementById("sendBtn").addEventListener("click", function (e) {
         let message = document.getElementById("message").value;
         connection.invoke("Send", message, "@(Model.CurrentOrder.Id)");
+        document.getElementById("message").value = "";
     });
 
     connection.on("GetItCustomer", function (data) {

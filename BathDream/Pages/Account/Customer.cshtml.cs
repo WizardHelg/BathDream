@@ -58,9 +58,15 @@ namespace BathDream.Pages.Account
             public string PaymentMessage { get; set; }
 
             public int Flag { get; set; } = 2;
+            /// <summary>
+            /// Детали заказа - договор
+            /// </summary>
             public int FlagContract { get; set; } = 0;
-            public int FlagBrief { get; set; } = 0;
 
+            /// <summary>
+            /// Бриф - чат
+            /// </summary>
+            public int FlagBrief { get; set; } = 0;
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, 
@@ -106,6 +112,7 @@ namespace BathDream.Pages.Account
             {
                 Input.FlagBrief = 1;
             }
+
             //Input.Payment = await _db.Payments.FirstOrDefaultAsync(p => p.Order.Id == order.Id);
         }
 
@@ -470,6 +477,18 @@ namespace BathDream.Pages.Account
         public IActionResult OnGetProject()
         {
             Input.Flag = 2;
+            return RedirectToPage();
+        }
+        public async Task<IActionResult> OnGetDeleteWork(int workId)
+        {
+            Work work = await _db.Works.FirstOrDefaultAsync(w => w.Id == workId);
+            if (work == null)
+            {
+                return NotFound();
+            }
+            _db.Works.Remove(work);
+            _db.SaveChanges();
+
             return RedirectToPage();
         }
     }

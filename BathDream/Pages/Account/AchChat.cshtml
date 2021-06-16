@@ -128,6 +128,7 @@
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let message = document.getElementById("message").value;
         connection.invoke("SendToClient", message, "@Model.Input.UserId", "@Model.Input.OrderId");
+        document.getElementById("message").value = "";
     });
 
     document.getElementById("message").addEventListener("keyup", function (event) {
