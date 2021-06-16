@@ -61,7 +61,7 @@ namespace BathDream.Pages.Account
             {
                 return RedirectToPage(new
                 {
-                    id = Input.UserId,
+                    userId = Input.UserId,
                     orderid = Input.OrderId
                 });
             }
@@ -97,9 +97,9 @@ namespace BathDream.Pages.Account
             await _hub.Clients.User(Input.UserId).SendAsync("Refresh");
             await SendToClient("Прислал вам новый вариант дизайна!", Input.UserId, fileItem.Order);
 
-            return RedirectToPage(new 
+            return RedirectToPage(new
             {
-                id = Input.UserId,
+                userId = Input.UserId,
                 orderid = Input.OrderId
             });
         }
@@ -123,10 +123,10 @@ namespace BathDream.Pages.Account
             }
 
             string folder = _webHostEnvironment.WebRootPath + filePath + file.Order.Id;
-            if (!(System.IO.Directory.GetDirectories(folder).Length
-                + System.IO.Directory.GetFiles(folder).Length > 0))
+            if (!(Directory.GetDirectories(folder).Length
+                + Directory.GetFiles(folder).Length > 0))
             {
-                System.IO.Directory.Delete(folder);
+                Directory.Delete(folder);
             }
 
             file.Order.SelectedItemId = 0;
@@ -139,7 +139,7 @@ namespace BathDream.Pages.Account
 
             return RedirectToPage(new
             {
-                id = file.Order.Customer.UserId,
+                userId = file.Order.Customer.UserId,
                 orderid = file.Order.Id
             });
         }

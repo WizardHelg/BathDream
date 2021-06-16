@@ -56,7 +56,9 @@ namespace BathDream.Pages.Account
             public Payment Payment { get; set; }
             public PaymentHandler PaymentHandler { get; set; }
             public string PaymentMessage { get; set; }
-
+            /// <summary>
+            /// 1 для частичных представлений, типа: "<partial></partial>", 2 для модальных окон
+            /// </summary>
             public int Flag { get; set; } = 2;
             /// <summary>
             /// Детали заказа - договор
@@ -69,7 +71,7 @@ namespace BathDream.Pages.Account
             public int FlagBrief { get; set; } = 0;
         }
 
-        public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager, 
+        public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager,
             DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub)
         {
             _signInManager = signInManager;
@@ -112,6 +114,8 @@ namespace BathDream.Pages.Account
             {
                 Input.FlagBrief = 1;
             }
+
+            //FileItem = await _db.FileItems.FirstOrDefaultAsync(f => f.)
 
             //Input.Payment = await _db.Payments.FirstOrDefaultAsync(p => p.Order.Id == order.Id);
         }
@@ -282,12 +286,9 @@ namespace BathDream.Pages.Account
                     return RedirectToPage("/Brief", new { id = order.Id });
                 else
                 {
+                    Input.Flag = 1;
                     Input.ContentView = "./Views/ChatPartialView";
-                    return new PartialViewResult
-                    {
-                        ViewName = "./Views/ChatPartialView",
-                        ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
-                    };
+                    return Page();
                 }
             }
 
@@ -440,10 +441,11 @@ namespace BathDream.Pages.Account
             if (Input.PaymentHandler.AlfabankPayment.ErrorCode != "0")
             {
                 Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage;
-                return RedirectToPage("/Account/Customer", "Contract", 
-                    new {
+                return RedirectToPage("/Account/Customer", "Contract",
+                    new
+                    {
                         paymentMessage = Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage
-                        });
+                    });
             }
 
             string paymentUrl = Input.PaymentHandler.AlfabankPayment.PaymentUrl;
