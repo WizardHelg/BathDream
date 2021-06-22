@@ -4,14 +4,16 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    partial class DBApplicationaContextModelSnapshot : ModelSnapshot
+    [Migration("20210621130719_ModelsForMaterial")]
+    partial class ModelsForMaterial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,9 +261,6 @@ namespace BathDream.Migrations
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderMaterialId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PaymentId")
                         .HasColumnType("nvarchar(max)");
 
@@ -274,8 +273,6 @@ namespace BathDream.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("OrderMaterialId");
 
                     b.ToTable("Payments");
                 });
@@ -706,7 +703,7 @@ namespace BathDream.Migrations
             modelBuilder.Entity("BathDream.Models.Material", b =>
                 {
                     b.HasOne("BathDream.Models.OrderMaterial", "OrderMaterial")
-                        .WithMany("Materials")
+                        .WithMany()
                         .HasForeignKey("OrderMaterialId");
 
                     b.Navigation("OrderMaterial");
@@ -763,13 +760,7 @@ namespace BathDream.Migrations
                         .WithMany()
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("BathDream.Models.OrderMaterial", "OrderMaterial")
-                        .WithMany()
-                        .HasForeignKey("OrderMaterialId");
-
                     b.Navigation("Order");
-
-                    b.Navigation("OrderMaterial");
                 });
 
             modelBuilder.Entity("BathDream.Models.Room", b =>
@@ -888,11 +879,6 @@ namespace BathDream.Migrations
             modelBuilder.Entity("BathDream.Models.Order", b =>
                 {
                     b.Navigation("Estimate");
-                });
-
-            modelBuilder.Entity("BathDream.Models.OrderMaterial", b =>
-                {
-                    b.Navigation("Materials");
                 });
 
             modelBuilder.Entity("BathDream.Models.User", b =>

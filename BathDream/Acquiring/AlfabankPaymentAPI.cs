@@ -25,9 +25,51 @@ namespace BathDream.Acquiring
         public string PaymentUrl { get; private set; }
         public string OrderStatus { get; private set; }
 
-        public AlfabankPaymentAPI()
+        public AlfabankPaymentAPI(string userName, string password)
         {
+            Username = userName;
+            Password = password;
             GatewayUrl = "https://web.rbsuat.com/ab/";
+        }
+
+        public void Registred(Dictionary<string,string> data)
+        {
+            data.Add("userName", Username);
+            data.Add("password", Password);
+
+            string response = Gateway("rest/register.do", data);
+            Response = response;
+
+            JObject JsonDoc = JObject.Parse(response);
+            if (JsonDoc["errorCode"] != null && JsonDoc["errorCode"].ToString() != "0")
+            {
+                ErrorCode = JsonDoc["errorCode"].ToString();
+                ErrorMessage = JsonDoc["errorMessage"].ToString();
+            }
+            else
+            {
+                PaymentId = JsonDoc["orderId"].ToString();
+                PaymentUrl = JsonDoc["formUrl"].ToString();
+            }
+        }
+
+        public void GetOrderStatus(Dictionary<string, string> data)
+        {
+            data.Add("userName", Username);
+            data.Add("password", Password);
+
+            string response = Gateway("rest/getOrderStatus.do", data);
+            Response = response;
+
+            JObject JsonDoc = JObject.Parse(response);
+            if (JsonDoc["errorCode"] != null && JsonDoc["errorCode"].ToString() != "0")
+            {
+                ErrorMessage = JsonDoc["errorMessage"].ToString();
+            }
+            else
+            {
+                OrderStatus = JsonDoc["OrderStatus"].ToString();
+            }
         }
 
         private string Gateway(string method, Dictionary<string, string> data)
@@ -48,40 +90,6 @@ namespace BathDream.Acquiring
             }
 
             return response;
-        }
-
-        public void Registred(Dictionary<string,string> data)
-        {
-            string response = Gateway("rest/register.do", data);
-            Response = response;
-
-            JObject JsonDoc = JObject.Parse(response);
-            if (JsonDoc["errorCode"].ToString() != "0")
-            {
-                ErrorCode = JsonDoc["errorCode"].ToString();
-                ErrorMessage = JsonDoc["errorMessage"].ToString();
-            }
-            else
-            {
-                PaymentId = JsonDoc["orderId"].ToString();
-                PaymentUrl = JsonDoc["formUrl"].ToString();
-            }
-        }
-
-        public void GetOrderStatus(Dictionary<string, string> data)
-        {
-            string response = Gateway("rest/getOrderStatus.do", data);
-            Response = response;
-
-            JObject JsonDoc = JObject.Parse(response);
-            if (JsonDoc["errorCode"].ToString() != "0")
-            {
-                ErrorMessage = JsonDoc["errorMessage"].ToString();
-            }
-            else
-            {
-                OrderStatus = JsonDoc["OrderStatus"].ToString();
-            }
         }
 
         private static string ToQueryString(NameValueCollection queryData)

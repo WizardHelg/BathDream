@@ -1,0 +1,42 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model BathDream.Pages.Account.ExecutorModel.InputModel
+@{
+}
+
+<form method="post" asp-page-handler="SelectMaterial">
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Название</th>
+            <th>Цена</th>
+            <th>Ед.</th>
+            <th>Количество</th>
+        </tr>
+        @foreach (var material in Model.MaterialPrices)
+        {
+            <tr>
+                @{
+                    Model.Materials.Add(new ExecutorModel.MaterialCount());
+
+                    int lastIndex = Model.Materials.Count() - 1;
+                }
+                <td>
+                    @material.Name
+                </td>
+                <td>@material.Price</td>
+                <td>@material.Unit</td>
+                <td>
+                    <input asp-for="Materials[lastIndex].Count" class="form-control" />
+                    <input asp-for="Materials[lastIndex].Material.Id" class="form-control" value="@material.Id" type="hidden" />
+                    <input asp-for="Materials[lastIndex].Material.Name" class="form-control" value="@material.Name" type="hidden" />
+                    <input asp-for="Materials[lastIndex].Material.Price" class="form-control" value="@material.Price" type="hidden" />
+                    <input asp-for="Materials[lastIndex].Material.Unit" class="form-control" value="@material.Unit" type="hidden" />
+                </td>
+            </tr>
+        }
+    </table>
+    <input asp-for="Order.Id" class="form-control" value="@Model.Order.Id" type="hidden" />
+    <button type="submit" class="btn btn-success">Отправить</button>
+</form>
+

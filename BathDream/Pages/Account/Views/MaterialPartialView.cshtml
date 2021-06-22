@@ -1,5 +1,32 @@
-﻿
+﻿@model BathDream.Pages.Account.CustomerModel.InputModel
 @{
 }
 
 <h3>Приносим свои извинения. Раздел находится в разработке.</h3>
+
+
+@*@foreach (var orderMaterial in Model.OrderMaterials)
+{
+    <p style="text-align:center">Заказ материалов №@orderMaterial.Id</p>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-condensed">
+            <tr class="success">
+                <th style="text-align: center;">Наименование</th>
+                <th style="text-align: center;">Ед.изм</th>
+                <th style="text-align: center;">Цена</th>
+                <th style="text-align: center;">Кол-во</th>
+                <th style="text-align: center;">Сумма</th>
+            </tr>
+            @foreach (var material in orderMaterial.Materials)
+            {
+                <tr>
+                    <td>@material.Name</td>
+                    <td>@material.Unit</td>
+                    <td>@material.Price</td>
+                    <td>@material.Count</td>
+                    <td>@{material.Count * material.Price}</td>
+                </tr>
+            }
+        </table>
+    </div>
+}*@

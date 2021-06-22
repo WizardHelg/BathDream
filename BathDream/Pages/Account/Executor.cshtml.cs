@@ -38,6 +38,16 @@ namespace BathDream.Pages.Account
             public Order Order { get; set; } = new Order();
             public string ContentView { get; set; } = "/Pages/Account/Views/ExecutorEstimatePartialView.cshtml";
             public string NameFamaly { get; set; }
+
+            public List<MaterialPrice> MaterialPrices { get; set; }
+            public List<MaterialCount> Materials { get; set; } = new List<MaterialCount>();
+
+        }
+
+        public class MaterialCount
+        {
+            public MaterialPrice Material { get; set; }
+            public int Count { get; set; }
         }
 
         public ExecutorModel(SignInManager<User> signInManager, UserManager<User> userManager, DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub)
@@ -155,6 +165,44 @@ namespace BathDream.Pages.Account
             var fileName = fileItem.FrendlyName;
 
             return File(content, contentType, fileName);
+        }
+
+        public async Task<IActionResult> OnGetSelectMaterialAsync(int id)
+        {
+            Input.Order.Id = id;
+            Input.MaterialPrices = await _db.MaterialPrices.ToListAsync();
+
+            return new PartialViewResult
+            {
+                ViewName = "./Views/SelectMaterialPartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
+        }
+
+        public async Task<IActionResult> OnPostSelectMaterialAsync()
+        {
+            Input.Order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == Input.Order.Id);
+
+            OrderMaterial orderMaterial = new OrderMaterial()
+            {
+                Order = Input.Order,
+                DateTime = DateTime.Now
+            };
+
+
+            Input.Materials.RemoveAll(m => m.Count == 0);
+            if (Input.Materials != null)
+            {
+                foreach (var item in Input.Materials)
+                {
+                    Material material = item.Material;
+                    material.Count = item.Count;
+                    material.OrderMaterial = orderMaterial;
+                    _db.Materials.Add(material);
+                }
+            }
+            await _db.SaveChangesAsync();
+            return Page();
         }
 
         public async Task SendToClient(string message, string userId, Order order)

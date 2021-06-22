@@ -40,6 +40,11 @@ namespace BathDream.Models
         public Order Order { get; set; }
 
         /// <summary>
+        /// Заказ (Order)
+        /// </summary>
+        public OrderMaterial OrderMaterial { get; set; }
+
+        /// <summary>
         /// Описание заказа
         /// </summary>
         public string Description { get; set; }

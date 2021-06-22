@@ -9,11 +9,14 @@ namespace BathDream.Models
     public class Work
     {
         public int Id { get; set; }
-        public WorkPrice WorkPrice { get; set; }
+        public string InnerName { get; set; }
+        public WorkType WorkType { get; set; }
         public int EstimateId { get; set; }
         public Estimate Estimate { get; set; }
         public int Position { get; set; }
         public string Group { get; set; }
+        public string Name { get; set; }
+        public string Unit { get; set; }
         public double Price { get; set; }
         public double Volume { get; set; }
 
@@ -21,18 +24,18 @@ namespace BathDream.Models
         public double Total => Price * Volume;
 
         [NotMapped]
-        public string FirstWord => WorkPrice.Name.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
+        public string FirstWord => Name.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
 
         [NotMapped]
         public string WithoutFirstWord
         {
             get
             {
-                string[] buffer = WorkPrice.Name.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                string[] buffer = Name.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
                 if (buffer.GetLength(0) > 1)
                     return buffer[1];
                 else
-                    return WorkPrice.Name;
+                    return Name;
             }
         }
     }

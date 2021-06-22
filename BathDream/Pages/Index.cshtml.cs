@@ -232,7 +232,6 @@ namespace BathDream.Pages
                 if (_db.WorkPrices.Where(x => x.InnerName == innerName).FirstOrDefault() is WorkPrice w_price)
                 {
                     Work work = w_price;
-                    work.WorkPrice = w_price;
                     work.Estimate = estimate;
                     work.Position = position++;
                     work.Group = group;

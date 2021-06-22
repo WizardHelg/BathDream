@@ -864,13 +864,12 @@ namespace BathDream.Pages
 
             if (id > 0 && await _db.Orders.Include(o => o.Estimate)
                                          .ThenInclude(e => e.Works)
-                                         .ThenInclude(e => e.WorkPrice)
                                          .Where(o => o.Id == id)
                                          .FirstOrDefaultAsync() is Order order)
             {
                 foreach (var work in order.Estimate.Works)
                 {
-                    AddSantech(work.WorkPrice.InnerName, $"{work.Volume:F0}");
+                    AddSantech(work.InnerName, $"{work.Volume:F0}");
                 }
 
                 return Page();

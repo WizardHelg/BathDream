@@ -135,28 +135,15 @@
     <a class="btn btn-success" asp-page-handler="Sign">Подписать</a>
 }
 
-@{
-    <!-- 1 ищем оплаты -->
-    @*
-                @if (Model.Payment == null)
-        {
-            <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить аванс 10%</a>
-        }-->
-        <!-- Цикл по всем оплатам. Все по DB -->
-        <!-- Проверяем статусы. Если статус оплачен - все ок -->
-        <!-- Если статус не оплачен -->
-        <!--else
-        {
-            if (Model.PaymentHandler.OnPaid(Model.Payment.PaymentId, out string status))
-            {
-        <label>Заказ оплачен</label>
-            }
-            else
-            {
-        <label>@status</label>
-            }
-        }
-    *@
+
+
+@if (Model.PrepaidPayment == null)
+{
+    <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить аванс 10%</a>
+}
+else if (Model.ResidualPayment == null)
+{
+    <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить остаток</a>
 }
 
 

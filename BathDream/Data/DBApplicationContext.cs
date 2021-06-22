@@ -22,6 +22,9 @@ namespace BathDream.Data
         public DbSet<Message> Messages { get; set; }
         public DbSet<FileItem> FileItems { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<OrderMaterial> OrderMaterials { get; set; }
+        public DbSet<Material> Materials { get; set; }
+        public DbSet<MaterialPrice> MaterialPrices { get; set; }
 
         public DBApplicationaContext(DbContextOptions<DBApplicationaContext> options)
             : base(options)

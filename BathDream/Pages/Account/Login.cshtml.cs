@@ -68,6 +68,8 @@ namespace BathDream.Pages.Account
 
             [Display(Name = "Код пришедший на телефон")]
             public string TempCode { get; set; }
+
+            public string CurrentPhone { get; set; }
         }
 
         public void OnGet(string returnUrl = null, string role = "customer")
@@ -82,6 +84,7 @@ namespace BathDream.Pages.Account
         public IActionResult OnPostSendCodeAsync()
         {
             int errorCode;
+            Input.CurrentPhone = Input.Phone.GetPhoneNumber();
             if (ModelState.TryGetValue("Input.Phone", out ModelStateEntry value)
                 && value.ValidationState == ModelValidationState.Valid)
             {
@@ -103,7 +106,12 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnPostCheckCodeAsync()
         {
-            if(ModelState.IsValid && _confirmator.TryConfirm(Input.GUID, Input.Code))
+
+            if (Input.CurrentPhone != Input.Phone)
+            {
+                ModelState.AddModelError(string.Empty, "Неверный номер телефона");
+            }
+            else if(ModelState.IsValid && _confirmator.TryConfirm(Input.GUID, Input.Code))
             {
                 User user = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == Input.Phone.GetPhoneNumber());
 
@@ -159,7 +167,7 @@ namespace BathDream.Pages.Account
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Не верный код подтверждения");
+                ModelState.AddModelError(string.Empty, "Неверный код подтверждения");
             }
 
             Input.CheckMode = true;

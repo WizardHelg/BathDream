@@ -75,7 +75,7 @@
     <!-- sidebar-wrapper  -->
     <main class="page-content">
         <div class="container-fluid">
-            <h1 style="text-align:center">Заказ №@Model.Input.CurrentOrder.Id от @Model.Input.CurrentOrder.Date.ToString("dd MMMM yyyy г.")</h1>
+            <h1 style="text-align:center">Заказ №@Model.Input.CurrentOrder?.Id от @Model.Input.CurrentOrder?.Date.ToString("dd MMMM yyyy г.")</h1>
             <hr />
             @if (Model.Input.Flag == 1)
             {
@@ -179,7 +179,6 @@
                     </div>
                 </div>
                 }
-
             </div>
 </main>
     <!-- page-content" -->

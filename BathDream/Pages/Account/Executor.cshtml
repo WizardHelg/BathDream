@@ -62,25 +62,6 @@
                                 <span>Принятые заказы</span>
                             </a>
                         </li>
-                        @*<li class="sidebar-dropdown">
-                            <a asp-page-handler="Brief">
-                                <i class="far fa-gem"></i>
-                                <span>Проект</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fa fa-chart-line"></i>
-                                <span>Материал</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fa fa-globe"></i>
-                                <span>Документы</span>
-                            </a>
-                        </li>*@
-
                     </ul>
                 </div>
                 <!-- sidebar-menu  -->
@@ -106,28 +87,28 @@
                             </tr>
                             @foreach (var order_info in @Model.Data)
                             {
-                        <tr>
-                            <td style="text-align: center;">
-                                @if (order_info.Status == Models.Order.Statuses.New)
-                                {
-                                    <a>New!</a>
-                                }
-                                @order_info.Customer.User.FullName
-                            </td>
-                            <td style="text-align: center;">@order_info.Id</td>
-                            <td style="text-align: center;">@order_info.ObjectAdress</td>
-                            <td style="text-align: center;">
-                                <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
-                            </td>
-                            <td style="text-align: center;">
-                            </td>
-                            <td style="text-align: center;">
-                                @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
-                                {
-                                    <a class="btn btn-success" asp-page-handler="Executing" asp-route-id="@order_info.Id">Принять</a>
-                                }
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        @if (order_info.Status == Models.Order.Statuses.New)
+                                        {
+                                            <a>New!</a>
+                                        }
+                                        @order_info.Customer.User.FullName
+                                    </td>
+                                    <td style="text-align: center;">@order_info.Id</td>
+                                    <td style="text-align: center;">@order_info.ObjectAdress</td>
+                                    <td style="text-align: center;">
+                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                    <td style="text-align: center;">
+                                        @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
+                                        {
+                                            <a class="btn btn-success" asp-page-handler="Executing" asp-route-id="@order_info.Id">Принять</a>
+                                        }
+                                    </td>
+                                </tr>
                             }
                             @foreach (var order_info in @Model.ExecutingOrders)
                             {
@@ -160,28 +141,42 @@
                                 <th style="text-align:center">Адрес</th>
                                 <th style="text-align:center">Чат</th>
                                 <th style="text-align:center">Смета</th>
-                                <th style="text-align:center">Дизайнн</th>
-                                @*<th></th>*@
+                                <th style="text-align:center">Дизайн</th>
+                                @*<th style="text-align:center">Материалы</th>*@
                             </tr>
                             @foreach (var order_info in @Model.ExecutingOrders)
                             {
-                        <tr>
-                            <td style="text-align: center;">@order_info.Customer.User.FullName</td>
-                            <td style="text-align: center;">@order_info.Id</td>
-                            <td style="text-align: center;">@order_info.ObjectAdress</td>
-                            <td style="text-align: center;"><a asp-page="/Account/ExecutorChat" asp-route-userId="@order_info.Customer.User.Id" asp-route-orderId="@order_info.Id">Открыть чат</a></td>
-                            <td style="text-align: center;">
-                                <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
-                            </td>
-                            <td style="text-align: center;">
-                                @if (order_info.SelectedItemId > 0)
-                                {
-                                    <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image">Скачать</i></a>
-                                }
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td style="text-align: center;">@order_info.Customer.User.FullName</td>
+                                    <td style="text-align: center;">@order_info.Id</td>
+                                    <td style="text-align: center;">@order_info.ObjectAdress</td>
+                                    <td style="text-align: center;"><a asp-page="/Account/ExecutorChat" asp-route-userId="@order_info.Customer.User.Id" asp-route-orderId="@order_info.Id">Открыть чат</a></td>
+                                    <td style="text-align: center;">
+                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        @if (order_info.SelectedItemId > 0)
+                                        {
+                                            <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image">Скачать</i></a>
+                                        }
+                                    </td>
+                                    <!--<td style="text-align: center;">-->
+                                        @*<a asp-page-handler="SelectMaterial" asp-route-id="@order_info.Id">Выбрать</a>*@
+                                        <!--<a class="btn btn-success" name="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Выбрать</a>
+                                    </td>-->
+                                </tr>
                             }
                         </table>
+                        <div aria-hidden="true" class="modal fade" id="modal-order" role="dialog">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+                                        <div id="partial"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         break;
                 }
             </div>
@@ -199,16 +194,8 @@
 <script src="~/js/todolist.js"></script>
 <script src="~/js/dashboard.js"></script>
 
-@*<script>
-        function ShowEstimate(e) {
-            var i = e;
-            $.get({
-                url: 'executor?handler=ShowEstimate',
-                data: { id: i },
-                success: function (data) {
-                    var newTab = window.open("", "_blank", true);
-                    newTab.document.body.innerHTML = data;
-                }
-            })
-        }        
-</script>*@
+<script>
+    function LoadPartialView(e) {
+        $("#partial").load("/Account/Executor?id=" + e.name + "&handler=SelectMaterial&");
+    }
+</script>

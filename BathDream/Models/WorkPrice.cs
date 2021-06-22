@@ -9,7 +9,11 @@ namespace BathDream.Models
     {
         public static implicit operator Work(WorkPrice wp) => new()
         {
-            Price = wp.Price
+            InnerName = wp.InnerName,
+            Name = wp.Name,
+            Unit = wp.Unit,
+            Price = wp.Price,
+            WorkType = wp.WorkType
         };
 
         public int Id { get; set; }

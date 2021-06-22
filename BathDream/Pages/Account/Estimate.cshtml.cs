@@ -24,8 +24,7 @@ namespace BathDream.Pages.Account
         {
             Input.Estimate = _db.Estimates.FirstOrDefault(e => e.OrderId == id);
             Input.Estimate.Rooms = _db.Rooms.Where(r => r.EstimateId == Input.Estimate.Id).ToList();
-            Input.Estimate.Works = _db.Works.Where(w => w.EstimateId == Input.Estimate.Id)
-                .Include(w => w.WorkPrice).ToList();
+            Input.Estimate.Works = _db.Works.Where(w => w.EstimateId == Input.Estimate.Id).ToList();
 
             Input.Order = _db.Orders.FirstOrDefault(o => o.Id == id);
             return Page();

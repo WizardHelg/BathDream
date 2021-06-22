@@ -23,7 +23,7 @@ namespace BathDream.Acquiring
 
         public PaymentHandler()
         {
-            AlfabankPayment = new AlfabankPaymentAPI();
+            AlfabankPayment = new AlfabankPaymentAPI("bath_dream-api", "bath_dream*?1");
         }
 
         /// <summary>
@@ -32,16 +32,15 @@ namespace BathDream.Acquiring
         /// <param name="paymentNumber">Номер заказа в системе магазина</param>
         /// <param name="amount">Сумма платежа в копейках</param>
         /// <param name="returnUrl">Адрес для перенаправления в случае успешной оплаты</param>
-        public void CreatePayment(string paymentNumber, int amount, string returnUrl)
+        public void CreatePayment(string paymentNumber, int amount, string returnUrl, string failUrl)
         {
             AlfabankPayment.Registred(
                 new Dictionary<string, string>
                 {
-                    ["userName"] = "NAME",
-                    ["password"] = "PASSWORD",
                     ["orderNumber"] = paymentNumber,
                     ["amount"] = amount.ToString(),
-                    ["returnUrl"] = returnUrl
+                    ["returnUrl"] = returnUrl,
+                    ["failUrl"] = failUrl
                 });
         }
 
@@ -55,11 +54,9 @@ namespace BathDream.Acquiring
             AlfabankPayment.GetOrderStatus(
                 new Dictionary<string, string>
                 {
-                    ["userName"] = "NAME",
-                    ["password"] = "PASSWORD",
                     ["orderId"] = paymentId
                 });
-            return Status.FirstOrDefault(s => s.Key == AlfabankPayment.OrderStatus).Value;
+            return Status.FirstOrDefault(s => s.Key == AlfabankPayment.OrderStatus).Key;
         }
 
         /// <summary>
