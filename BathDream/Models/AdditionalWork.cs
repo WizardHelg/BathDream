@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace BathDream.Models
 {
-    public class Material
+    public class AdditionalWork
     {
         public int Id { get; set; }
+        public WorkType WorkType { get; set; }
         public string Name { get; set; }
         public string Unit { get; set; }
         public double Price { get; set; }

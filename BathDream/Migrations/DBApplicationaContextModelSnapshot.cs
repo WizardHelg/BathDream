@@ -19,6 +19,40 @@ namespace BathDream.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("BathDream.Models.AdditionalWork", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("WorkTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.HasIndex("WorkTypeId");
+
+                    b.ToTable("AdditionalWorks");
+                });
+
             modelBuilder.Entity("BathDream.Models.Estimate", b =>
                 {
                     b.Property<int>("Id")
@@ -91,6 +125,32 @@ namespace BathDream.Migrations
                     b.ToTable("FileItems");
                 });
 
+            modelBuilder.Entity("BathDream.Models.Invoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StatusPayment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Invoices");
+                });
+
             modelBuilder.Entity("BathDream.Models.Material", b =>
                 {
                     b.Property<int>("Id")
@@ -101,11 +161,11 @@ namespace BathDream.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
+                    b.Property<int?>("InvoiceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderMaterialId")
-                        .HasColumnType("int");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -115,7 +175,7 @@ namespace BathDream.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderMaterialId");
+                    b.HasIndex("InvoiceId");
 
                     b.ToTable("Materials");
                 });
@@ -217,29 +277,6 @@ namespace BathDream.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("BathDream.Models.OrderMaterial", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StatusPayment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderMaterials");
-                });
-
             modelBuilder.Entity("BathDream.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -256,10 +293,7 @@ namespace BathDream.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderMaterialId")
+                    b.Property<int?>("InvoiceId")
                         .HasColumnType("int");
 
                     b.Property<string>("PaymentId")
@@ -273,9 +307,7 @@ namespace BathDream.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("OrderMaterialId");
+                    b.HasIndex("InvoiceId");
 
                     b.ToTable("Payments");
                 });
@@ -666,6 +698,21 @@ namespace BathDream.Migrations
                     b.ToTable("ExecutorProfiles");
                 });
 
+            modelBuilder.Entity("BathDream.Models.AdditionalWork", b =>
+                {
+                    b.HasOne("BathDream.Models.Invoice", "Invoice")
+                        .WithMany("AdditionalWorks")
+                        .HasForeignKey("InvoiceId");
+
+                    b.HasOne("BathDream.Models.WorkType", "WorkType")
+                        .WithMany()
+                        .HasForeignKey("WorkTypeId");
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("WorkType");
+                });
+
             modelBuilder.Entity("BathDream.Models.Estimate", b =>
                 {
                     b.HasOne("BathDream.Models.Order", "Order")
@@ -703,13 +750,22 @@ namespace BathDream.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("BathDream.Models.Invoice", b =>
+                {
+                    b.HasOne("BathDream.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("BathDream.Models.Material", b =>
                 {
-                    b.HasOne("BathDream.Models.OrderMaterial", "OrderMaterial")
+                    b.HasOne("BathDream.Models.Invoice", "Invoice")
                         .WithMany("Materials")
-                        .HasForeignKey("OrderMaterialId");
+                        .HasForeignKey("InvoiceId");
 
-                    b.Navigation("OrderMaterial");
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("BathDream.Models.Message", b =>
@@ -748,28 +804,13 @@ namespace BathDream.Migrations
                     b.Navigation("Executor");
                 });
 
-            modelBuilder.Entity("BathDream.Models.OrderMaterial", b =>
-                {
-                    b.HasOne("BathDream.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId");
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("BathDream.Models.Payment", b =>
                 {
-                    b.HasOne("BathDream.Models.Order", "Order")
+                    b.HasOne("BathDream.Models.Invoice", "Invoice")
                         .WithMany()
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("InvoiceId");
 
-                    b.HasOne("BathDream.Models.OrderMaterial", "OrderMaterial")
-                        .WithMany()
-                        .HasForeignKey("OrderMaterialId");
-
-                    b.Navigation("Order");
-
-                    b.Navigation("OrderMaterial");
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("BathDream.Models.Room", b =>
@@ -885,14 +926,16 @@ namespace BathDream.Migrations
                     b.Navigation("Works");
                 });
 
+            modelBuilder.Entity("BathDream.Models.Invoice", b =>
+                {
+                    b.Navigation("AdditionalWorks");
+
+                    b.Navigation("Materials");
+                });
+
             modelBuilder.Entity("BathDream.Models.Order", b =>
                 {
                     b.Navigation("Estimate");
-                });
-
-            modelBuilder.Entity("BathDream.Models.OrderMaterial", b =>
-                {
-                    b.Navigation("Materials");
                 });
 
             modelBuilder.Entity("BathDream.Models.User", b =>

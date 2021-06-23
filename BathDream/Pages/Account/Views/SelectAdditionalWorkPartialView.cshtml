@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model BathDream.Pages.Account.ExecutorModel.InputModel
+@{
+}
+
+<form method="post" asp-page-handler="SelectAdditionalWork">
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Название</th>
+            <th>Цена</th>
+            <th>Ед.</th>
+            <th>Количество</th>
+        </tr>
+        @foreach (var work in Model.WorkPrices)
+        {
+            <tr>
+                @{
+                    Model.AdditionalWorks.Add(new ExecutorModel.AdditionalWorkCount());
+                    int lastIndex = Model.AdditionalWorks.Count() - 1;
+                    //Model.AdditionalWorks[lastIndex].AdditionalWork.WorkType = new Models.WorkType();
+                }
+                <td>
+                    @work.Name
+                </td>
+                <td>@work.Price</td>
+                <td>@work.Unit</td>
+                <td>
+                    <input asp-for="AdditionalWorks[lastIndex].Count" class="form-control" />
+                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Id" class="form-control" value="@work.Id" type="hidden" />
+                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Name" class="form-control" value="@work.Name" type="hidden" />
+                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Price" class="form-control" value="@work.Price" type="hidden" />
+                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Unit" class="form-control" value="@work.Unit" type="hidden" />
+                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.WorkType.Id" class="form-control" value="@work.WorkType.Id" type="hidden" />
+                </td>
+            </tr>
+        }
+    </table>
+    <input asp-for="Order.Id" class="form-control" value="@Model.Order.Id" type="hidden" />
+    <button type="submit" class="btn btn-success">Отправить</button>
+</form>
+

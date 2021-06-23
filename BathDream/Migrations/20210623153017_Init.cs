@@ -50,6 +50,21 @@ namespace BathDream.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MaterialPrices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MaterialPrices", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WorkTypes",
                 columns: table => new
                 {
@@ -340,6 +355,28 @@ namespace BathDream.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    StatusPayment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
@@ -406,10 +443,13 @@ namespace BathDream.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    WorkPriceId = table.Column<int>(type: "int", nullable: true),
+                    InnerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkTypeId = table.Column<int>(type: "int", nullable: true),
                     EstimateId = table.Column<int>(type: "int", nullable: false),
                     Position = table.Column<int>(type: "int", nullable: false),
                     Group = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Volume = table.Column<double>(type: "float", nullable: false)
                 },
@@ -423,12 +463,100 @@ namespace BathDream.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Works_WorkPrices_WorkPriceId",
-                        column: x => x.WorkPriceId,
-                        principalTable: "WorkPrices",
+                        name: "FK_Works_WorkTypes_WorkTypeId",
+                        column: x => x.WorkTypeId,
+                        principalTable: "WorkTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "AdditionalWorks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WorkTypeId = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Count = table.Column<int>(type: "int", nullable: false),
+                    InvoiceId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdditionalWorks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdditionalWorks_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AdditionalWorks_WorkTypes_WorkTypeId",
+                        column: x => x.WorkTypeId,
+                        principalTable: "WorkTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Materials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Count = table.Column<int>(type: "int", nullable: false),
+                    InvoiceId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Materials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Materials_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    InvoiceId = table.Column<int>(type: "int", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdditionalWorks_InvoiceId",
+                table: "AdditionalWorks",
+                column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdditionalWorks_WorkTypeId",
+                table: "AdditionalWorks",
+                column: "WorkTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -491,6 +619,16 @@ namespace BathDream.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invoices_OrderId",
+                table: "Invoices",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Materials_InvoiceId",
+                table: "Materials",
+                column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_OrderId",
                 table: "Messages",
                 column: "OrderId");
@@ -516,6 +654,11 @@ namespace BathDream.Migrations
                 column: "ExecutorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payments_InvoiceId",
+                table: "Payments",
+                column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rooms_EstimateId",
                 table: "Rooms",
                 column: "EstimateId");
@@ -538,13 +681,16 @@ namespace BathDream.Migrations
                 column: "EstimateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Works_WorkPriceId",
+                name: "IX_Works_WorkTypeId",
                 table: "Works",
-                column: "WorkPriceId");
+                column: "WorkTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AdditionalWorks");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -567,10 +713,22 @@ namespace BathDream.Migrations
                 name: "FileItems");
 
             migrationBuilder.DropTable(
+                name: "MaterialPrices");
+
+            migrationBuilder.DropTable(
+                name: "Materials");
+
+            migrationBuilder.DropTable(
                 name: "Messages");
 
             migrationBuilder.DropTable(
+                name: "Payments");
+
+            migrationBuilder.DropTable(
                 name: "Rooms");
+
+            migrationBuilder.DropTable(
+                name: "WorkPrices");
 
             migrationBuilder.DropTable(
                 name: "Works");
@@ -579,16 +737,16 @@ namespace BathDream.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Invoices");
+
+            migrationBuilder.DropTable(
                 name: "Estimates");
 
             migrationBuilder.DropTable(
-                name: "WorkPrices");
+                name: "WorkTypes");
 
             migrationBuilder.DropTable(
                 name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "WorkTypes");
 
             migrationBuilder.DropTable(
                 name: "ExecutorProfiles");

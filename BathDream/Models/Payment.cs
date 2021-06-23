@@ -34,15 +34,15 @@ namespace BathDream.Models
         /// </summary>
         public int Amount { get; set; }
 
-        /// <summary>
-        /// Заказ (Order)
-        /// </summary>
-        public Order Order { get; set; }
+        ///// <summary>
+        ///// Заказ (Order)
+        ///// </summary>
+        //public Order Order { get; set; }
 
         /// <summary>
         /// Заказ (Order)
         /// </summary>
-        public OrderMaterial OrderMaterial { get; set; }
+        public Invoice Invoice { get; set; }
 
         /// <summary>
         /// Описание заказа

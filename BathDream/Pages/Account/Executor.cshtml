@@ -143,6 +143,7 @@
                                 <th style="text-align:center">Смета</th>
                                 <th style="text-align:center">Дизайн</th>
                                 @*<th style="text-align:center">Материалы</th>*@
+                                <th style="text-align:center">Доп.Работы</th>
                             </tr>
                             @foreach (var order_info in @Model.ExecutingOrders)
                             {
@@ -162,8 +163,11 @@
                                     </td>
                                     <!--<td style="text-align: center;">-->
                                         @*<a asp-page-handler="SelectMaterial" asp-route-id="@order_info.Id">Выбрать</a>*@
-                                        <!--<a class="btn btn-success" name="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Выбрать</a>
+                                        <!--<a class="btn btn-success" name="SelectMaterial" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Выбрать</a>
                                     </td>-->
+                                    <td style="text-align: center;">
+                                        <a class="btn btn-success" name="SelectAdditionalWork" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Дополнительные работы</a>
+                                    </td>
                                 </tr>
                             }
                         </table>
@@ -196,6 +200,6 @@
 
 <script>
     function LoadPartialView(e) {
-        $("#partial").load("/Account/Executor?id=" + e.name + "&handler=SelectMaterial&");
+        $("#partial").load("/Account/Executor?id=" + e.id + "&handler=" + e.name + "&");
     }
 </script>

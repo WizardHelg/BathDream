@@ -26,7 +26,7 @@ namespace BathDream.Pages.Account
 
         public List<Order> ExecutingOrders = new List<Order>();
 
-        public int sw = 1;
+        public int sw = 2;
 
         private readonly DBApplicationaContext _db;
 
@@ -42,11 +42,19 @@ namespace BathDream.Pages.Account
             public List<MaterialPrice> MaterialPrices { get; set; }
             public List<MaterialCount> Materials { get; set; } = new List<MaterialCount>();
 
+            public List<WorkPrice> WorkPrices { get; set; }
+            public List<AdditionalWorkCount> AdditionalWorks { get; set; } = new List<AdditionalWorkCount>();
+
         }
 
         public class MaterialCount
         {
             public MaterialPrice Material { get; set; }
+            public int Count { get; set; }
+        }
+        public class AdditionalWorkCount
+        {
+            public WorkPrice AdditionalWork { get; set; }
             public int Count { get; set; }
         }
 
@@ -183,8 +191,9 @@ namespace BathDream.Pages.Account
         {
             Input.Order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == Input.Order.Id);
 
-            OrderMaterial orderMaterial = new OrderMaterial()
+            Invoice invoice = new Invoice()
             {
+                Type = 3,
                 Order = Input.Order,
                 DateTime = DateTime.Now
             };
@@ -197,11 +206,53 @@ namespace BathDream.Pages.Account
                 {
                     Material material = item.Material;
                     material.Count = item.Count;
-                    material.OrderMaterial = orderMaterial;
+                    material.Invoice = invoice;
                     _db.Materials.Add(material);
                 }
             }
             await _db.SaveChangesAsync();
+            return Page();
+        }
+
+        public async Task<IActionResult> OnGetSelectAdditionalWork(int id)
+        {
+            Input.Order.Id = id;
+            Input.WorkPrices = await _db.WorkPrices.Include(w => w.WorkType).ToListAsync();
+
+            return new PartialViewResult
+            {
+                ViewName = "./Views/SelectAdditionalWorkPartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
+        }
+
+        public async Task<IActionResult> OnPostSelectAdditionalWork()
+        {
+            Input.Order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == Input.Order.Id);
+
+            Invoice invoice = new Invoice()
+            {
+                Type = 3,
+                Order = Input.Order,
+                DateTime = DateTime.Now
+            };
+
+
+            Input.AdditionalWorks.RemoveAll(m => m.Count == 0);
+            if (Input.AdditionalWorks != null)
+            {
+                await _db.Invoices.AddAsync(invoice);
+                foreach (var item in Input.AdditionalWorks)
+                {
+                    AdditionalWork additionalWork = item.AdditionalWork;
+                    additionalWork.WorkType = await _db.WorkTypes.FirstOrDefaultAsync(t => t.Id == item.AdditionalWork.WorkType.Id);
+                    additionalWork.Count = item.Count;
+                    additionalWork.Invoice = invoice;
+                    _db.AdditionalWorks.Add(additionalWork);
+                }
+            }
+            await _db.SaveChangesAsync();
+
             return Page();
         }
 

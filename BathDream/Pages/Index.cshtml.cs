@@ -19,6 +19,7 @@ using MimeKit;
 
 using BathDream.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages
 {
@@ -229,8 +230,8 @@ namespace BathDream.Pages
             int position = 1;
             void AddWork(string group, string innerName, double volume)
             {
-                if (_db.WorkPrices.Where(x => x.InnerName == innerName).FirstOrDefault() is WorkPrice w_price)
-                {
+                if (_db.WorkPrices.Where(x => x.InnerName == innerName).Include(x => x.WorkType).FirstOrDefault() is WorkPrice w_price)
+                { 
                     Work work = w_price;
                     work.Estimate = estimate;
                     work.Position = position++;

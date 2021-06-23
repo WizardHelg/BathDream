@@ -16,6 +16,14 @@ namespace BathDream.Models
             WorkType = wp.WorkType
         };
 
+        public static implicit operator AdditionalWork(WorkPrice wp) => new()
+        {
+            Name = wp.Name,
+            Unit = wp.Unit,
+            Price = wp.Price,
+            WorkType = wp.WorkType
+        };
+
         public int Id { get; set; }
         public WorkType WorkType { get; set; }
         public string InnerName { get; set; }

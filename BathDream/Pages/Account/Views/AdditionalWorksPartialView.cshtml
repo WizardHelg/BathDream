@@ -1,0 +1,44 @@
+﻿@model BathDream.Pages.Account.CustomerModel.InputModel
+@{
+}
+
+@*<h3>Приносим свои извинения. Раздел находится в разработке.</h3>*@
+
+<h3>Дополнительные работы к заказу №@Model.CurrentOrder.Id</h3>
+<form method="post" asp-page-handler="AdditionalWorks">
+    @foreach (var invoice in Model.Invoices)
+    {
+        <p style="text-align:center">Дополнительные работы №@invoice.Id</p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-condensed">
+                <tr class="success">
+                    <th style="text-align: center;">Наименование</th>
+                    <th style="text-align: center;">Ед.изм</th>
+                    <th style="text-align: center;">Цена</th>
+                    <th style="text-align: center;">Кол-во</th>
+                    <th style="text-align: center;">Сумма</th>
+                </tr>
+                @foreach (var additionalWork in invoice.AdditionalWorks)
+                {
+                    double sum = additionalWork.Count * additionalWork.Price;
+                    <tr>
+                        <td>@additionalWork.Name</td>
+                        <td>@additionalWork.Unit</td>
+                        <td>@additionalWork.Price</td>
+                        <td>@additionalWork.Count</td>
+                        <td>@sum</td>
+                    </tr>
+                }
+            </table>
+            <div style="text-align: right;">@invoice.AdditionalWorks.Sum(x => x.Price * x.Count).ToString("# ##0.00")</div>
+        </div>
+        if (invoice.StatusPayment == "2")
+        {
+            <label>Заказ оплачен</label>
+        }
+        else
+        {
+            <button type="submit" asp-page-handler="AdditionalWorks" asp-route-id="@invoice.Id" asp-route-total="@invoice.AdditionalWorks.Sum(x => x.Price * x.Count)" class="btn btn-success">Оплатить</button>
+        }
+    }
+</form>

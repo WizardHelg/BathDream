@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 
 namespace BathDream.Models
 {
-    public class OrderMaterial
+    public class Invoice
     {
         public int Id { get; set; }
+        public int Type { get; set; }
         public Order Order { get; set; }
         public string StatusPayment { get; set; }
         public DateTime DateTime { get; set; }
         public List<Material> Materials { get; set; }
+        public List<AdditionalWork> AdditionalWorks  { get; set; }
     }
 }

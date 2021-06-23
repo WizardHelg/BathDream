@@ -82,7 +82,8 @@ namespace BathDream.Pages.Account
             /// </summary>
             public int FlagBrief { get; set; } = 0;
 
-            public List<OrderMaterial> OrderMaterials { get; set; }
+            public List<Invoice> Invoices { get; set; }
+            public Invoice Invoice { get; set; }
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager,
@@ -128,6 +129,9 @@ namespace BathDream.Pages.Account
             {
                 Input.FlagBrief = 1;
             }
+
+            Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == order.Id && i.Type == 3).ToListAsync();
+
         }
 
         public async Task<IActionResult> OnGetEstimateAsync()
@@ -223,19 +227,10 @@ namespace BathDream.Pages.Account
 
             Input.PaymentHandler = new PaymentHandler();
 
-            Input.Payments = await _db.Payments.Where(p => p.Order.Id == order.Id).ToListAsync();
-            foreach (var payment in Input.Payments)
-            {
-                if (payment.PaymentStatus == "2" || payment.PaymentStatus == "6")
-                {
-                    continue;
-                }
-                string status = Input.PaymentHandler.GetPaymentStatus(payment.PaymentId);
-                if (payment.PaymentStatus != status || payment.PaymentStatus == null)
-                {
-                    payment.PaymentStatus = status;
-                }
-            }
+            Input.Payments = await _db.Payments.Where(p => p.Invoice.Order.Id == order.Id && p.Invoice.Type == 1).Include(p => p.Invoice).ToListAsync();
+
+            CheckStatus(Input.Payments);
+
             await _db.SaveChangesAsync();
 
             Input.PrepaidPayment = Input.Payments.FirstOrDefault(p => p.PaymentStatus == "2" && p.Description == "Аванс");
@@ -253,6 +248,28 @@ namespace BathDream.Pages.Account
         }
 
 
+        /// <summary>
+        /// Проверяет статусы оплат в Payments, сверяет их со статусами в Invoice, и, при необходимости, обновляет.
+        /// </summary>
+        /// <param name="payments">Список загруженных из БД платежей конкретного Invoice.Type (1 - смета, 2 - материалы, 3 - дополнительные работы) </param>
+        public void CheckStatus(List<Payment> payments)
+        {
+            foreach (var payment in Input.Payments)
+            {
+                if ((payment.PaymentStatus == "2" || payment.PaymentStatus == "6") && payment.PaymentStatus == payment.Invoice.StatusPayment)
+                {
+                    continue;
+                }
+                string status = Input.PaymentHandler.GetPaymentStatus(payment.PaymentId);
+                if (payment.PaymentStatus != status
+                 || payment.Invoice.StatusPayment != status
+                 || payment.PaymentStatus == null)
+                {
+                    payment.PaymentStatus = status;
+                    payment.Invoice.StatusPayment = status;
+                }
+            }
+        }
 
         public async Task<IActionResult> OnGetSignAsync()
         {
@@ -325,13 +342,13 @@ namespace BathDream.Pages.Account
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnGetMaterial()
+        public async Task<IActionResult> OnGetMaterialAsync()
         {
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
             Order order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
 
-            Input.OrderMaterials = await _db.OrderMaterials.Where(o => o.Order.Id == order.Id).Include(m => m.Materials).ToListAsync();
+            Input.Invoices = await _db.Invoices.Where(o => o.Order.Id == order.Id).Include(m => m.Materials).ToListAsync();
 
             return new PartialViewResult
             {
@@ -341,12 +358,79 @@ namespace BathDream.Pages.Account
         }
         public IActionResult OnGetDocuments()
         {
-            Input.ContentView = "./Views/DocumentsPartialView";
+            //Input.ContentView = "./Views/DocumentsPartialView";
             return new PartialViewResult
             {
                 ViewName = "./Views/DocumentsPartialView",
                 ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
             };
+        }
+
+        public async Task<IActionResult> OnGetAdditionalWorksAsync(int id)
+        {
+            Input.CurrentOrder = new Order() { Id = id };
+            Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == id && i.Type == 3).Include(i => i.AdditionalWorks).ToListAsync();
+
+            Input.PaymentHandler = new PaymentHandler();
+
+            Input.Payments = await _db.Payments.Where(p => p.Invoice.Order.Id == id && p.Invoice.Type == 3).Include(p => p.Invoice).ToListAsync();
+
+            CheckStatus(Input.Payments);
+
+            await _db.SaveChangesAsync();
+
+            return new PartialViewResult
+            {
+                ViewName = "./Views/AdditionalWorksPartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
+        }
+        
+        public async Task<IActionResult> OnPostAdditionalWorksAsync(int id, double total)
+        {
+            Invoice invoice = await _db.Invoices.Include(i => i.Order).FirstOrDefaultAsync(i => i.Id == id);
+ 
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+            int amount = Convert.ToInt32(total * 100);
+            string paymentNumber = await GeneratePaymentNumber(invoice.Order.Id, 3);
+
+            string returnUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/Account/Payments/ReturnUrl";
+            string failUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/Account/Payments/FailUrl";
+
+            Input.PaymentHandler = new PaymentHandler();
+            Input.PaymentHandler.CreatePayment(paymentNumber, amount, returnUrl, failUrl);
+
+            if (Input.PaymentHandler.AlfabankPayment.ErrorCode != "0" && Input.PaymentHandler.AlfabankPayment.ErrorCode != null)
+            {
+                Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage;
+                return RedirectToPage("/Account/Customer", "Contract",
+                    new
+                    {
+                        paymentMessage = Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage //поправить
+                    });
+            }
+
+            string paymentUrl = Input.PaymentHandler.AlfabankPayment.PaymentUrl;
+            string paymentId = Input.PaymentHandler.AlfabankPayment.PaymentId;
+
+            Payment payment = new Payment()
+            {
+                PaymentId = paymentId,
+                PaymentStatus = "0",
+                PaymentNumber = paymentNumber,
+                Date = DateTime.Now,
+                Amount = amount,
+                Invoice = invoice,
+                Description = "Дополнительные работы"
+            };
+
+            await _db.Payments.AddAsync(payment);
+            await _db.SaveChangesAsync();
+
+            return Redirect(paymentUrl);
         }
 
         /// <summary>
@@ -459,16 +543,28 @@ namespace BathDream.Pages.Account
             }
         }
 
-        public async Task<IActionResult> OnGetPayment(int orderId)
+        public async Task<IActionResult> OnGetPaymentAsync(int orderId)
         {
             Order order = await _db.Orders.Include(o => o.Estimate).ThenInclude(e => e.Works).FirstOrDefaultAsync(o => o.Id == orderId);
             Input.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
             Input.Total = Input.Works.Sum(w => w.Total);
 
+            Invoice invoice = await _db.Invoices.FirstOrDefaultAsync(i => i.Order.Id == orderId && i.Type == 1);
+            if (invoice == null)
+            {
+                invoice = new Invoice
+                {
+                    Type = 1,
+                    Order = order,
+                    DateTime = DateTime.Now
+                };
+                await _db.Invoices.AddAsync(invoice);
+            }
+
             int amount = 0;
             string description = "";
 
-            Payment payment = await _db.Payments.FirstOrDefaultAsync(p => p.Order.Id == orderId && p.Description == "Аванс" && p.PaymentStatus == "2");
+            Payment payment = await _db.Payments.FirstOrDefaultAsync(p => p.Invoice.Order.Id == orderId && p.Description == "Аванс" && p.PaymentStatus == "2");
             if (payment != null)
             {
                 amount = Convert.ToInt32(Input.Total * 100) - payment.Amount;
@@ -483,7 +579,7 @@ namespace BathDream.Pages.Account
                 description = "Аванс";
             }
 
-            string paymentNumber = await GeneratePaymentNumber(order.Id);
+            string paymentNumber = await GeneratePaymentNumber(order.Id, 1);
 
             string returnUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/Account/Payments/ReturnUrl";
             string failUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/Account/Payments/FailUrl";
@@ -511,20 +607,34 @@ namespace BathDream.Pages.Account
                 PaymentNumber = paymentNumber,
                 Date = DateTime.Now,
                 Amount = amount,
-                Order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == orderId),
+                Invoice = invoice,
                 Description = description
             };
 
-            _db.Payments.Add(payment);
-            _db.SaveChanges();
+            await _db.Payments.AddAsync(payment);
+            await _db.SaveChangesAsync();
 
             return Redirect(paymentUrl);
         }
 
-        public async Task<string> GeneratePaymentNumber(int orderId)
+        public async Task<string> GeneratePaymentNumber(int orderId, int type)
         {
-            int count = await _db.Payments.Where(p => p.Order.Id == orderId).CountAsync() + 1;
-            string result = $"Order{orderId}-{count}";
+            string result = "";
+            int count = await _db.Payments.Where(p => p.Invoice.Order.Id == orderId && p.Invoice.Type == type).CountAsync() + 1;
+            if (type == 1)
+            {
+                result = $"Order{orderId}-{count}";
+            }
+            else if (type == 2)
+            {
+                result = $"Order{orderId}-Materials-{count}";
+            }
+            else if (type == 3)
+            {
+
+                result = $"Order{orderId}-AddWork-{count}";
+            }
+            
             return result;
         }
 
