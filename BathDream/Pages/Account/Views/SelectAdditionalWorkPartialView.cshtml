@@ -4,40 +4,111 @@
 @model BathDream.Pages.Account.ExecutorModel.InputModel
 @{
 }
+@{
+    int i = 0;
+}
+@foreach (var invoice in Model.Invoices)
+{
+    i++;
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <a class="btn btn-success" data-toggle="collapse" data-target="#collapse @i" aria-expanded="false" aria-controls="collapse @i">
+                        Дополнительные работы №@invoice.Id к заказу №@Model.Order.Id
+                    </a>
+                </h5>
+            </div>
 
-<form method="post" asp-page-handler="SelectAdditionalWork">
-    <table class="table table-bordered table-hover">
-        <tr>
-            <th>Название</th>
-            <th>Цена</th>
-            <th>Ед.</th>
-            <th>Количество</th>
-        </tr>
-        @foreach (var work in Model.WorkPrices)
-        {
-            <tr>
-                @{
-                    Model.AdditionalWorks.Add(new ExecutorModel.AdditionalWorkCount());
-                    int lastIndex = Model.AdditionalWorks.Count() - 1;
-                    //Model.AdditionalWorks[lastIndex].AdditionalWork.WorkType = new Models.WorkType();
-                }
-                <td>
-                    @work.Name
-                </td>
-                <td>@work.Price</td>
-                <td>@work.Unit</td>
-                <td>
-                    <input asp-for="AdditionalWorks[lastIndex].Count" class="form-control" />
-                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Id" class="form-control" value="@work.Id" type="hidden" />
-                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Name" class="form-control" value="@work.Name" type="hidden" />
-                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Price" class="form-control" value="@work.Price" type="hidden" />
-                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.Unit" class="form-control" value="@work.Unit" type="hidden" />
-                    <input asp-for="AdditionalWorks[lastIndex].AdditionalWork.WorkType.Id" class="form-control" value="@work.WorkType.Id" type="hidden" />
-                </td>
-            </tr>
-        }
-    </table>
-    <input asp-for="Order.Id" class="form-control" value="@Model.Order.Id" type="hidden" />
-    <button type="submit" class="btn btn-success">Отправить</button>
-</form>
+            @{ 
+                string partDiv = "partResult" + i.ToString();
+            }
 
+            <div id="collapse @i" class="collapse" aria-labelledby="heading @i" data-parent="#accordion">
+                <div class="card-body">
+                    <div id="@partDiv">
+                            <table class="table table-bordered table-hover">
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Цена</th>
+                                    <th>Ед.</th>
+                                    <th>Количество</th>
+                                    @*<th></th>*@
+                                </tr>
+                                @foreach (var work in invoice.AdditionalWorks)
+                                {
+                                    <tr>
+                                        <td>@work.Name</td>
+                                        <td>@work.Price</td>
+                                        <td>@work.Unit</td>
+                                        <td>@work.Count</td>
+                                        @*<td>
+                                            <input type="submit" value="Отправить" />
+                                            <a>
+                                                <i class="fas fa-times">
+                                                </i>
+                                            </a>
+                                        </td>*@
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<hr />
+<div id="accordion">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <a class="btn btn-success" data-toggle="collapse" data-target="#collapseAdd" aria-expanded="false" aria-controls="collapseAdd">
+                    Добавить
+                </a>
+            </h5>
+        </div>
+
+        <div id="collapseAdd" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+                <form method="post" asp-page-handler="SelectAdditionalWork">
+
+                    <table class="table table-bordered table-hover">
+                        <tr>
+                            <th>Название</th>
+                            <th>Цена</th>
+                            <th>Ед.</th>
+                            <th>Количество</th>
+                        </tr>
+                        @foreach (var work in Model.WorkPrices)
+                        {
+                            <tr>
+                                @{
+                                    Model.AdditionalWorksCount.Add(new ExecutorModel.AdditionalWorkCount());
+                                    int lastIndex = Model.AdditionalWorksCount.Count() - 1;
+                                }
+                                <td>
+                                    @work.Name
+                                </td>
+                                <td>@work.Price</td>
+                                <td>@work.Unit</td>
+                                <td>
+                                    <input asp-for="AdditionalWorksCount[lastIndex].Count" class="form-control" />
+                                    <input asp-for="AdditionalWorksCount[lastIndex].AdditionalWork.Id" class="form-control" value="@work.Id" type="hidden" />
+                                    <input asp-for="AdditionalWorksCount[lastIndex].AdditionalWork.Name" class="form-control" value="@work.Name" type="hidden" />
+                                    <input asp-for="AdditionalWorksCount[lastIndex].AdditionalWork.Price" class="form-control" value="@work.Price" type="hidden" />
+                                    <input asp-for="AdditionalWorksCount[lastIndex].AdditionalWork.Unit" class="form-control" value="@work.Unit" type="hidden" />
+                                    <input asp-for="AdditionalWorksCount[lastIndex].AdditionalWork.WorkType.Id" class="form-control" value="@work.WorkType.Id" type="hidden" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <input asp-for="Order.Id" class="form-control" value="@Model.Order.Id" type="hidden" />
+                    <input type="submit" class="btn btn-success" value="Отправить" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>

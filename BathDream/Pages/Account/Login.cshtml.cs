@@ -24,19 +24,22 @@ namespace BathDream.Pages.Account
         private readonly DBApplicationaContext _db;
         private readonly SMSConfirmator _confirmator;
         private readonly SMSSender _smssender;
+        private readonly EmailSender _emailSender;
 
         public LoginModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             DBApplicationaContext db,
             SMSConfirmator confirmator,
-            SMSSender SMSSender)
+            SMSSender SMSSender,
+            EmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
             _confirmator = confirmator;
             _smssender = SMSSender;
+            _emailSender = emailSender;
         }
 
         public string ReturnUrl { get; set; }
@@ -140,6 +143,11 @@ namespace BathDream.Pages.Account
                             User = user
                         };
                         await _db.ExecutorProfiles.AddAsync(profile);
+#if DEBUG
+#else
+                        _emailSender.Send("order@bath-dream.ru", $"Bath-Dream - Новый исполнитель",
+                                        $"Зарегистрирован новый исполнитель, телефон: {user.PhoneNumber}.");
+#endif
                     }
                     //if (Input.Role == "architector")
                     //{
@@ -156,11 +164,15 @@ namespace BathDream.Pages.Account
                             User = user
                         };
                         await _db.UserProfiles.AddAsync(profile);
+#if DEBUG
+#else
+                        _emailSender.Send("order@bath-dream.ru", $"Bath-Dream - Новый пользователь",
+                                        $"Зарегистрирован новый пользователь, телефон: {user.PhoneNumber}.");
+#endif
                     }
 
                     await _db.SaveChangesAsync();
                 }
-
                 //user = await _userManager.FindByIdAsync(user.Id);
                 await _signInManager.SignInAsync(user, true);
                 return Redirect(Input.ReturnUrl);

@@ -45,10 +45,21 @@ namespace BathDream.Acquiring
         }
 
         /// <summary>
+        /// Создание заказа для оплаты. Асинхронный метод
+        /// </summary>
+        /// <param name="paymentNumber">Номер заказа в системе магазина</param>
+        /// <param name="amount">Сумма платежа в копейках</param>
+        /// <param name="returnUrl">Адрес для перенаправления в случае успешной оплаты</param>
+        //public async void CreatePaymentAsync(string paymentNumber, int amount, string returnUrl, string failUrl)
+        //{
+        //    await Task.Run(() => CreatePayment(paymentNumber, amount, returnUrl, failUrl));
+        //}
+
+        /// <summary>
         /// Текущее состояние заказа
         /// </summary>
         /// <param name="paymentId">Номер заказа в платежной системе</param>
-        /// <returns>Возвращает текущее состояние заказа</returns>
+        /// <returns>Возвращает код состояния</returns>
         public string GetPaymentStatus(string paymentId)
         {
             AlfabankPayment.GetOrderStatus(
@@ -58,6 +69,16 @@ namespace BathDream.Acquiring
                 });
             return Status.FirstOrDefault(s => s.Key == AlfabankPayment.OrderStatus).Key;
         }
+
+        /// <summary>
+        /// Текущее состояние заказа. Асинхронный метод.
+        /// </summary>
+        /// <param name="paymentId">Номер заказа в платежной системе</param>
+        /// <returns>Возвращает код состояния</returns>
+        //public async Task<string> GetPaymentStatusAsync(string paymentId)
+        //{
+        //    return await Task.Run(() => GetPaymentStatus(paymentId));
+        //}
 
         /// <summary>
         /// Проверяет, оплачен заказ или нет

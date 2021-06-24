@@ -134,17 +134,21 @@
 {
     <a class="btn btn-success" asp-page-handler="Sign">Подписать</a>
 }
-
-
-
-@if (Model.PrepaidPayment == null)
+else
 {
-    <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить аванс 10%</a>
+    @if (Model.PrepaidPayment == null)
+    {
+        <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить аванс 10%</a>
+    }
+    else if (Model.ResidualPayment == null)
+    {
+        <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить остаток</a>
+    }
 }
-else if (Model.ResidualPayment == null)
-{
-    <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить остаток</a>
-}
+
+
+
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

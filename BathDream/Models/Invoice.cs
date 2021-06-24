@@ -8,6 +8,9 @@ namespace BathDream.Models
     public class Invoice
     {
         public int Id { get; set; }
+        /// <summary>
+        /// Тип заказа: 1 - Смета, 2 - Материалы, 3 - Дополнительные работы
+        /// </summary>
         public int Type { get; set; }
         public Order Order { get; set; }
         public string StatusPayment { get; set; }

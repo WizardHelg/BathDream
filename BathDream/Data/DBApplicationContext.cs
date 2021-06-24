@@ -26,7 +26,7 @@ namespace BathDream.Data
         public DbSet<Material> Materials { get; set; }
         public DbSet<MaterialPrice> MaterialPrices { get; set; }
         public DbSet<AdditionalWork> AdditionalWorks { get; set; }
-
+        public DbSet<Class> Class { get; set; }
         public DBApplicationaContext(DbContextOptions<DBApplicationaContext> options)
             : base(options)
         {

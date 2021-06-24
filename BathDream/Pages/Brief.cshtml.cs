@@ -880,8 +880,6 @@ namespace BathDream.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            
-
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             //await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
 

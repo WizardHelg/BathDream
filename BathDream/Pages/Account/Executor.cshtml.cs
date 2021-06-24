@@ -43,7 +43,9 @@ namespace BathDream.Pages.Account
             public List<MaterialCount> Materials { get; set; } = new List<MaterialCount>();
 
             public List<WorkPrice> WorkPrices { get; set; }
-            public List<AdditionalWorkCount> AdditionalWorks { get; set; } = new List<AdditionalWorkCount>();
+            public List<AdditionalWorkCount> AdditionalWorksCount { get; set; } = new List<AdditionalWorkCount>();
+            public List<Invoice> Invoices { get; set; }
+            public List<AdditionalWork> AdditionalWorks { get; set; }
 
         }
 
@@ -219,6 +221,8 @@ namespace BathDream.Pages.Account
             Input.Order.Id = id;
             Input.WorkPrices = await _db.WorkPrices.Include(w => w.WorkType).ToListAsync();
 
+            Input.Invoices = await _db.Invoices.Include(i => i.AdditionalWorks).Where(i => i.Order.Id == id && i.Type == 3).ToListAsync();
+
             return new PartialViewResult
             {
                 ViewName = "./Views/SelectAdditionalWorkPartialView",
@@ -238,11 +242,11 @@ namespace BathDream.Pages.Account
             };
 
 
-            Input.AdditionalWorks.RemoveAll(m => m.Count == 0);
-            if (Input.AdditionalWorks != null)
+            Input.AdditionalWorksCount.RemoveAll(m => m.Count == 0);
+            if (Input.AdditionalWorksCount != null)
             {
                 await _db.Invoices.AddAsync(invoice);
-                foreach (var item in Input.AdditionalWorks)
+                foreach (var item in Input.AdditionalWorksCount)
                 {
                     AdditionalWork additionalWork = item.AdditionalWork;
                     additionalWork.WorkType = await _db.WorkTypes.FirstOrDefaultAsync(t => t.Id == item.AdditionalWork.WorkType.Id);
@@ -254,6 +258,22 @@ namespace BathDream.Pages.Account
             await _db.SaveChangesAsync();
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteOneAsync(int workId)
+        {
+            AdditionalWork additionalWork = await _db.AdditionalWorks.Include(w => w.Invoice).FirstOrDefaultAsync(w => w.Id == workId);
+
+            _db.AdditionalWorks.Remove(additionalWork);
+            await _db.SaveChangesAsync();
+
+            Input.AdditionalWorks = await _db.AdditionalWorks.Where(w => w.Invoice.Id == additionalWork.Invoice.Id).Include(w => w.Invoice).ToListAsync();
+
+            return new PartialViewResult
+            {
+                ViewName = "./Views/SelectAddSubPartialView",
+                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
+            };
         }
 
         public async Task SendToClient(string message, string userId, Order order)
@@ -282,6 +302,11 @@ namespace BathDream.Pages.Account
                 await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
                 await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
             }
+        }
+
+        public void OnPost()
+        {
+
         }
     }
 }

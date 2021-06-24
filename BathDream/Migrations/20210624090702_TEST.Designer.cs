@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    [Migration("20210623153017_Init")]
-    partial class Init
+    [Migration("20210624090702_TEST")]
+    partial class TEST
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,6 +53,18 @@ namespace BathDream.Migrations
                     b.HasIndex("WorkTypeId");
 
                     b.ToTable("AdditionalWorks");
+                });
+
+            modelBuilder.Entity("BathDream.Models.DELETE", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DELETEs");
                 });
 
             modelBuilder.Entity("BathDream.Models.Estimate", b =>

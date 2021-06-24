@@ -4,14 +4,16 @@ using BathDream.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BathDream.Migrations
 {
     [DbContext(typeof(DBApplicationaContext))]
-    partial class DBApplicationaContextModelSnapshot : ModelSnapshot
+    [Migration("20210624093258_RemoveDELETEtable")]
+    partial class RemoveDELETEtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,18 +53,6 @@ namespace BathDream.Migrations
                     b.HasIndex("WorkTypeId");
 
                     b.ToTable("AdditionalWorks");
-                });
-
-            modelBuilder.Entity("BathDream.Models.Class", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Class");
                 });
 
             modelBuilder.Entity("BathDream.Models.Estimate", b =>

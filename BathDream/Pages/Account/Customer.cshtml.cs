@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using BathDream.Acquiring;
+using BathDream.Services;
 
 namespace BathDream.Pages.Account
 {
@@ -24,6 +25,7 @@ namespace BathDream.Pages.Account
         private readonly DBApplicationaContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHubContext<ChatHub> _hub;
+        private readonly EmailSender _emailSender;
 
         [BindProperty]
         public InputModel Input { get; set; } = new InputModel();
@@ -87,16 +89,17 @@ namespace BathDream.Pages.Account
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager,
-            DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub)
+            DBApplicationaContext db, IWebHostEnvironment webHostEnvironment, IHubContext<ChatHub> hub, EmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _db = db;
             _webHostEnvironment = webHostEnvironment;
             _hub = hub;
+            _emailSender = emailSender;
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
 
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -109,8 +112,22 @@ namespace BathDream.Pages.Account
                 order.Status = Order.Statuses.New;
 
                 user.Profile.CurrentOrderId = order.Id;
+#if DEBUG
+
+#else
+                _emailSender.Send("order@bath-dream.ru", $"Bath-Dream - Заказ №{order.Id}",
+                $"Зарегистрирован новый заказ №{order.Id}. \n" +
+                $"Пользователь - {user.FullName}, телефон: {user.PhoneNumber}.");
+#endif
+
 
                 await _db.SaveChangesAsync();
+            }
+
+            var orders = await _db.Orders.Where(o => o.Customer.Id == user.Profile.Id).ToListAsync();
+            if (!orders.Any())
+            {
+                return RedirectToPage("/Index");
             }
 
             order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
@@ -132,6 +149,7 @@ namespace BathDream.Pages.Account
 
             Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == order.Id && i.Type == 3).ToListAsync();
 
+            return Page();
         }
 
         public async Task<IActionResult> OnGetEstimateAsync()
@@ -229,7 +247,7 @@ namespace BathDream.Pages.Account
 
             Input.Payments = await _db.Payments.Where(p => p.Invoice.Order.Id == order.Id && p.Invoice.Type == 1).Include(p => p.Invoice).ToListAsync();
 
-            CheckStatus(Input.Payments);
+            Input.Payments = CheckStatus(Input.Payments);
 
             await _db.SaveChangesAsync();
 
@@ -252,9 +270,9 @@ namespace BathDream.Pages.Account
         /// Проверяет статусы оплат в Payments, сверяет их со статусами в Invoice, и, при необходимости, обновляет.
         /// </summary>
         /// <param name="payments">Список загруженных из БД платежей конкретного Invoice.Type (1 - смета, 2 - материалы, 3 - дополнительные работы) </param>
-        public void CheckStatus(List<Payment> payments)
+        public List<Payment> CheckStatus(List<Payment> payments)
         {
-            foreach (var payment in Input.Payments)
+            foreach (var payment in payments)
             {
                 if ((payment.PaymentStatus == "2" || payment.PaymentStatus == "6") && payment.PaymentStatus == payment.Invoice.StatusPayment)
                 {
@@ -269,6 +287,7 @@ namespace BathDream.Pages.Account
                     payment.Invoice.StatusPayment = status;
                 }
             }
+            return payments;
         }
 
         public async Task<IActionResult> OnGetSignAsync()
@@ -375,7 +394,7 @@ namespace BathDream.Pages.Account
 
             Input.Payments = await _db.Payments.Where(p => p.Invoice.Order.Id == id && p.Invoice.Type == 3).Include(p => p.Invoice).ToListAsync();
 
-            CheckStatus(Input.Payments);
+            Input.Payments = CheckStatus(Input.Payments);
 
             await _db.SaveChangesAsync();
 
@@ -623,16 +642,16 @@ namespace BathDream.Pages.Account
             int count = await _db.Payments.Where(p => p.Invoice.Order.Id == orderId && p.Invoice.Type == type).CountAsync() + 1;
             if (type == 1)
             {
-                result = $"Order{orderId}-{count}";
+                result = $"TestOrder{orderId}-{count}";
             }
             else if (type == 2)
             {
-                result = $"Order{orderId}-Materials-{count}";
+                result = $"TestOrder{orderId}-Materials-{count}";
             }
             else if (type == 3)
             {
 
-                result = $"Order{orderId}-AddWork-{count}";
+                result = $"TestOrder{orderId}-AddWork-{count}";
             }
             
             return result;

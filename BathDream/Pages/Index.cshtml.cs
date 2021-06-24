@@ -20,6 +20,7 @@ using MimeKit;
 using BathDream.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BathDream.Services;
 
 namespace BathDream.Pages
 {
@@ -194,7 +195,11 @@ namespace BathDream.Pages
         [BindProperty]
         public Customer Customer { get; set; }
 
-        public IndexModel(DBApplicationaContext db) => _db = db;
+        public IndexModel(DBApplicationaContext db, EmailSender emailSender)
+        {
+            _db = db;
+
+        }
 
         public IActionResult OnGet()
         {
