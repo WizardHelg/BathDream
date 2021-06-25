@@ -11,13 +11,11 @@ namespace BathDream.Pages.AdminPanel
     {
         public void OnGet()
         {
+
         }
 
-        public IActionResult OnPost()
+        public void OnPost()
         {
-            TempData["huita"] = "Каое же говно";
-            //TempData["huita2"] = new BathDream.Models.Order() { Status = "Редкий еблан" };
-            return RedirectToPage("./TestTempData");
         }
     }
 }

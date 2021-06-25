@@ -1,0 +1,138 @@
+﻿@model BathDream.Pages.AdminPanel.OrderDetailsModel
+@{
+}
+
+
+
+@if (Model.Input.Order != null)
+{
+    <h3>Заказ №@Model.Input.Order.Id от @Model.Input.Order.Date.ToShortDateString()</h3>
+
+    if (Model.Input.Order.Estimate?.Rooms != null)
+    {
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Помещение</th>
+                <th>Размеры</th>
+                <th>Пол</th>
+                <th>Стены</th>
+                <th>Потолок</th>
+                <th>Дверь</th>
+            </tr>
+            @foreach (var room in Model.Input.Order.Estimate.Rooms)
+            {
+                <tr>
+                    <td style="text-align: center;">@room.Name</td>
+                    <td style="text-align: center;">@room.Width x @room.Length x @room.Height мм</td>
+                    <td style="text-align: center;">@room.FloorArea() кв.м</td>
+                    <td style="text-align: center;">@room.WallsArea() кв.м</td>
+                    <td style="text-align: center;">@room.CeilingArea() кв.м</td>
+                    <td style="text-align: center;">@room.DoorArea() кв.м</td>
+                </tr>
+            }
+        </table>
+    }
+    if (Model.Input.Order.Estimate?.Works != null)
+    {
+        string sub_caption = "";
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th style="text-align: center;">№ п/п</th>
+                <th style="text-align: center;">Тип</th>
+                <th style="text-align: center;">Наименование</th>
+                <th style="text-align: center;">Ед.изм</th>
+                <th style="text-align: center;">Цена</th>
+                <th style="text-align: center;">Кол-во</th>
+                <th style="text-align: center;">Сумма</th>
+            </tr>
+
+            @foreach (var work in Model.Input.Order.Estimate.Works)
+            {
+
+                @if (sub_caption != work.Group)
+                {
+                    sub_caption = work.Group;
+
+                    <tr>
+                        <td colspan="7" class="info" style="text-align: center;"><b>@sub_caption</b></td>
+                    </tr>
+
+                }
+                <tr>
+                    <td style="text-align: center;">@work.Position</td>
+                    <td>@work.FirstWord</td>
+                    <td>@work.WithoutFirstWord</td>
+                    <td style="text-align: center;">@work.Unit</td>
+                    <td style="text-align: right;">
+                        @if (work.Price == 0.0)
+                        {<span>30% от стоимости</span> }
+                        else
+                            @work.Price.ToString("# ##0")
+                    </td>
+                    <td style="text-align: center;">@work.Volume</td>
+                    <td style="text-align: right;">@work.Total.ToString("# ##0.00")</td>
+                </tr>
+
+            }
+        </table>
+        <h4 style="text-align: right;">Итого: @Model.Input.Order.Estimate.Works.Sum(w => w.Total).ToString("# ##0.00")</h4>
+    }
+    if (Model.Input.Order.Invoices != null)
+    {
+        foreach (var invoice in Model.Input.Order.Invoices)
+        {
+            if (invoice.Materials?.Count != 0)
+            {
+                <h4>Материалы №@invoice.Id к заказу №@Model.Input.Order.Id</h4>
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>Название</th>
+                        <th>Ед.</th>
+                        <th>Цена</th>
+                        <th>Количество</th>
+                        <th>Сумма</th>
+                    </tr>
+                    @foreach (var material in invoice.Materials)
+                    {
+                        double sum = material.Count * material.Price;
+                        <tr>
+                            <td>@material.Name</td>
+                            <td>@material.Unit</td>
+                            <td>@material.Price</td>
+                            <td>@material.Count</td>
+                            <td>@sum</td>
+                        </tr>
+                    }
+                </table>
+                <h4 style="text-align: right;">Итого: @invoice.Materials.Sum(m => m.Price * m.Count).ToString("# ##0.00")</h4>
+            }
+            else if (invoice.AdditionalWorks?.Count != 0)
+            {
+                <h4>Дополнительные работы №@invoice.Id к заказу №@Model.Input.Order.Id</h4>
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>Название</th>
+                        <th>Ед.</th>
+                        <th>Цена</th>
+                        <th>Количество</th>
+                        <th>Сумма</th>
+                    </tr>
+                    @foreach (var additionalWork in invoice.AdditionalWorks)
+                    {
+                        double sum = additionalWork.Count * additionalWork.Price;
+                        <tr>
+                            <td>@additionalWork.Name</td>
+                            <td>@additionalWork.Unit</td>
+                            <td>@additionalWork.Price</td>
+                            <td>@additionalWork.Count</td>
+                            <td>@sum</td>
+                        </tr>
+                    }
+                </table>
+                <h4 style="text-align: right;">Итого: @invoice.AdditionalWorks.Sum(m => m.Price * m.Count).ToString("# ##0.00")</h4>
+            }
+        }
+    }
+    <hr />
+}
+
