@@ -5,8 +5,17 @@
 
 <br />
 <br />
-<h3>Все заказы пользователя №@Model.Input.UserProfile.Id - @Model.Input.UserProfile.User.FullName</h3>
-<a class="btn btn-success" asp-page-handler="SeeAll" asp-route-userId="@Model.Input.UserProfile.User.Id">Посмотреть все</a>
+<p><a asp-page="/AdminPanel/Index">На главную</a></p>
+<br />
+@if (Model.Input.UserProfile == null)
+{
+    <h3>Все заказы</h3>
+}
+else
+{
+    <h3>Все заказы пользователя №@Model.Input.UserProfile.Id - @Model.Input.UserProfile.User.FullName</h3>
+    <a class="btn btn-success" asp-page-handler="SeeAll" asp-route-userId="@Model.Input.UserProfile.User.Id">Посмотреть все</a>
+}
 <table class="table table-bordered table-hover">
     <tr>
         <th>Номер</th>
@@ -20,7 +29,7 @@
     {
         <tr>
             <td>@order.Id</td>
-            <td>@order.Date</td>
+            <td>@order.Date.ToShortDateString()</td>
             <td>@order.ObjectAdress</td>
             <td>@order.Executor</td>
             <td>@order.Estimate.Works.Sum(w => w.Total).ToString("# ##0.00")</td>

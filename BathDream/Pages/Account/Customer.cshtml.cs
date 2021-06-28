@@ -84,6 +84,17 @@ namespace BathDream.Pages.Account
             /// </summary>
             public int FlagBrief { get; set; } = 0;
 
+            /// <summary>
+            /// 0 - нет материалов, 1 - есть
+            /// </summary>
+            public int FlagMaterials { get; set; } = 0;
+
+            /// <summary>
+            /// 0 - нет доп. работ, 1 - есть
+            /// </summary>
+            public int FlagAddWorks { get; set; } = 0;
+
+
             public List<Invoice> Invoices { get; set; }
             public Invoice Invoice { get; set; }
         }
@@ -147,7 +158,16 @@ namespace BathDream.Pages.Account
                 Input.FlagBrief = 1;
             }
 
+            Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == order.Id && i.Type == 2).ToListAsync();
+            if (Input.Invoices?.Count > 0)
+            {
+                Input.FlagMaterials = 1;
+            }
             Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == order.Id && i.Type == 3).ToListAsync();
+            if (Input.Invoices?.Count > 0)
+            {
+                Input.FlagAddWorks = 1;
+            }
 
             return Page();
         }
@@ -361,20 +381,73 @@ namespace BathDream.Pages.Account
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnGetMaterialAsync()
+        public async Task<IActionResult> OnGetMaterialAsync(int id)
         {
-            User user = await _userManager.FindByNameAsync(User.Identity.Name);
-            await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
-            Order order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
+            Input.CurrentOrder = new Order() { Id = id };
+            Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == id && i.Type == 2).Include(i => i.Materials).ToListAsync();
 
-            Input.Invoices = await _db.Invoices.Where(o => o.Order.Id == order.Id).Include(m => m.Materials).ToListAsync();
+            Input.PaymentHandler = new PaymentHandler();
+
+            Input.Payments = await _db.Payments.Where(p => p.Invoice.Order.Id == id && p.Invoice.Type == 2).Include(p => p.Invoice).ToListAsync();
+
+            Input.Payments = CheckStatus(Input.Payments);
+
+            await _db.SaveChangesAsync();
 
             return new PartialViewResult
             {
                 ViewName = "./Views/MaterialPartialView",
                 ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
             };
+
         }
+        public async Task<IActionResult> OnPostMaterialAsync(int id, double total)
+        {
+            Invoice invoice = await _db.Invoices.Where(i => i.Id == id).Include(i => i.Order).FirstOrDefaultAsync();
+
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+            int amount = Convert.ToInt32(total * 100);
+            string paymentNumber = await GeneratePaymentNumber(invoice.Order.Id, 2);
+
+            string returnUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/Account/Payments/ReturnUrl";
+            string failUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/Account/Payments/FailUrl";
+
+            Input.PaymentHandler = new PaymentHandler();
+            Input.PaymentHandler.CreatePayment(paymentNumber, amount, returnUrl, failUrl);
+
+            if (Input.PaymentHandler.AlfabankPayment.ErrorCode != "0" && Input.PaymentHandler.AlfabankPayment.ErrorCode != null)
+            {
+                Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage;
+                return RedirectToPage("/Account/Customer", "Contract",
+                    new
+                    {
+                        paymentMessage = Input.PaymentMessage = Input.PaymentHandler.AlfabankPayment.ErrorMessage //поправить
+                    });
+            }
+
+            string paymentUrl = Input.PaymentHandler.AlfabankPayment.PaymentUrl;
+            string paymentId = Input.PaymentHandler.AlfabankPayment.PaymentId;
+
+            Payment payment = new Payment()
+            {
+                PaymentId = paymentId,
+                PaymentStatus = "0",
+                PaymentNumber = paymentNumber,
+                Date = DateTime.Now,
+                Amount = amount,
+                Invoice = invoice,
+                Description = "Материалы"
+            };
+
+            await _db.Payments.AddAsync(payment);
+            await _db.SaveChangesAsync();
+
+            return Redirect(paymentUrl);
+        }
+
         public IActionResult OnGetDocuments()
         {
             //Input.ContentView = "./Views/DocumentsPartialView";

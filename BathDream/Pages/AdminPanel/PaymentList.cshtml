@@ -1,0 +1,33 @@
+﻿@page
+@model BathDream.Pages.AdminPanel.PaymentListModel
+@{
+}
+<br />
+<br />
+<p><a asp-page="/AdminPanel/Index">На главную</a></p>
+<br />
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Номер</th>
+        <th>Дата</th>
+        <th>Id</th>
+        <th>Статус</th>
+        <th>Invoice</th>
+        <th>Сумма</th>
+        <th>Описание</th>
+    </tr>
+    @foreach (var payment in Model.Input.Payments)
+    {
+        double sum = Convert.ToDouble(payment.Amount) / 100;
+        <tr>
+            <td>@payment.Id</td>
+            <td>@payment.Date.ToShortDateString()</td>
+            <td>@payment.PaymentNumber</td>
+            <td>@payment.PaymentStatus</td>
+            <td>@payment.Invoice.Id</td>
+            <td>@sum</td>
+            <td>@payment.Description</td>
+        </tr>
+    }
+</table>

@@ -40,12 +40,15 @@ namespace BathDream.Pages.Account
             public string NameFamaly { get; set; }
 
             public List<MaterialPrice> MaterialPrices { get; set; }
-            public List<MaterialCount> Materials { get; set; } = new List<MaterialCount>();
+            public List<MaterialCount> MaterialsCount { get; set; } = new List<MaterialCount>();
 
             public List<WorkPrice> WorkPrices { get; set; }
             public List<AdditionalWorkCount> AdditionalWorksCount { get; set; } = new List<AdditionalWorkCount>();
+
             public List<Invoice> Invoices { get; set; }
+
             public List<AdditionalWork> AdditionalWorks { get; set; }
+            public List<Material> Materials { get; set; }
 
         }
 
@@ -182,6 +185,8 @@ namespace BathDream.Pages.Account
             Input.Order.Id = id;
             Input.MaterialPrices = await _db.MaterialPrices.ToListAsync();
 
+            Input.Invoices = await _db.Invoices.Include(i => i.Materials).Where(i => i.Order.Id == id && i.Type == 2).ToListAsync();
+
             return new PartialViewResult
             {
                 ViewName = "./Views/SelectMaterialPartialView",
@@ -195,25 +200,26 @@ namespace BathDream.Pages.Account
 
             Invoice invoice = new Invoice()
             {
-                Type = 3,
+                Type = 2,
                 Order = Input.Order,
                 DateTime = DateTime.Now
             };
 
 
-            Input.Materials.RemoveAll(m => m.Count == 0);
-            if (Input.Materials != null)
+            Input.MaterialsCount.RemoveAll(m => m.Count == 0);
+            if (Input.MaterialsCount != null && Input.MaterialsCount.Count != 0)
             {
-                foreach (var item in Input.Materials)
+                await _db.Invoices.AddAsync(invoice);
+                foreach (var item in Input.MaterialsCount)
                 {
                     Material material = item.Material;
                     material.Count = item.Count;
                     material.Invoice = invoice;
                     _db.Materials.Add(material);
                 }
+                await _db.SaveChangesAsync();
             }
-            await _db.SaveChangesAsync();
-            return Page();
+            return RedirectToPage("Executor", "ShowAcceptedOrders");
         }
 
         public async Task<IActionResult> OnGetSelectAdditionalWork(int id)
@@ -243,7 +249,7 @@ namespace BathDream.Pages.Account
 
 
             Input.AdditionalWorksCount.RemoveAll(m => m.Count == 0);
-            if (Input.AdditionalWorksCount != null)
+            if (Input.AdditionalWorksCount != null && Input.AdditionalWorksCount.Count != 0)
             {
                 await _db.Invoices.AddAsync(invoice);
                 foreach (var item in Input.AdditionalWorksCount)
@@ -254,27 +260,71 @@ namespace BathDream.Pages.Account
                     additionalWork.Invoice = invoice;
                     _db.AdditionalWorks.Add(additionalWork);
                 }
+                await _db.SaveChangesAsync();
             }
-            await _db.SaveChangesAsync();
+            return RedirectToPage("Executor", "ShowAcceptedOrders");
+        }
+
+        public async Task<IActionResult> OnPostDeleteAddWork(int workId)
+        {
+            AdditionalWork work = await _db.AdditionalWorks.Where(w => w.Id == workId).Include(w => w.Invoice).FirstOrDefaultAsync();
+
+            if (work == null)
+            {
+                return NotFound();
+            }
+
+            Invoice invoice = work.Invoice;
+
+            _db.AdditionalWorks.Remove(work);
+            _db.SaveChanges();
+
+            work = await _db.AdditionalWorks.Where(w => w.Invoice.Id == invoice.Id).Include(w => w.Invoice).FirstOrDefaultAsync();
+
+            if (work == null)
+            {
+                _db.Invoices.Remove(invoice);
+                _db.SaveChanges();
+                var result = new
+                {
+                    invoiceId = invoice.Id
+                };
+                return new JsonResult(result);
+            }
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostDeleteOneAsync(int workId)
+        public async Task<IActionResult> OnPostDeleteMaterial(int materialId)
         {
-            AdditionalWork additionalWork = await _db.AdditionalWorks.Include(w => w.Invoice).FirstOrDefaultAsync(w => w.Id == workId);
+            Material material = await _db.Materials.Where(w => w.Id == materialId).Include(w => w.Invoice).FirstOrDefaultAsync();
 
-            _db.AdditionalWorks.Remove(additionalWork);
-            await _db.SaveChangesAsync();
-
-            Input.AdditionalWorks = await _db.AdditionalWorks.Where(w => w.Invoice.Id == additionalWork.Invoice.Id).Include(w => w.Invoice).ToListAsync();
-
-            return new PartialViewResult
+            if (material == null)
             {
-                ViewName = "./Views/SelectAddSubPartialView",
-                ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
-            };
+                return NotFound();
+            }
+
+            Invoice invoice = material.Invoice;
+
+            _db.Materials.Remove(material);
+            _db.SaveChanges();
+
+            material = await _db.Materials.Where(w => w.Invoice.Id == invoice.Id).Include(w => w.Invoice).FirstOrDefaultAsync();
+
+            if (material == null)
+            {
+                _db.Invoices.Remove(invoice);
+                _db.SaveChanges();
+                var result = new
+                {
+                    invoiceId = invoice.Id
+                };
+                return new JsonResult(result);
+            }
+
+            return Page();
         }
+
 
         public async Task SendToClient(string message, string userId, Order order)
         {

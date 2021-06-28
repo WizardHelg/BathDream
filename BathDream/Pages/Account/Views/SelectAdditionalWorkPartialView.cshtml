@@ -3,58 +3,60 @@
 *@
 @model BathDream.Pages.Account.ExecutorModel.InputModel
 @{
-}
-@{
     int i = 0;
 }
 @foreach (var invoice in Model.Invoices)
 {
     i++;
+    string partDiv = "partResult" + i.ToString();
+    string table = "table" + invoice.Id.ToString();
+    string btn = "btn" + invoice.Id.ToString();
     <div id="accordion">
         <div class="card">
             <div class="card-header" id="headingOne">
                 <h5 class="mb-0">
-                    <a class="btn btn-success" data-toggle="collapse" data-target="#collapse @i" aria-expanded="false" aria-controls="collapse @i">
+                    <a class="btn btn-success" data-toggle="collapse" data-target="#collapse @i" aria-expanded="false" aria-controls="collapse @i" id="@btn">
                         Дополнительные работы №@invoice.Id к заказу №@Model.Order.Id
                     </a>
                 </h5>
             </div>
-
-            @{ 
-                string partDiv = "partResult" + i.ToString();
-            }
-
-            <div id="collapse @i" class="collapse" aria-labelledby="heading @i" data-parent="#accordion">
-                <div class="card-body">
-                    <div id="@partDiv">
-                            <table class="table table-bordered table-hover">
+            <form method="post" id="deleteForm">
+                <div id="collapse @i" class="collapse" aria-labelledby="heading @i" data-parent="#accordion">
+                    <div class="card-body">
+                        <div id="@partDiv">
+                            <table id="@table" class="table table-bordered table-hover" >
                                 <tr>
                                     <th>Название</th>
                                     <th>Цена</th>
                                     <th>Ед.</th>
                                     <th>Количество</th>
-                                    @*<th></th>*@
+                                    @if (invoice.StatusPayment != "2")
+                                    {
+                                        <th></th>
+                                    }
                                 </tr>
                                 @foreach (var work in invoice.AdditionalWorks)
                                 {
-                                    <tr>
+                                    string row = "row" + work.Id.ToString();
+                                    <tr id="@row">
                                         <td>@work.Name</td>
                                         <td>@work.Price</td>
                                         <td>@work.Unit</td>
                                         <td>@work.Count</td>
-                                        @*<td>
-                                            <input type="submit" value="Отправить" />
-                                            <a>
-                                                <i class="fas fa-times">
-                                                </i>
-                                            </a>
-                                        </td>*@
+                                        @if (invoice.StatusPayment != "2")
+                                        {
+                                            <td>
+                                                    <input type="submit" onclick="DeleteAddWork(this)" name="@work.Id" value="Удалить"/>
+                                            </td>
+                                        }
                                     </tr>
                                 }
                             </table>
                         </div>
+                    </div>
                 </div>
-            </div>
+            </form>
+            
         </div>
     </div>
 }
@@ -111,4 +113,40 @@
     </div>
 </div>
 
-<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+
+<script>
+    function DeleteAddWork(el) {
+        $(document).on('submit', 'form#deleteForm', function (e) {
+            e.preventDefault();
+            var i = el.name;
+            var data = {
+                workId: i
+            };
+            $.ajax({
+                type: 'POST',
+                url: "Executor?handler=DeleteAddWork",
+                headers:
+                {
+                    "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: data,
+                success: function (response) {
+                    console.log('success');
+                    var row = document.getElementById('row' + i);
+                    row.remove();
+
+                    if (response != null) {
+                        var table = document.getElementById("table" + response.invoiceId);
+                        table.remove();
+
+                        var btn = document.getElementById("btn" + response.invoiceId);
+                        btn.remove();
+                    }
+                }
+            })
+            return false;
+        })
+    };
+</script>
+
+

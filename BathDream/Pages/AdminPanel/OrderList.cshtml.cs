@@ -32,6 +32,12 @@ namespace BathDream.Pages.AdminPanel
 
         public async Task<IActionResult> OnGetAsync(string userId = "")
         {
+            if (userId == "")
+            {
+                Input.Orders = await _db.Orders.Include(o => o.Customer).Include(o => o.Estimate).ThenInclude(e => e.Works).ToListAsync();
+                return Page();
+            }
+
             Input.UserProfile = await _db.UserProfiles.Where(u => u.UserId == userId)
                                          .Include(u => u.User)
                                          .Include(u => u.Orders)

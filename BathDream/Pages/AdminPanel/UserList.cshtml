@@ -5,7 +5,8 @@
 
 <br />
 <br />
-
+<p><a asp-page="/AdminPanel/Index">На главную</a></p>
+<br />
 <h2>Список пользователей</h2>
 
 <div>
@@ -26,12 +27,12 @@
                 <td>@user.User.FullName</td>
                 <td>@user.User.Email</td>
                 <td>@user.User.PhoneNumber</td>
-                <td>  
+                <td>
                     @if (user.Role == "customer")
                     {
-                    <a asp-page-handler="OrdersByUser" asp-route-userId="@user.User.Id">@user.User.Profile.Orders.Count</a>
+                        <a asp-page-handler="OrdersByUser" asp-route-userId="@user.User.Id">@user.User.Profile.Orders.Count</a>
                     }
-                 </td>
+                </td>
             </tr>
 
         }

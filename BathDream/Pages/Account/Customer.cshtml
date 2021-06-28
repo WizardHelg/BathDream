@@ -149,14 +149,16 @@
                     </div>
                 }
 
-
-                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
-                    <div class="install panel panel-success" style="background-color: #FAFAFA">
-                        <div class="install-title"><b>Материалы</b></div>
-                        <img alt="Brand" src=/img/icons8-drill-100.png />
-                        <a class="btn btn-success" name="Material" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
+                if (Model.Input.FlagMaterials == 1)
+                {
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                        <div class="install panel panel-success" style="background-color: #FAFAFA">
+                            <div class="install-title"><b>Материалы</b></div>
+                            <img alt="Brand" src=/img/icons8-drill-100.png />
+                            <a class="btn btn-success" name="Material" id="@Model.Input.CurrentOrder?.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
                     <div class="install panel panel-success" style="background-color: #FAFAFA">
@@ -167,7 +169,7 @@
                     </div>
                 </div>
 
-                if (Model.Input.Invoices?.Count != 0)
+                if (Model.Input.FlagAddWorks == 1)
                 {
                     <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
                         <div class="install panel panel-success" style="background-color: #FAFAFA">
@@ -198,40 +200,12 @@
 <script>
     function LoadPartialView(e) {
         var hand = e.name;
-        if (hand == "AdditionalWorks") {
+        if (hand == "AdditionalWorks" || hand == "Material") {
             $("#partial").load("/Account/Customer?handler=" + hand + "&id=" + e.id);
         }
         else {
             $("#partial").load("/Account/Customer?handler=" + hand);
         }
-        
-
-        //fetch('/Account/Customer?handler=' + hand)
-        //    .then((response) => {
-        //        return response.text();
-        //    })
-        //    .then((result) => {
-        //        document.getElementById('partial').innerHTML = result;
-        //    });
-
-
-
-        //$(document).ready(function () {
-        //    $("a").click(function () {
-        //        $.ajax({
-        //            type: "GET",
-        //            url: url,
-        //        })
-        //            .done(function (response) {
-        //                console.log("SUCCESS");
-        //                $("#partial").load(response);
-        //            })
-        //            .fail(function (response) {
-        //                console.log("FAIL");
-        //            })
-        //        //$("#partial").load("/Account/Customer?handler=" + hand);
-        //    })
-        //})
     }
 </script>
 

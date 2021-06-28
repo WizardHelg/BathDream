@@ -1,42 +1,147 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model BathDream.Pages.Account.ExecutorModel.InputModel
+﻿@model BathDream.Pages.Account.ExecutorModel.InputModel
 @{
+    int i = 0;
 }
 
-<form method="post" asp-page-handler="SelectMaterial">
-    <table class="table table-bordered table-hover">
-        <tr>
-            <th>Название</th>
-            <th>Цена</th>
-            <th>Ед.</th>
-            <th>Количество</th>
-        </tr>
-        @foreach (var material in Model.MaterialPrices)
-        {
-            <tr>
-                @{
-                    Model.Materials.Add(new ExecutorModel.MaterialCount());
+@foreach (var invoice in Model.Invoices)
+{
+    i++;
+    string partDiv = "partResult" + i.ToString();
+    string table = "table" + invoice.Id.ToString();
+    string btn = "btn" + invoice.Id.ToString();
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <a class="btn btn-success" data-toggle="collapse" data-target="#collapse @i" aria-expanded="false" aria-controls="collapse @i" id="@btn">
+                        Материалы №@invoice.Id к заказу №@Model.Order.Id
+                    </a>
+                </h5>
+            </div>
 
-                    int lastIndex = Model.Materials.Count() - 1;
+            <form method="post" id="deleteForm">
+                <div id="collapse @i" class="collapse" aria-labelledby="heading @i" data-parent="#accordion">
+                    <div class="card-body">
+                        <div id="@partDiv">
+                            <table id="@table" class="table table-bordered table-hover">
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Цена</th>
+                                    <th>Ед.</th>
+                                    <th>Количество</th>
+                                    @if (invoice.StatusPayment != "2")
+                                    {
+                                        <th></th>
+                                    }
+                                </tr>
+                                @foreach (var material in invoice.Materials)
+                                {
+                                    string row = "row" + material.Id.ToString();
+                                    <tr id="@row">
+                                        <td>@material.Name</td>
+                                        <td>@material.Price</td>
+                                        <td>@material.Unit</td>
+                                        <td>@material.Count</td>
+                                        @if (invoice.StatusPayment != "2")
+                                        {
+                                            <td>
+                                                <input type="submit" onclick="DeleteMaterial(this)" name="@material.Id" value="Удалить"/>
+                                            </td>
+                                        } 
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+}
+<hr />
+<div id="accordion">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <a class="btn btn-success" data-toggle="collapse" data-target="#collapseAdd" aria-expanded="false" aria-controls="collapseAdd">
+                    Добавить
+                </a>
+            </h5>
+        </div>
+
+        <div id="collapseAdd" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+                <form method="post" asp-page-handler="SelectMaterial">
+
+                    <table class="table table-bordered table-hover">
+                        <tr>
+                            <th>Название</th>
+                            <th>Цена</th>
+                            <th>Ед.</th>
+                            <th>Количество</th>
+                        </tr>
+                        @foreach (var material in Model.MaterialPrices)
+                        {
+                            <tr>
+                                @{
+                                    Model.MaterialsCount.Add(new ExecutorModel.MaterialCount());
+                                    int lastIndex = Model.MaterialsCount.Count() - 1;
+                                }
+                                <td>
+                                    @material.Name
+                                </td>
+                                <td>@material.Price</td>
+                                <td>@material.Unit</td>
+                                <td>
+                                    <input asp-for="MaterialsCount[lastIndex].Count" class="form-control" />
+                                    <input asp-for="MaterialsCount[lastIndex].Material.Id" class="form-control" value="@material.Id" type="hidden" />
+                                    <input asp-for="MaterialsCount[lastIndex].Material.Name" class="form-control" value="@material.Name" type="hidden" />
+                                    <input asp-for="MaterialsCount[lastIndex].Material.Price" class="form-control" value="@material.Price" type="hidden" />
+                                    <input asp-for="MaterialsCount[lastIndex].Material.Unit" class="form-control" value="@material.Unit" type="hidden" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <input asp-for="Order.Id" class="form-control" value="@Model.Order.Id" type="hidden" />
+                    <input type="submit" class="btn btn-success" value="Отправить" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function DeleteMaterial(el) {
+        $(document).on('submit', 'form#deleteForm', function (e) {
+            e.preventDefault();
+            var i = el.name;
+            var data = {
+                materialId: i
+            };
+            $.ajax({
+                type: 'POST',
+                url: "Executor?handler=DeleteMaterial",
+                headers:
+                {
+                    "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: data,
+                success: function (response) {
+                    console.log('success');
+                    var row = document.getElementById('row' + i);
+                    row.remove();
+
+                    if (response != null) {
+                        var table = document.getElementById("table" + response.invoiceId);
+                        table.remove();
+
+                        var btn = document.getElementById("btn" + response.invoiceId);
+                        btn.remove();
+                    }
                 }
-                <td>
-                    @material.Name
-                </td>
-                <td>@material.Price</td>
-                <td>@material.Unit</td>
-                <td>
-                    <input asp-for="Materials[lastIndex].Count" class="form-control" />
-                    <input asp-for="Materials[lastIndex].Material.Id" class="form-control" value="@material.Id" type="hidden" />
-                    <input asp-for="Materials[lastIndex].Material.Name" class="form-control" value="@material.Name" type="hidden" />
-                    <input asp-for="Materials[lastIndex].Material.Price" class="form-control" value="@material.Price" type="hidden" />
-                    <input asp-for="Materials[lastIndex].Material.Unit" class="form-control" value="@material.Unit" type="hidden" />
-                </td>
-            </tr>
-        }
-    </table>
-    <input asp-for="Order.Id" class="form-control" value="@Model.Order.Id" type="hidden" />
-    <button type="submit" class="btn btn-success">Отправить</button>
-</form>
-
+            })
+            return false;
+        })
+    };
+</script>

@@ -2,9 +2,6 @@
 @{
 }
 
-@*<h3>Приносим свои извинения. Раздел находится в разработке.</h3>*@
-
-<h3>Дополнительные работы к заказу №@Model.CurrentOrder.Id</h3>
 <form method="post" asp-page-handler="AdditionalWorks">
     @foreach (var invoice in Model.Invoices)
     {

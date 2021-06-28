@@ -142,33 +142,32 @@
                                 <th style="text-align:center">Чат</th>
                                 <th style="text-align:center">Смета</th>
                                 <th style="text-align:center">Дизайн</th>
-                                @*<th style="text-align:center">Материалы</th>*@
+                                <th style="text-align:center">Материалы</th>
                                 <th style="text-align:center">Доп.Работы</th>
                             </tr>
                             @foreach (var order_info in @Model.ExecutingOrders)
                             {
-                                <tr>
-                                    <td style="text-align: center;">@order_info.Customer.User.FullName</td>
-                                    <td style="text-align: center;">@order_info.Id</td>
-                                    <td style="text-align: center;">@order_info.ObjectAdress</td>
-                                    <td style="text-align: center;"><a asp-page="/Account/ExecutorChat" asp-route-userId="@order_info.Customer.User.Id" asp-route-orderId="@order_info.Id">Открыть чат</a></td>
-                                    <td style="text-align: center;">
-                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        @if (order_info.SelectedItemId > 0)
-                                        {
-                                            <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image">Скачать</i></a>
-                                        }
-                                    </td>
-                                    <!--<td style="text-align: center;">-->
-                                        @*<a asp-page-handler="SelectMaterial" asp-route-id="@order_info.Id">Выбрать</a>*@
-                                        <!--<a class="btn btn-success" name="SelectMaterial" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Выбрать</a>
-                                    </td>-->
-                                    <td style="text-align: center;">
-                                        <a class="btn btn-success" name="SelectAdditionalWork" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Дополнительные работы</a>
-                                    </td>
-                                </tr>
+                        <tr>
+                            <td style="text-align: center;">@order_info.Customer.User.FullName</td>
+                            <td style="text-align: center;">@order_info.Id</td>
+                            <td style="text-align: center;">@order_info.ObjectAdress</td>
+                            <td style="text-align: center;"><a asp-page="/Account/ExecutorChat" asp-route-userId="@order_info.Customer.User.Id" asp-route-orderId="@order_info.Id">Открыть чат</a></td>
+                            <td style="text-align: center;">
+                                <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
+                            </td>
+                            <td style="text-align: center;">
+                                @if (order_info.SelectedItemId > 0)
+                                {
+                                    <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image">Скачать</i></a>
+                                }
+                            </td>
+                            <td style="text-align: center;">
+                                <a class="btn btn-success" name="SelectMaterial" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Материалы</a>
+                            </td>
+                            <td style="text-align: center;">
+                                <a class="btn btn-success" name="SelectAdditionalWork" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Дополнительные работы</a>
+                            </td>
+                        </tr>
                             }
                         </table>
                         <div aria-hidden="true" class="modal fade" id="modal-order" role="dialog">
