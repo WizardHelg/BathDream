@@ -110,7 +110,7 @@ namespace BathDream.Pages.Account
         public async Task<IActionResult> OnPostCheckCodeAsync()
         {
 
-            if (Input.CurrentPhone != Input.Phone)
+            if (Input.CurrentPhone != Input.Phone.GetPhoneNumber())
             {
                 ModelState.AddModelError(string.Empty, "Неверный номер телефона");
             }
