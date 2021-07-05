@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BathDream.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using static BathDream.Pages.Account.ExecutorModel;
 
 namespace BathDream.Pages.Account
 {
+    [Authorize(Roles = "executor")]
     public class EstimateModel : PageModel
     {
         private readonly DBApplicationaContext _db;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BathDream.Data;
 using BathDream.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages.AdminPanel
 {
+    [Authorize(Roles = "admin")]
     public class OrderDetailsModel : PageModel
     {
         private readonly UserManager<User> _user_manager;

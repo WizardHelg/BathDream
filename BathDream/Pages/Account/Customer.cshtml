@@ -82,61 +82,64 @@
             }
             else if (Model.Input.Flag == 2)
             {
-
-
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
-
-
                     <div class="install panel panel-success" style="background-color: #FAFAFA">
                         <div class="install-title"><b>Смета</b></div>
                         <img alt="Brand" src=/img/icons8-invoice-100.png />
                         <a class="btn btn-success" name="Estimate" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
                     </div>
-
-
                 </div>
+
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
-
                     <div class="install panel panel-success" style="background-color: #FAFAFA">
-
-
-                        @if (Model.Input.FlagContract == 1)
-                        {
-                            <div class="install-title"><b>Детали заказа</b></div>
-                            <img alt="Brand" src=/img/icons8-agreement-100.png />
-                            <a class="btn btn-success" asp-page-handler="Contract">Открыть</a>
-                        }
-                        else
-                        {
-                            <div class="install-title"><b>Договор</b></div>
-                            <img alt="Brand" src=/img/icons8-agreement-100.png />
-                            <a class="btn btn-success" name="Contract" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
-                        }
-
+                        <div class="install-title"><b>Договор</b></div>
+                        <img alt="Brand" src=/img/icons8-agreement-100.png />
+                        <a class="btn btn-success" name="Contract" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Открыть</a>
                     </div>
-
                 </div>
 
                 string ChatOrBrief = Model.Input.FlagBrief == 1 ? "Бриф" : "Чат";
 
+                if (Model.Input.PrepaidPayment != null)
+                {
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                        <div class="install panel panel-success" style="background-color: #FAFAFA">
+                            @if (Model.Input.FlagBrief == 1)
+                            {
+                                <div class="install-title"><b>Бриф</b></div>
+                                <img alt="Brand" src=/img/icons8-design-100.png />
+                                <a class="btn btn-success" asp-page-handler="Brief">Заполнить</a>
+                            }
+                            else
+                            {
+                                <div class="install-title"><b>Чат</b></div>
+                                <img alt="Brand" src=/img/icons8-design-100.png />
+                                <a class="btn btn-success" asp-page-handler="Brief">Открыть</a>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @*if (Model.Input.PrepaidPayment == null)
+            {
                 <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
                     <div class="install panel panel-success" style="background-color: #FAFAFA">
-                        @if (Model.Input.FlagBrief == 1)
-                        {
-                            <div class="install-title"><b>Бриф</b></div>
-                            <img alt="Brand" src=/img/icons8-design-100.png />
-                            <a class="btn btn-success" asp-page-handler="Brief">Заполнить</a>
-                        }
-                        else
-                        {
-                            <div class="install-title"><b>Чат</b></div>
-                            <img alt="Brand" src=/img/icons8-design-100.png />
-                            <a class="btn btn-success" asp-page-handler="Brief">Открыть</a>
-                        }
+                        <div class="install-title"><b>Аванс 10%</b></div>
+                        <img alt="Brand" src=/img/icons8-agreement-100.png />
+                        <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.Input.CurrentOrder.Id">Оплатить</a>
                     </div>
                 </div>
-
-
+            }
+            else if (Model.Input.ResidualPayment == null)
+            {
+                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                    <div class="install panel panel-success" style="background-color: #FAFAFA">
+                        <div class="install-title"><b>Остаток</b></div>
+                        <img alt="Brand" src=/img/icons8-agreement-100.png />
+                        <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.Input.CurrentOrder.Id">Оплатить</a>
+                    </div>
+                </div>
+            }*@
 
                 if (Model.Input.CurrentOrder?.SelectedItemId != 0)
                 {
@@ -206,9 +209,50 @@
         else {
             $("#partial").load("/Account/Customer?handler=" + hand);
         }
-    }
-</script>
+    };
 
+    function DeleteWork(el) {
+        $(document).on('submit', 'form#formWork', function (e) {
+            e.preventDefault();
+            var i = el.name;
+            var data = {
+                workId: i
+            };
+            $.ajax({
+                type: 'POST',
+                url: "Customer?handler=DeleteWork",
+                headers:
+                {
+                    "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: data,
+                success: function (response) {
+                    console.log('success');
+                    var row = document.getElementById('row' + i);
+                    row.remove();
+
+                    if (response.group != null) {
+                        var groupRow = document.getElementById(response.group);
+                        groupRow.remove();
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+
+            })
+            return false;
+        });
+    };
+
+    function ConfirmDelete(e) {
+        var result = confirm("Вы уверены, что хотите удалить?");
+        if (result) {
+            document.getElementById('formWork').submit();
+            DeleteWork(e);
+        }
+    };
+</script>
 
 <!-- page-wrapper -->
 <!--

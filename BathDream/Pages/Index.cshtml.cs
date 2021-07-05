@@ -110,6 +110,13 @@ namespace BathDream.Pages
 
             new BathroomItem()
             {
+                DisplyName = "Стиральная машина",
+                BindedProperty = "Order.Washer",
+                Image = "img/Washer.jpg"
+            },
+
+            new BathroomItem()
+            {
                 DisplyName ="Тумба",
                 BindedProperty = "Order.BedsideAmount",
                 Image ="img/Bedside.jpg"
@@ -141,7 +148,7 @@ namespace BathDream.Pages
                 DisplyName ="Сантехнический люк",
                 BindedProperty = "Order.PlumbingHatch",
                 Image ="img/Plumbing.jpg"
-            }
+            },
         };
         #endregion
         #region PiplineEquipments
@@ -278,8 +285,8 @@ namespace BathDream.Pages
                 AddWork("Пол", "УкладкаПлитки", sum_floor_area);
                 AddWork("Пол", "ЗатиркаПлитки", sum_floor_area);
                 AddWork("Пол", "АнтигрибковоеПокрытие", sum_floor_area);
-                AddWork("Пол", "ПодрезкаПлитки", sum_floor_area);
-                AddWork("Пол", "ЗапилПлитки", sum_floor_area);
+                AddWork("Пол", "ПодрезкаПлитки", 0);
+                AddWork("Пол", "ЗапилПлитки", 0);
             }
 
             if(Order.WallCoverType.ToLower() == "плитка")
@@ -289,9 +296,8 @@ namespace BathDream.Pages
                 AddWork("Стены", "АнтигрибковоеПокрытие", sum_wall_area);
                 AddWork("Стены", "УкладкаПлитки", sum_wall_area);
                 AddWork("Стены", "ЗатиркаПлитки", sum_wall_area);
-                AddWork("Стены", "Грунтовка", sum_wall_area);
-                AddWork("Стены", "ПодрезкаПлитки", sum_wall_area);
-                AddWork("Стены", "ЗапилПлитки", sum_wall_area);
+                AddWork("Стены", "ПодрезкаПлитки", 0);
+                AddWork("Стены", "ЗапилПлитки", 0);
             }
 
             if (Order.WallCoverType.ToLower() == "панели пвх")
@@ -302,7 +308,7 @@ namespace BathDream.Pages
 
             if (Order.WarmFloor)
             {
-                AddWork("Электрика", "Терморегулятор", 2);
+                AddWork("Электрика", "Терморегулятор", 1);
                 AddWork("Электрика", "ТеплыйПол", sum_floor_area / 2);
             }
 
@@ -348,32 +354,47 @@ namespace BathDream.Pages
                 AddWork("Сантехника", "УнитазНапольный", Order.ToiletAmount);
             }
 
-            if (Order.InstallationAndToiletAmount > 0 || Order.InstallationAndBidetAmount > 0)
-            {
-                water_dots += 1 * (Order.InstallationAndToiletAmount + Order.InstallationAndBidetAmount);
-                AddWork("Сантехника", "Инсталляция", Order.ToiletAmount);
-            }
-
             if (Order.InstallationAndToiletAmount > 0)
             {
                 water_dots += 1 * Order.InstallationAndToiletAmount;
                 sewer_dots += 1 * Order.InstallationAndToiletAmount;
-                AddWork("Сантехника", "ПодвеснойУнитаз", Order.InstallationAndToiletAmount);
-            }
 
-            if (Order.BidetAmount > 0)
-            {
-                water_dots += 1 * Order.BidetAmount;
-                sewer_dots += 1 * Order.BidetAmount;
-                AddWork("Сантехника", "Биде", Order.BidetAmount);
+                if (works.Any(w => w.InnerName == "Инсталляция"))
+                {
+                    works.FirstOrDefault(w => w.InnerName == "Инсталляция").Volume += Order.InstallationAndToiletAmount;
+                }
+                else
+                {
+                    AddWork("Сантехника", "Инсталляция", Order.InstallationAndToiletAmount);
+                }
+                
+                AddWork("Сантехника", "ПодвеснойУнитаз", Order.InstallationAndToiletAmount);
+
             }
 
             if (Order.InstallationAndBidetAmount > 0)
             {
-                water_dots += 1 * Order.InstallationAndBidetAmount;
+                water_dots += 2 * Order.InstallationAndBidetAmount;
                 sewer_dots += 1 * Order.InstallationAndBidetAmount;
-                AddWork("Сантехника", "Биде", Order.InstallationAndBidetAmount);
+
+                if (works.Any(w => w.InnerName == "Инсталляция"))
+                {
+                    works.FirstOrDefault(w => w.InnerName == "Инсталляция").Volume += Order.InstallationAndBidetAmount;
+                }
+                else
+                {
+                    AddWork("Сантехника", "Инсталляция", Order.InstallationAndBidetAmount);
+                }
+
+                AddWork("Сантехника", "ПодвесноеБиде", Order.InstallationAndBidetAmount);                
             }
+
+            if (Order.BidetAmount > 0)
+            {
+                water_dots += 2 * Order.BidetAmount;
+                sewer_dots += 1 * Order.BidetAmount;
+                AddWork("Сантехника", "Биде", Order.BidetAmount);
+            }            
 
             if (Order.HygienicShowerAmount > 0)
             {
@@ -389,6 +410,13 @@ namespace BathDream.Pages
                 AddWork("Сантехника", "Раковина", Order.SinkAmount);
             }
 
+            if (Order.Washer > 0)
+            {
+                water_dots += 1 * Order.Washer;
+                sewer_dots += 1 * Order.Washer;
+                AddWork("Сантехника", "СтиральнаяМашина", Order.Washer);
+            }
+
             if (Order.BedsideAmount > 0)
                 AddWork("Сантехника", "ТумбаПодРаковину", Order.BedsideAmount);
 
@@ -396,7 +424,11 @@ namespace BathDream.Pages
                 AddWork("Сантехника", "Зеркало", Order.MirrorAmount);
 
             if (Order.TowelDryerAmount > 0)
+            {
+                water_dots += 2 * Order.TowelDryerAmount;
                 AddWork("Сантехника", "Полотенцесушитель", Order.TowelDryerAmount);
+            }
+                
 
             if (Order.BathroomAccessoriesAmount > 0)
                 AddWork("Сантехника", "Аксессуары", Order.BathroomAccessoriesAmount);
@@ -442,7 +474,7 @@ namespace BathDream.Pages
             }
 
             if (Order.InstallDoor)
-                AddWork("Прочее", "УстановкаДверей", 1);
+                AddWork("Прочее", "УстановкаДверей", Rooms.Count());
 
             await _db.Works.AddRangeAsync(works);
             await _db.SaveChangesAsync();

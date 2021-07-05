@@ -4,6 +4,8 @@
 @using BathDream.Models
 @model BathDream.Pages.Account.CustomerModel.InputModel
 @{
+    int time = Model.UniqueWorks.Sum(w => w.WorkType.Time);
+    int limitTime = time + 2;
 }
 
 <br />
@@ -29,13 +31,13 @@
     </tr>
 </table>
 <div class="contract-text">
-    <p class="contract-p">@Model.FIO, <span class="contract-bold">зарегистрирован(на) по адресу:</span> @Model.PasportAddress, именуемый в дальнейшем <span class="contract-bold">Заказчик</span>, и <span class="contract-bold">Общество с ограниченной ответственностью «Престиж»</span>, именуемый в дальнейшем <span class="contract-bold">Подрядчик</span>, в лице Генерального директора <span class="contract-bold">Захаревича Дмитрия Борисовича</span>, действующего на основании Устава, с другой стороны, заключили настоящий Договор о нижеследующем:</p>
+    <p class="contract-p">@Model.FIO, <span class="contract-bold">зарегистрирован(на) по адресу:</span> @Model.PasportAddress, именуемый в дальнейшем <span class="contract-bold">Заказчик</span>, и <span class="contract-bold">Общество с ограниченной ответственностью «Лазурит»</span>, именуемый в дальнейшем <span class="contract-bold">Подрядчик</span>, в лице Генерального директора <span class="contract-bold">Абрамова Дмитрия Викторовича</span>, действующего на основании Устава, с другой стороны, заключили настоящий Договор о нижеследующем:</p>
     <p class="contract-top-level">1. Предмет Договора.</p>
     <p class="contract-p">1.1. Заказчик поручает, а Подрядчик принимает на себя обязательства по ремонту помещения (квартира), по адресу: <span class="contract-bold">@Model.OrderAddress</span>, именуемый в дальнейшем Объект, согласно проектно-сметной документации, прилагаемой к настоящему договору и пожеланиями Заказчика, выраженными в письменной форме.</p>
     <p class="contract-top-level">2. Стоимость и сроки выполнения работ.</p>
     <p class="contract-p">2.1. Содержание работ указано в Протоколе согласования цены (Приложение №1), объемы и способы выполнения работ указаны в Проектной Документации, которые являются неотъемлемой частью Договора. </p>
     <p class="contract-p">2.2. Стоимость материалов определяется фактическими ценами в соответствии со сметой и выбором Заказчика.</p>
-    <p class="contract-p">2.3. Сроки выполнения работ составляют 14 (четырнадцать) календарных дней с момента подписания настоящего Договора. В связи с технологической необходимостью, сроки могут корректироваться по взаимной договоренности.</p>
+    <p class="contract-p">2.3. Сроки выполнения работ составляют @time - @limitTime календарных дней с момента подписания настоящего Договора. В связи с технологической необходимостью, сроки могут корректироваться по взаимной договоренности.</p>
     <p class="contract-p">2.4. В случае, если в ходе выполнения работ по настоящему Договору обнаружится необходимость проведения работ, не предусмотренных сметой, стороны письменно согласовывают новые сроки, стоимость и порядок выполнения дополнительных объемов работ, что оформляется соответствующими дополнениями к настоящему Договору.</p>
     <p class="contract-p">2.5. Приложение № 1 (Смета) является неотъемлемой частью настоящего Договора.</p>
     <p class="contract-top-level">3. Права и обязанности сторон.</p>
@@ -92,7 +94,7 @@
     <li><span class="contract-li-span">Приложение № 1 Сметный расчет</span></li>
     <li><span class="contract-li-span">Приложение № 2 Проект производственных работ</span></li>
     <li><span class="contract-li-span">Приложение № 3 Акт выполненных работ</span></li>
-    <li><span class="contract-li-span">Приложение № 4 Акта приема-сдачи работ</span></li>
+    <li><span class="contract-li-span">Приложение № 4 Акт приема-сдачи работ</span></li>
 </ol>
 <p class="contract-top-level">12. Юридические адреса и реквизиты сторон.</p>
 <table class="contract-table contract-bold">
@@ -102,16 +104,15 @@
     </tr>
     <tr>
         <td>
-            ООО «Престиж» 115230,<br />
-            г. Москва, Каширское ш. дом 13Б,<br />
-            8 этаж комната 22 пом. 1<br />
-            ИНН: 7735581756<br />
-            КПП: 772401001<br />
-            Р/С: 40702810810000514740,<br />
-            Банк: АО "ТИНЬКОФФ БАНК",<br />
-            К/с 30101810145250000974<br />
-            БИК: 044525974.<br />
-            Тел.: +7 9637773577<br />
+            ООО «Лазурит» 121357, РОССИЯ<br />
+            г. Москва, Шоссе Аминьевское, дом 26Б<br />
+            ИНН: 7719855689<br />
+            КПП: 773101001<br />
+            Р/С: 40702810202630004185,<br />
+            Банк: АО "АЛЬФА-БАНК",<br />
+            К/с 30101810200000000593<br />
+            БИК: 044525593.<br />
+            Тел.: 8-800-333-88-37<br />
             E-mail: info@bath-dream.ru
         </td>
         <td>
@@ -125,26 +126,34 @@
         </td>
     </tr>
     <tr>
-        <td>М.П. ______________ Захаревич Д.Б.</td>
+        <td>М.П. ______________ Абрамов Д.В.</td>
         <td>М.П. __________________ </td>
     </tr>
 </table>
 
-@if (!@Model.Signed)
+@if (!Model.Signed && (string.IsNullOrEmpty(Model.OrderAddress) || Model.OrderAddress == "_" || !Model.IsFilled))
 {
-    <a class="btn btn-success" asp-page-handler="Sign">Подписать</a>
+    <a class="btn btn-success" asp-page="/OrderDetails" asp-route-OrderId="@Model.OrderNumber">Детали заказа</a>
 }
 else
 {
-    @if (Model.PrepaidPayment == null)
+    @if (!@Model.Signed)
     {
-        <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить аванс 10%</a>
+        <a class="btn btn-success" asp-page-handler="Sign">Подписать</a>
     }
-    else if (Model.ResidualPayment == null)
+    else
     {
-        <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить остаток</a>
+        @if (Model.PrepaidPayment == null)
+        {
+            <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить аванс 10%</a>
+        }
+        else if (Model.ResidualPayment == null)
+        {
+            <a class="btn btn-success" asp-page-handler="Payment" asp-route-orderId="@Model.OrderNumber">Оплатить остаток</a>
+        }
     }
 }
+
 
 
 

@@ -17,6 +17,7 @@ namespace BathDream
             //string adminPassword = "Qq1945!";
 
             string architectPhone = "70000000000";
+            string adminPhone = "70000001234";
 
             if (await roleManager.FindByNameAsync("admin") == null)
                 await roleManager.CreateAsync(new IdentityRole("admin"));
@@ -51,6 +52,24 @@ namespace BathDream
                     User = architector
                 };
                 await db.UserProfiles.AddAsync(userProfile);
+                await db.SaveChangesAsync();
+            }
+
+            if (await userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == adminPhone) == null)
+            {
+                User admin = new()
+                {
+                    PhoneNumber = adminPhone
+                };
+
+                admin.UserName = admin.Id;
+
+                IdentityResult result = await userManager.CreateAsync(admin);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "admin");
+                    await userManager.UpdateAsync(admin);
+                }
                 await db.SaveChangesAsync();
             }
 

@@ -179,6 +179,11 @@ namespace BathDream.Models
         /// Водяной коллектор ГВ
         /// </summary>
         public int PLWaterCollectorHW { get; set; } = 1;
+
+        /// <summary>
+        /// Стиральная машина
+        /// </summary>
+        public int Washer { get; set; }
         #endregion
     }
 }

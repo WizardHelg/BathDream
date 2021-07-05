@@ -506,6 +506,41 @@ namespace BathDream.Pages
                     }
                 }
             },
+            ["СтиральнаяМашина"] = new()
+            {
+                Name = "Стиральная машина",
+                Prices = new()
+                {
+                    "10 000 - 20 000",
+                    "20 000 - 30 000",
+                    "30 000 - 40 000",
+                    "40 000 - 50 000",
+                    "50 000 - 60 000",
+                    "60 000 - 70 000",
+                    "70 000 - 80 000",
+                    "80 000 - 90 000",
+                    "90 000 - 100 000",
+                    "100 000 - ..."
+                },
+                ChoiseItems = new()
+                {
+                    new()
+                    {
+                        Text = "Вариант стиля 1",
+                        Img = "img/brief/other/СтиральнаяМашина1.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 2",
+                        Img = "img/brief/other/СтиральнаяМашина2.jpg"
+                    },
+                    new()
+                    {
+                        Text = "Вариант стиля 3",
+                        Img = "img/brief/other/СтиральнаяМашина3.jpg"
+                    }
+                }
+            },
             ["ТумбаПодРаковину"] = new()
             {
                 Name = "Тумба под раковину",
@@ -957,7 +992,7 @@ namespace BathDream.Pages
                 await _db.SaveChangesAsync();
             }
 
-            return RedirectToPage("/Account/Customer", "Chat", submitOrder);
+            return RedirectToPage("/Account/Customer");
         }
     }
 }

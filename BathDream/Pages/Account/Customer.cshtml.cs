@@ -77,7 +77,7 @@ namespace BathDream.Pages.Account
             /// <summary>
             /// Детали заказа - договор
             /// </summary>
-            public int FlagContract { get; set; } = 0;
+            public int FlagContract { get; set; } = 1;
 
             /// <summary>
             /// Бриф - чат
@@ -97,6 +97,8 @@ namespace BathDream.Pages.Account
 
             public List<Invoice> Invoices { get; set; }
             public Invoice Invoice { get; set; }
+
+            public bool IsFilled { get; set; }
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager,
@@ -169,6 +171,10 @@ namespace BathDream.Pages.Account
                 Input.FlagAddWorks = 1;
             }
 
+            Input.PrepaidPayment = _db.Payments.Where(p => p.Invoice.Order.Id == order.Id && p.Invoice.Type == 1)
+                                      .Include(p => p.Invoice)
+                                      .FirstOrDefault(p => p.PaymentStatus == "2" && p.Description == "Аванс");
+
             return Page();
         }
 
@@ -238,25 +244,31 @@ namespace BathDream.Pages.Account
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
             Input.UserName = user.UName;
             Input.UserFamaly = user.UFamaly;
-            Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
+            Input.FIO = $"{user.UFamaly ?? "_"} {user.UName ?? "_"} {user.UPatronymic ?? "_"}";
             Input.CustomerPhone = user.PhoneNumber;
-            Input.CustomerEmail = user.Email;
-            Input.PasportAddress = user.Profile.PasportAddress;
-            Input.PasportSerial = user.Profile.PasportSerial;
-            Input.PasportNumber = user.Profile.PasportNumber;
-            Input.PasportIssued = user.Profile.PasportIssued;
+            Input.CustomerEmail = user.Email ?? "_@_._";
+            Input.PasportAddress = user.Profile.PasportAddress ?? "_";
+            Input.PasportSerial = user.Profile.PasportSerial ?? "_";
+            Input.PasportNumber = user.Profile.PasportNumber ?? "_";
+            Input.PasportIssued = user.Profile.PasportIssued ?? "_";
             if (user.Profile.PasportDate is DateTime dt)
-                Input.PasportDate = dt.ToShortDateString();
+                Input.PasportDate = dt.ToShortDateString() ?? "_";
 
             int order_id = 0;
-            if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync() is Order order)
+            if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId)
+                                .Include(o => o.Estimate)
+                                    .ThenInclude(e => e.Works)
+                                    .ThenInclude(w => w.WorkType)
+                                .FirstOrDefaultAsync() is Order order)
             {
                 Input.SignText = order.Signed ? "Подписан" : "Не подписан";
                 Input.OrderDate = order.Date.ToShortDateString();
                 Input.OrderNumber = order.Id;
-                Input.OrderAddress = order.ObjectAdress;
+                Input.OrderAddress = order.ObjectAdress ?? "_";
                 Input.Signed = order.Signed;
-                order_id = order.Id;            }
+                order_id = order.Id;
+                Input.Works = order.Estimate.Works;
+            }
             else
             {
                 return RedirectToPage("/Account/Customer");
@@ -274,9 +286,23 @@ namespace BathDream.Pages.Account
             Input.PrepaidPayment = Input.Payments.FirstOrDefault(p => p.PaymentStatus == "2" && p.Description == "Аванс");
             Input.ResidualPayment = Input.Payments.FirstOrDefault(p => p.PaymentStatus == "2" && p.Description == "Остаток");
 
+            Input.IsFilled = user.Profile.IsFilled();
 
-            if (!Input.Signed && (string.IsNullOrEmpty(Input.OrderAddress) || !user.Profile.IsFilled()))
-                return RedirectToPage("/OrderDetails", new { OrderId = order_id });
+            //if (!Input.Signed && (string.IsNullOrEmpty(Input.OrderAddress) || !user.Profile.IsFilled()))
+            //    return RedirectToPage("/OrderDetails", new { OrderId = order_id });
+
+
+            Input.UniqueWorks = new List<Work>();
+            foreach (var item in Input.Works)
+            {
+                if (Input.UniqueWorks.Any(w => w.WorkType.Id == item.WorkType.Id))
+                {
+                    continue;
+                }
+                Input.UniqueWorks.Add(item);
+            }
+            Input.UniqueWorks = Input.UniqueWorks.OrderBy(w => w.WorkType.Priority).ToList();
+
 
             return new PartialViewResult
             {
@@ -284,6 +310,7 @@ namespace BathDream.Pages.Account
                 ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, Input)
             };
         }
+
 
 
         /// <summary>
@@ -339,7 +366,7 @@ namespace BathDream.Pages.Account
                 await _db.SaveChangesAsync();
             }
 
-            return await OnGetBriefAsync();
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnGetDeleteOrderAsync()
@@ -740,9 +767,9 @@ namespace BathDream.Pages.Account
             Input.Flag = 2;
             return RedirectToPage();
         }
-        public async Task<IActionResult> OnGetDeleteWork(int workId)
+        public async Task<IActionResult> OnPostDeleteWorkAsync(int workId)
         {
-            Work work = await _db.Works.FirstOrDefaultAsync(w => w.Id == workId);
+            Work work = await _db.Works.Where(w => w.Id == workId).Include(w => w.Estimate).FirstOrDefaultAsync();
             if (work == null)
             {
                 return NotFound();
@@ -750,7 +777,17 @@ namespace BathDream.Pages.Account
             _db.Works.Remove(work);
             _db.SaveChanges();
 
-            return RedirectToPage();
+            if (! await _db.Works.AnyAsync(w => w.Estimate.Id == work.Estimate.Id && w.Group == work.Group))
+            {
+                return new JsonResult(
+                    new
+                    {
+                        group = work.Group
+                    }
+                );
+            }
+
+            return Page();
         }
     }
 }

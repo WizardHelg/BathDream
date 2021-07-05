@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BathDream.Data;
 using BathDream.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BathDream.Pages.Account
 {
+    [Authorize(Roles = "architector")]
     public class AchChatModel : PageModel
     {
         private readonly DBApplicationaContext _db;

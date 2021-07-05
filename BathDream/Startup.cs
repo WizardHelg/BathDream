@@ -52,10 +52,14 @@ namespace BathDream
 
             services.AddDbContext<DBApplicationaContext>(options =>
             {
+#if DEBUG
+                options.UseSqlServer(Configuration.GetConnectionString("TestConnection"));
+#else
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+#endif
             });
 
-            services.AddIdentity<User, IdentityRole>(options =>
+                services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
             })

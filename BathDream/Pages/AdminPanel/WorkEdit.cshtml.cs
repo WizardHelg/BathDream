@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using BathDream.Data;
 using BathDream.Models;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BathDream.Pages.AdminPanel
 {
+    [Authorize(Roles = "admin")]
     public class WorkEditModel : PageModel
     {
         readonly DBApplicationaContext _db;
