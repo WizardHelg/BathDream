@@ -211,8 +211,50 @@
         }
     };
 
+    var totalAll;
+
+    function EditWork(el) {
+        $(document).off('submit').on('submit', 'form#formWork', function (e) {
+            e.preventDefault();
+
+            var i = el.name;
+            var input = document.getElementById('input' + i);
+            var span = document.getElementById('span' + i);
+            var totalRow = document.getElementById('totalRow' + i);
+
+            var data = {
+                workId: i,
+                volume: input.value
+            };
+            $.ajax({
+                type: 'POST',
+                url: "Customer?handler=EditWork",
+                headers:
+                {
+                    "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: data,
+                success: function (response) {
+                    console.log('success');
+
+                     totalAll = document.getElementById('totalAll');
+
+                    span.innerText = input.value;
+                    totalRow.innerText = response.totalRow;
+                    totalAll.innerText = response.totalAll;
+                    CancelEdit(el);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+
+            })
+            return false;
+        });
+    }
+
     function DeleteWork(el) {
-        $(document).on('submit', 'form#formWork', function (e) {
+        $(document).off('submit').on('submit', 'form#formWork', function (e) {
             e.preventDefault();
             var i = el.name;
             var data = {
@@ -228,6 +270,10 @@
                 data: data,
                 success: function (response) {
                     console.log('success');
+
+                    totalAll = document.getElementById('totalAll');
+                    totalAll.innerText = response.totalAll;
+
                     var row = document.getElementById('row' + i);
                     row.remove();
 

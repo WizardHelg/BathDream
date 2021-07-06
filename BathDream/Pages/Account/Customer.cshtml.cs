@@ -777,17 +777,52 @@ namespace BathDream.Pages.Account
             _db.Works.Remove(work);
             _db.SaveChanges();
 
+            var works = await _db.Works.Where(w => w.Estimate.Id == work.Estimate.Id).ToListAsync();
+            double buf = works.Sum(w => w.Total);
+            string totalAll = buf.ToString("# ##0.00");
+
             if (! await _db.Works.AnyAsync(w => w.Estimate.Id == work.Estimate.Id && w.Group == work.Group))
             {
                 return new JsonResult(
                     new
                     {
-                        group = work.Group
+                        group = work.Group,
+                        totalAll = totalAll
                     }
                 );
             }
 
-            return Page();
+            return new JsonResult(new
+            {
+                totalAll = totalAll
+            });
+        }
+
+
+        public async Task<IActionResult> OnPostEditWorkAsync(int workId, string volume)
+        {
+            Work work = await _db.Works.Where(w => w.Id == workId).Include(w => w.Estimate).FirstOrDefaultAsync();
+            if (work == null)
+            {
+                return NotFound();
+            }
+
+            work.Volume = Convert.ToDouble(volume);
+
+            _db.Works.Update(work);
+            _db.SaveChanges();
+
+            string totalRow = work.Total.ToString("# ##0.00");
+
+            var works = await _db.Works.Where(w => w.Estimate.Id == work.Estimate.Id).ToListAsync();
+            double buf = works.Sum(w => w.Total);
+            string totalAll = buf.ToString("# ##0.00");
+
+            return new JsonResult(new
+            {
+                totalRow = totalRow,
+                totalAll = totalAll
+            });
         }
     }
 }
