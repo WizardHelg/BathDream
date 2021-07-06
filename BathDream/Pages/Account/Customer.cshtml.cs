@@ -45,6 +45,7 @@ namespace BathDream.Pages.Account
             public List<Work> Works { get; set; }
             public double Total { get; set; }
             public string ContentView { get; set; }
+            public DateTime? StartDate { get; set; }
             public string OrderAddress { get; set; }
             public string PasportAddress { get; set; }
             public string PasportSerial { get; set; }
@@ -261,6 +262,7 @@ namespace BathDream.Pages.Account
                                     .ThenInclude(w => w.WorkType)
                                 .FirstOrDefaultAsync() is Order order)
             {
+                Input.StartDate = order.StartDate;
                 Input.SignText = order.Signed ? "Подписан" : "Не подписан";
                 Input.OrderDate = order.Date.ToShortDateString();
                 Input.OrderNumber = order.Id;

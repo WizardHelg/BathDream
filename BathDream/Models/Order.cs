@@ -34,6 +34,7 @@ namespace BathDream.Models
             //else if (Status == Statuses.Executing) statusName = "Executing";
         }
         public DateTime Date { get; set; }
+        public DateTime? StartDate { get; set; }
         public UserProfile Customer { get; set; }
         public ExecutorProfile Executor { get; set; }
         public Estimate Estimate { get; set; }

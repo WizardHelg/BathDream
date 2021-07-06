@@ -274,8 +274,9 @@ namespace BathDream.Pages
 
             if (Order.RequiredRemoval)
                 AddWork("Демонтажные работы", "ДПомещения", sum_floor_area);
-            //if(Order.NeedMakeWalls)
-            //    AddWork("",)
+
+            if (Order.NeedMakeWalls)
+                AddWork("Возведение стен", "ВозведениеПерегородок", 0);
 
             if(Order.FloorType.ToLower() == "плитка")
             {
@@ -292,6 +293,7 @@ namespace BathDream.Pages
             if(Order.WallCoverType.ToLower() == "плитка")
             {
                 AddWork("Стены", "Грунтовка", sum_wall_area);
+                AddWork("Стены", "Гидроизоляция", sum_wall_area * 0.8);
                 AddWork("Стены", "ВыравниваниеСтен", sum_wall_area);
                 AddWork("Стены", "АнтигрибковоеПокрытие", sum_wall_area);
                 AddWork("Стены", "УкладкаПлитки", sum_wall_area);
@@ -399,7 +401,7 @@ namespace BathDream.Pages
             if (Order.HygienicShowerAmount > 0)
             {
                 water_dots += 2 * Order.HygienicShowerAmount;
-                sewer_dots += 1 * Order.HygienicShowerAmount;
+                //sewer_dots += 1 * Order.HygienicShowerAmount;
                 AddWork("Сантехника", "ГигиеническийДуш", Order.HygienicShowerAmount);
             }
 
@@ -470,6 +472,9 @@ namespace BathDream.Pages
                     break;
                 case "окраска":
                     AddWork("Потолок", "ПотолокОкраска", sum_ceiling_area);
+                    break;
+                case "стеклянный":
+                    AddWork("Потолок", "ПотолокСтеклянный", sum_ceiling_area);
                     break;
             }
 

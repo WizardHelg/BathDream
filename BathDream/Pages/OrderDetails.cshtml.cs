@@ -59,6 +59,11 @@ namespace BathDream.Pages
                 get => $"{City}, {Street}, {HouseNumber}, {ApartmentNumber}";
             }
 
+            [Required(ErrorMessage = "Не указана дата начала работ")]
+            [DataType(DataType.Date)]
+            [Display(Name = "Дата начала работ")]
+            public DateTime Date { get; set; }
+
             [Required(ErrorMessage = "Не указан email")]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -168,6 +173,7 @@ namespace BathDream.Pages
                     }
 
                     order.ObjectAdress = Input.ObjectAddress;
+                    order.StartDate = Input.Date;
 
                     _db.Orders.Update(order);
                     await _db.SaveChangesAsync();

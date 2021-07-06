@@ -17,7 +17,7 @@ namespace BathDream
             //string adminPassword = "Qq1945!";
 
             string architectPhone = "70000000000";
-            string adminPhone = "70000001234";
+            string adminPhone = "79030000735";
 
             if (await roleManager.FindByNameAsync("admin") == null)
                 await roleManager.CreateAsync(new IdentityRole("admin"));
