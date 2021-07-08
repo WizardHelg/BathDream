@@ -23,7 +23,8 @@ else
         <th>Адрес</th>
         <th>Исполнитель</th>
         <th>Сумма</th>
-        <th></th>
+        <th>Смета</th>
+        <th>Договор</th>
     </tr>
     @foreach (var order in Model.Input.Orders)
     {
@@ -34,6 +35,7 @@ else
             <td>@order.Executor</td>
             <td>@order.Estimate.Works.Sum(w => w.Total).ToString("# ##0.00")</td>
             <td><a asp-page-handler="Details" asp-route-orderId="@order.Id">Подробнее</a></td>
+            <td><a asp-page-handler="Contract" asp-route-orderId="@order.Id">Скачать</a></td>
         </tr>
     }
 </table>

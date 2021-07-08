@@ -31,14 +31,12 @@ namespace BathDream.Pages.Account
         public InputModel Input { get; set; } = new InputModel();
         public class InputModel
         {
+            public User User { get; set; }
             public bool Signed { get; set; } = false;
             public string SignText { get; set; } = "Не подписан";
             public string UserName { get; set; }
             public string UserFamaly { get; set; }
-            public string FIO { get; set; }
             public bool Display { get; set; } = false;
-            public string CustomerPhone { get; set; }
-            public string CustomerEmail { get; set; }
             public int OrderNumber { get; set; }
             public string OrderDate { get; set; }
             public List<Room> Rooms { get; set; }
@@ -47,11 +45,6 @@ namespace BathDream.Pages.Account
             public string ContentView { get; set; }
             public DateTime? StartDate { get; set; }
             public string OrderAddress { get; set; }
-            public string PasportAddress { get; set; }
-            public string PasportSerial { get; set; }
-            public string PasportNumber { get; set; }
-            public string PasportIssued { get; set; }
-            public string PasportDate { get; set; }
             public List<FileItem> FileItems { get; set; }
             public List<Order> Orders { get; set; }
             public Order CurrentOrder { get; set; }
@@ -181,16 +174,12 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetEstimateAsync()
         {
-            Input.ContentView = "./Views/CustomerEstimatePartialView";
+            //Input.ContentView = "./Views/CustomerEstimatePartialView";
 
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
 
-            Input.UserName = user.UName;
-            Input.UserFamaly = user.UFamaly;
-            Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
-            Input.CustomerPhone = user.PhoneNumber;
-            Input.CustomerEmail = user.Email;
+            Input.User = user;
 
             //if (user.Profile.CurrentOrderId == 0)
             //{
@@ -243,17 +232,8 @@ namespace BathDream.Pages.Account
             Input.ContentView = "./Views/CustomerContractPartialView";
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
-            Input.UserName = user.UName;
-            Input.UserFamaly = user.UFamaly;
-            Input.FIO = $"{user.UFamaly ?? "_"} {user.UName ?? "_"} {user.UPatronymic ?? "_"}";
-            Input.CustomerPhone = user.PhoneNumber;
-            Input.CustomerEmail = user.Email ?? "_@_._";
-            Input.PasportAddress = user.Profile.PasportAddress ?? "_";
-            Input.PasportSerial = user.Profile.PasportSerial ?? "_";
-            Input.PasportNumber = user.Profile.PasportNumber ?? "_";
-            Input.PasportIssued = user.Profile.PasportIssued ?? "_";
-            if (user.Profile.PasportDate is DateTime dt)
-                Input.PasportDate = dt.ToShortDateString() ?? "_";
+
+            Input.User = user;
 
             int order_id = 0;
             if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId)
@@ -341,21 +321,9 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetSignAsync()
         {
-            Input.ContentView = "./Views/CustomerContractPartialView";
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
             Order order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
-
-
-            Input.FIO = $"{user.UFamaly} {user.UName} {user.UPatronymic}";
-            Input.CustomerPhone = user.PhoneNumber;
-            Input.CustomerEmail = user.Email;
-            Input.PasportAddress = user.Profile.PasportAddress;
-            Input.PasportSerial = user.Profile.PasportSerial;
-            Input.PasportNumber = user.Profile.PasportNumber;
-            Input.PasportIssued = user.Profile.PasportIssued;
-            if (user.Profile.PasportDate is DateTime dt)
-                Input.PasportDate = dt.ToShortDateString();
 
             if (order != null)
             {

@@ -6,6 +6,15 @@
 @{
     int time = Model.UniqueWorks.Sum(w => w.WorkType.Time);
     int limitTime = time + 2;
+
+    string FIO = Model.User.FullName ?? "___ ___";
+    string PasportAddress = Model.User.Profile.PasportAddress ?? "_";
+    string CustomerPhone = Model.User.PhoneNumber ?? "________";
+    string CustomerEmail = Model.User.Email ?? "_@_._";
+    string PasportSerial = Model.User.Profile.PasportSerial ?? "____";
+    string PasportNumber = Model.User.Profile.PasportNumber ?? "______";
+    string PasportIssued = Model.User.Profile.PasportIssued ?? "_";
+    string PasportDate = Model.User.Profile.PasportDate == null ? "_" : ((DateTime)Model.User.Profile.PasportDate).ToShortDateString();
 }
 
 <br />
@@ -31,7 +40,7 @@
     </tr>
 </table>
 <div class="contract-text">
-    <p class="contract-p">@Model.FIO, <span class="contract-bold">зарегистрирован(на) по адресу:</span> @Model.PasportAddress, именуемый в дальнейшем <span class="contract-bold">Заказчик</span>, и <span class="contract-bold">Общество с ограниченной ответственностью «Лазурит»</span>, именуемый в дальнейшем <span class="contract-bold">Подрядчик</span>, в лице Генерального директора <span class="contract-bold">Абрамова Дмитрия Викторовича</span>, действующего на основании Устава, с другой стороны, заключили настоящий Договор о нижеследующем:</p>
+    <p class="contract-p">@FIO, <span class="contract-bold">зарегистрирован(на) по адресу:</span> @PasportAddress, именуемый в дальнейшем <span class="contract-bold">Заказчик</span>, и <span class="contract-bold">Общество с ограниченной ответственностью «Лазурит»</span>, именуемый в дальнейшем <span class="contract-bold">Подрядчик</span>, в лице Генерального директора <span class="contract-bold">Абрамова Дмитрия Викторовича</span>, действующего на основании Устава, с другой стороны, заключили настоящий Договор о нижеследующем:</p>
     <p class="contract-top-level">1. Предмет Договора.</p>
     <p class="contract-p">1.1. Заказчик поручает, а Подрядчик принимает на себя обязательства по ремонту помещения (квартира), по адресу: <span class="contract-bold">@Model.OrderAddress</span>, именуемый в дальнейшем Объект, согласно проектно-сметной документации, прилагаемой к настоящему договору и пожеланиями Заказчика, выраженными в письменной форме.</p>
     <p class="contract-top-level">2. Стоимость и сроки выполнения работ.</p>
@@ -126,13 +135,13 @@
             E-mail: info@bath-dream.ru
         </td>
         <td>
-            @Model.FIO<br />
-            Паспорт: @Model.PasportSerial @Model.PasportNumber<br />
-            Выдан: @Model.PasportIssued<br />
-            Дата выдачи: @Model.PasportDate<br />
-            Адрес регистрации: @Model.PasportAddress<br />
-            Тел.: @Model.CustomerPhone<br />
-            E-mail: @Model.CustomerEmail
+            @FIO<br />
+            Паспорт: @PasportSerial @PasportNumber<br />
+            Выдан: @PasportIssued<br />
+            Дата выдачи: @PasportDate<br />
+            Адрес регистрации: @PasportAddress<br />
+            Тел.: @CustomerPhone<br />
+            E-mail: @CustomerEmail
         </td>
     </tr>
     <tr>

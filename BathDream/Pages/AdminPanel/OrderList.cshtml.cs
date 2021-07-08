@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using BathDream.Data;
 using BathDream.Models;
+using BathDream.Pages.Account;
+using jsreport.AspNetCore;
+using jsreport.Types;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +33,7 @@ namespace BathDream.Pages.AdminPanel
             public UserProfile UserProfile { get; set; }
             public List<Order> Orders { get; set; }
             public List<Work> Works { get; set; }
+            public User User { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(string userId = "")
@@ -65,6 +69,19 @@ namespace BathDream.Pages.AdminPanel
             {
                 orderId = orderId
             });
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public IActionResult OnGetContract()
+        {
+            //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+
+            return Page();
+            //return new PartialViewResult
+            //{
+            //    ViewName = "./Account/Views/CustomerContractPartialView",
+            //    ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, )
+            //};
         }
     }
 }

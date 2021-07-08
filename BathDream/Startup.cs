@@ -16,6 +16,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using jsreport.AspNetCore;
+using jsreport.Local;
+using jsreport.Binary;
+
 namespace BathDream
 {
     public class Startup
@@ -34,6 +38,11 @@ namespace BathDream
             services.AddSingleton<SMSConfirmator>();
             services.AddTransient<EmailSender>();
             services.AddTransient<SMSSender>();
+
+            services.AddJsReport(new LocalReporting()
+                .UseBinary(JsReportBinary.GetBinary())
+                .AsUtility()
+                .Create());
 
             services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(serv => new CustomPasswordValidator()
             {
