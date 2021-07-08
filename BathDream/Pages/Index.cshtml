@@ -4,7 +4,7 @@
     ViewBag.Title = "Формирование заказа";
 
     List<SelectListItem> ObjectTypeList = new List<SelectListItem>()
-    {
+{
         new SelectListItem()
         {
             Text = "Новостройка",
@@ -23,7 +23,7 @@
     };
 
     List<SelectListItem> FloorTypeList = new List<SelectListItem>()
-    {
+{
         new SelectListItem()
         {
             Text = "Плитка",
@@ -38,7 +38,7 @@
     };
 
     List<SelectListItem> WallCoverTypeList = new List<SelectListItem>()
-    {
+{
         new SelectListItem()
         {
             Text = "Плитка",
@@ -57,7 +57,7 @@
     };
 
     List<SelectListItem> CeilingCoverType = new List<SelectListItem>()
-    {
+{
         new SelectListItem()
         {
             Text = "Реечный",
@@ -82,7 +82,7 @@
     };
 
     List<(string Name, string Text)> ModalFields = new List<(string, string)>
-    {
+{
         ("Surname", "Фамилия"),
         ("Name", "Имя"),
         ("Phone", "Телефон"),
@@ -93,7 +93,7 @@
 }
 
 @section MainMenu
-{ 
+{
     <partial name="MainMenu" model="returnUrl" />
 }
 
@@ -104,7 +104,104 @@
         <h2>Пройди всего 5 шагов и выбери свой подарок до 30 000 р.</h2>
         <hr />
 
-        <div id="page1" style="display: block;">
+        <div id="page0" style="display: block;">
+            <h2>Выберите тип ремонта</h2>
+
+            <div class="container-fluid">
+
+
+                <div class="col-xs-12">
+                    <div class="row" style="background-color: #FAFAFA; padding: 5px">
+                        <div class="col-sm-6 col-xs-12 ">
+                            <h4><b>Все включено</b></h4>
+                            <ul style="text-align: left">
+                                <li>
+                                    Три уникальных дизайн проекта на выбор
+                                </li>
+                                <li>
+                                    Подбор всего материала согласно, дизайн проекта
+                                </li>
+                                <li>Поставка всего материала согласно, дизайн проекта</li>
+                                <li>Выполнение ремонтно-монтажных работ согласно проектной документации</li>
+                                <li>Вывоз мусора</li>
+                                <li>Уборка помещения после ремонта</li>
+                                <li>Подарок от компании Bath-Dream до 30 тысяч рублей из выбранной сантехники.</li>
+
+                            </ul>
+                            <a class="btn btn-success" name="Estimate" onclick="
+                document.getElementById('page0').style.display = 'none';
+                document.getElementById('page1').style.display = 'block';
+                window.scrollTo(0, 0);
+            ">Выбрать</a>
+                        </div>
+
+                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="row" style="padding: 5px">
+                        <div class="col-sm-6 col-xs-12 ">
+                            <h4><b>Стандарт</b></h4>
+                            <ul style="text-align: left">
+                                <li>Закупка чернового материала согласно ремонтно-монтажных работам</li>
+                                <li>Выполнение ремонтно-монтажных работ согласно проектной документации</li>
+                                <li>Вывоз мусора</li>
+                            </ul>
+                            <a class="btn btn-success" name="Estimate" onclick="
+                document.getElementById('page0').style.display = 'none';
+                document.getElementById('page1').style.display = 'block';
+                window.scrollTo(0, 0);
+            ">Выбрать</a>
+                        </div>
+
+                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="row" style="background-color: #FAFAFA; padding: 5px">
+                        <div class="col-sm-6 col-xs-12 ">
+                            <h4><b>Без гарантии</b></h4>
+                            <ul style="text-align: left">
+                                <li>
+                                    Выполнение ремонтно-монтажных работ согласно проектной документации.
+                                    Вы закупаете весь материал сами, мы не гарантируем гарантию качества материала. Гарантия будет ограниченна
+                                </li>
+                            </ul>
+                            <a class="btn btn-success" name="Estimate" onclick="
+                document.getElementById('page0').style.display = 'none';
+                document.getElementById('page1').style.display = 'block';
+                window.scrollTo(0, 0);
+            ">Выбрать</a>
+                        </div>
+
+                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="row" style="padding: 5px">
+                        <div class="col-sm-6 col-xs-12 ">
+                            <h4><b>Сервис</b></h4>
+                            <ul style="text-align: left">
+                                <li>Опишите задачу ремонта для составления сметной документации</li>
+                                <li>При возможности приложите фотографии.</li>
+                            </ul>
+                            <a class="btn btn-success" name="Estimate">Выбрать</a>
+                        </div>
+
+                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr />
+            
+        </div>
+
+        <div id="page1" style="display: none;">
             <simple-form-container label="Выберите объект" col-sm-width="8">
                 <select class="form-control" name="ObjectType" asp-items="ObjectTypeList"></select>
             </simple-form-container>
@@ -149,19 +246,34 @@
             </div>
 
             <hr />
-            <button type="button" class="btn btn-success" onclick="
-                document.getElementById('page1').style.display = 'none';
-                document.getElementById('page2').style.display = 'block';
-                window.scrollTo(0, 0);
-            ">
-                Далее
-            </button>
+            <table style="border: 0; width: 100%">
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page0').style.display = 'block';
+                            document.getElementById('page1').style.display = 'none';
+                            window.scrollTo(0, 0);
+                            ">
+                            Назад
+                        </button>
+                    </td>
+                    <td align="right">
+                        <button type="button" class="btn btn-success" onclick="
+                            document.getElementById('page1').style.display = 'none';
+                            document.getElementById('page2').style.display = 'block';
+                            window.scrollTo(0, 0);
+                            ">
+                            Далее
+                        </button>
+                    </td>
+                </tr>
+            </table>
         </div>
 
         @*<simple-form-container label="Санузен совмещенный?" col-sm-width="8">
-            <radio-form-element element-name="Order.CombinedBathroom" element-value="true">Да</radio-form-element>
-            <radio-form-element element-name="Order.CombinedBathroom" element-value="false" element-checked="true">Нет</radio-form-element>
-        </simple-form-container>*@
+                <radio-form-element element-name="Order.CombinedBathroom" element-value="true">Да</radio-form-element>
+                <radio-form-element element-name="Order.CombinedBathroom" element-value="false" element-checked="true">Нет</radio-form-element>
+            </simple-form-container>*@
 
         <div id="page2" style="display: none;">
             <simple-form-container label="Требуется демонтаж?" col-sm-width="8">
@@ -361,41 +473,41 @@
         @*<button type="button" class="btn btn-success btn-lg btn-block" formaction="/?handler=submit" data-target="#modal-order" data-toggle="modal">Расчитать смету</button>*@
 
         @*<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modal-order" role="dialog" tabindex="-1">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                            <span aria-hidden="true">
-                                &times;
-                            </span>
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">На какой адрес отправить смету?</h4>
-                    </div>
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                <span aria-hidden="true">
+                                    &times;
+                                </span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">На какой адрес отправить смету?</h4>
+                        </div>
 
-                    <div class="modal-body">
-                        @foreach (var item in ModalFields)
-                        {
-                            <div class="form-group row">
-                                <label class="col-sm-3" for="@item.Name" style="font-size: unset;">@item.Text:*</label>
-                                <div class="col-sm-9">
-                                    <input class="form-control" id="@item.Name" name="@($"Customer.{item.Name}")" placeholder="@item.Text" type="text" required />
+                        <div class="modal-body">
+                            @foreach (var item in ModalFields)
+                            {
+                                <div class="form-group row">
+                                    <label class="col-sm-3" for="@item.Name" style="font-size: unset;">@item.Text:*</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control" id="@item.Name" name="@($"Customer.{item.Name}")" placeholder="@item.Text" type="text" required />
+                                    </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
+                            }
+                        </div>
 
-                    <div class="modal-footer">
-                        <p class="small">Нажимая кнопку "Отправить смету", Вы соглашаетесь с условиями <a href="https://bath-dream.ru/" target="_blank">Пользовательского соглашения</a></p>
-                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Закрыть</button>
-                        <button type="submit" class="btn btn-success" name="send" id="send_order" asp-page-handler="submit">Отправить смету</button>
+                        <div class="modal-footer">
+                            <p class="small">Нажимая кнопку "Отправить смету", Вы соглашаетесь с условиями <a href="https://bath-dream.ru/" target="_blank">Пользовательского соглашения</a></p>
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Закрыть</button>
+                            <button type="submit" class="btn btn-success" name="send" id="send_order" asp-page-handler="submit">Отправить смету</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>*@
+            </div>*@
     </form>
 
     <script type="text/javascript">
-        
+
         rooms.addEventListener('click', function (evt) {
             if (evt.target.closest('.deleteRow')) {
                 evt.target.closest('tr').remove();
@@ -412,7 +524,7 @@
                 newRow = table.insertRow();
             newRow.innerHTML = rowNewText;
 
- //           renameRooms();
+            //           renameRooms();
         }
 
         function renameRooms() {
