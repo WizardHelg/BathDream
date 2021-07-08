@@ -66,38 +66,34 @@ hr {
 
 
 .nav {
-    margin: 7px 0 15px -10px;
-    color: #263E44;
+    /*margin: 7px 0 15px -10px;*/
+    color: #fff;
 }
 
 .navbar-default {
-    background-color: #fff;
-    border-bottom: #263E44;
-    border-bottom-style: solid;
-    border-bottom-width: thin;
+    background-color: #263E44;
 }
 
 .nav li {
-    color: #263E44;
-    font-weight:600;
+   color: #fff;
+   font-weight:600;
 }
 
 .navbar-brand {
-    padding-top: 10px;
+     padding: 10px;
 }
 
 
 .navbar-nav > li > a {
-    padding-top: 10px;
     line-height: 20px;
     padding-bottom: 0;
-    color: #263E44;
+    color: #fff;
     font-size: 15px;
     text-decoration: none;
 }
 
 .navbar-default .navbar-nav > li > a:hover {
-    color: #9A8078;
+     color: #9A8078;
 }
 
 .navbar-default .navbar-nav > li > a.hover {
@@ -106,21 +102,21 @@ hr {
 }
 
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
-    background-color: unset;
+    /*background-color: unset;*/
 }
 
 .navbar-default .navbar-nav > li > a {
-    color: #263E44;
+    color: #fff;
 }
 
 .navbar-header a:hover, .footer a:hover {
-    border: 0px;
+    /* border: 0px;*/
 }
 
 
 @media (min-width:768px) {
     .logo {
-        margin: 10px -10px 10px 10px;
+        /*margin: 10px -10px 10px 10px;*/
     }
 
     li > a:hover {
@@ -128,17 +124,18 @@ hr {
     }
 
     .nav > li > a {
-        position: relative;
+        /*position: relative;
         display: block;
         margin: 7px 10px;
-        text-decoration: none;
+        text-decoration: none;*/
     }
 }
 
 
 .nav {
+    /*
     margin: 7px 0 15px -10px;
-    color: #263E44;
+    color: #263E44;*/
 }
 
 .nav li {
@@ -146,12 +143,12 @@ hr {
 }
 
 .navbar-nav > li > a {
-    padding-top: 10px;
+    /*padding-top: 10px;
     line-height: 20px;
     padding-bottom: 0;
     color: #263E44;
     font-size: 15px;
-    text-decoration: none;
+    text-decoration: none;*/
 }
 
 .navbar-default .navbar-nav > li > a:hover {
@@ -160,19 +157,22 @@ hr {
 }
 
 .navbar-default .navbar-nav > li > a.hover {
-    color: #9A8078;
-    display: table;
+    /* color: #9A8078;
+    display: table;*/
 }
 
 .navbar-default .navbar-nav > li > a {
-    color: #263E44;
+    /*color: #263E44;*/
 }
 
 .navbar-header a:hover, .footer a:hover {
-    border: 0px;
+    /*border: 0px;*/
 }
 
-
+.nav-logo {
+    height: 100%;
+    width: auto;
+}
 
 .order {
     padding: 40px 15px;
