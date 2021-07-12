@@ -21,12 +21,15 @@ using BathDream.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using BathDream.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace BathDream.Pages
 {
     public class IndexModel : PageModel
     {
         readonly DBApplicationaContext _db;
+        private readonly EmailSender _emailSender;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         #region BathroomEquipments
         public List<BathroomItem> BathroomEquipments = new()
@@ -202,10 +205,21 @@ namespace BathDream.Pages
         [BindProperty]
         public Customer Customer { get; set; }
 
-        public IndexModel(DBApplicationaContext db, EmailSender emailSender)
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        public IndexModel(DBApplicationaContext db, EmailSender emailSender, IWebHostEnvironment webHostEnvironment)
         {
             _db = db;
+            _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
+        }
 
+        public class InputModel
+        {
+            public string Sender { get; set; }
+            [Required (ErrorMessage = "Опишите проблему")]
+            public string Message { get; set; }
         }
 
         public IActionResult OnGet()
@@ -225,6 +239,7 @@ namespace BathDream.Pages
         {
             Order order = new()
             {
+                OrderType = (Order.Type)Convert.ToInt32(Order.OrderType),
                 Date = DateTime.Now.Date,
                 Status = Models.Order.Statuses.Temp
             };
@@ -293,7 +308,7 @@ namespace BathDream.Pages
             if(Order.WallCoverType.ToLower() == "плитка")
             {
                 AddWork("Стены", "Грунтовка", sum_wall_area);
-                AddWork("Стены", "Гидроизоляция", sum_wall_area * 0.8);
+                AddWork("Стены", "Гидроизоляция", Math.Round(sum_wall_area * 0.8, 4));
                 AddWork("Стены", "ВыравниваниеСтен", sum_wall_area);
                 AddWork("Стены", "АнтигрибковоеПокрытие", sum_wall_area);
                 AddWork("Стены", "УкладкаПлитки", sum_wall_area);
@@ -311,7 +326,7 @@ namespace BathDream.Pages
             if (Order.WarmFloor)
             {
                 AddWork("Электрика", "Терморегулятор", 1);
-                AddWork("Электрика", "ТеплыйПол", sum_floor_area / 2);
+                AddWork("Электрика", "ТеплыйПол", Math.Round(sum_floor_area / 2, 4));
             }
 
             if (Order.BathAmount > 0)
@@ -485,6 +500,41 @@ namespace BathDream.Pages
             await _db.SaveChangesAsync();
 
             return order;
+        }
+
+        public async Task<IActionResult> OnPostSendRequest(List<IFormFile> formFiles)
+        {
+            List<string> attachments = new List<string>();
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            string directoryPath = webRootPath + @"\temp\";
+            string fullPath = "";
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            foreach (var file in formFiles)
+            {
+                fullPath = @$"{directoryPath}\{file.FileName}";
+                using (var fileStream = new FileStream(directoryPath + file.FileName, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                    attachments.Add(fullPath);
+                }
+            }
+#if DEBUG
+#else
+            _emailSender.Send("order@bath-dream.ru", $"Bath-Dream - Новая заявка {Input.Sender}",
+            $"Отправитель (email/тел.): {Input.Sender}. " +
+            $"Текст заявки: '{Input.Message}' ", attachments);
+#endif
+
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+
+            return RedirectToPage();
         }
     }
 }

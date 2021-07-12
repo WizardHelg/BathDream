@@ -32,22 +32,10 @@ namespace BathDream.Pages.Account
         public class InputModel
         {
             public User User { get; set; }
-            public bool Signed { get; set; } = false;
-            public string SignText { get; set; } = "Не подписан";
-            public string UserName { get; set; }
-            public string UserFamaly { get; set; }
-            public bool Display { get; set; } = false;
-            public int OrderNumber { get; set; }
-            public string OrderDate { get; set; }
-            public List<Room> Rooms { get; set; }
-            public List<Work> Works { get; set; }
-            public double Total { get; set; }
+            public Order Order { get; set; }
             public string ContentView { get; set; }
-            public DateTime? StartDate { get; set; }
-            public string OrderAddress { get; set; }
             public List<FileItem> FileItems { get; set; }
             public List<Order> Orders { get; set; }
-            public Order CurrentOrder { get; set; }
             public List<Work> UniqueWorks { get; set; }
 
             /// <summary>
@@ -88,11 +76,7 @@ namespace BathDream.Pages.Account
             /// </summary>
             public int FlagAddWorks { get; set; } = 0;
 
-
             public List<Invoice> Invoices { get; set; }
-            public Invoice Invoice { get; set; }
-
-            public bool IsFilled { get; set; }
         }
 
         public CustomerModel(SignInManager<User> signInManager, UserManager<User> userManager,
@@ -126,8 +110,6 @@ namespace BathDream.Pages.Account
                 $"Зарегистрирован новый заказ №{order.Id}. \n" +
                 $"Пользователь - {user.FullName}, телефон: {user.PhoneNumber}.");
 #endif
-
-
                 await _db.SaveChangesAsync();
             }
 
@@ -139,19 +121,12 @@ namespace BathDream.Pages.Account
 
             order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync();
 
-            Input.UserName = user.UName;
-            Input.UserFamaly = user.UFamaly;
+            Input.User = user;
+            Input.Order = order;
 
-            Input.CurrentOrder = order;
-
-            Input.OrderAddress = order.ObjectAdress;
-            if (!Input.Signed && (string.IsNullOrEmpty(Input.OrderAddress) || !user.Profile.IsFilled()))
+            if (string.IsNullOrEmpty(Input.Order.ObjectAdress) || !user.Profile.IsFilled())
             {
                 Input.FlagContract = 1;
-            }
-            if ((order.Status & Order.Statuses.Brief) == 0)
-            {
-                Input.FlagBrief = 1;
             }
 
             Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == order.Id && i.Type == 2).ToListAsync();
@@ -181,13 +156,6 @@ namespace BathDream.Pages.Account
 
             Input.User = user;
 
-            //if (user.Profile.CurrentOrderId == 0)
-            //{
-            //    user.Profile.CurrentOrderId = order.Id;
-            //}
-
-            //Order order = null;
-
             Order order = await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId)
                                     .Include(o => o.Estimate)
                                     .ThenInclude(e => e.Rooms)
@@ -197,17 +165,12 @@ namespace BathDream.Pages.Account
 
             if (order != null)
             {
-                Input.Display = true;
-                Input.OrderDate = order.Date.ToShortDateString();
-                Input.OrderNumber = order.Id;
-                Input.OrderAddress = order.ObjectAdress;
-                Input.Rooms = order.Estimate.Rooms;
-                Input.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
-                Input.Total = Input.Works.Sum(w => w.Total);
-                Input.Signed = order.Signed;
+                Input.Order = order;
+
+                Input.Order.Estimate.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
 
                 Input.UniqueWorks = new List<Work>();
-                foreach (var item in Input.Works)
+                foreach (var item in Input.Order.Estimate.Works)
                 {
                     if (Input.UniqueWorks.Any(w => w.WorkType.Id == item.WorkType.Id))
                     {
@@ -235,21 +198,13 @@ namespace BathDream.Pages.Account
 
             Input.User = user;
 
-            int order_id = 0;
             if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId)
                                 .Include(o => o.Estimate)
                                     .ThenInclude(e => e.Works)
                                     .ThenInclude(w => w.WorkType)
                                 .FirstOrDefaultAsync() is Order order)
             {
-                Input.StartDate = order.StartDate;
-                Input.SignText = order.Signed ? "Подписан" : "Не подписан";
-                Input.OrderDate = order.Date.ToShortDateString();
-                Input.OrderNumber = order.Id;
-                Input.OrderAddress = order.ObjectAdress ?? "_";
-                Input.Signed = order.Signed;
-                order_id = order.Id;
-                Input.Works = order.Estimate.Works;
+                Input.Order = order;
             }
             else
             {
@@ -268,14 +223,8 @@ namespace BathDream.Pages.Account
             Input.PrepaidPayment = Input.Payments.FirstOrDefault(p => p.PaymentStatus == "2" && p.Description == "Аванс");
             Input.ResidualPayment = Input.Payments.FirstOrDefault(p => p.PaymentStatus == "2" && p.Description == "Остаток");
 
-            Input.IsFilled = user.Profile.IsFilled();
-
-            //if (!Input.Signed && (string.IsNullOrEmpty(Input.OrderAddress) || !user.Profile.IsFilled()))
-            //    return RedirectToPage("/OrderDetails", new { OrderId = order_id });
-
-
             Input.UniqueWorks = new List<Work>();
-            foreach (var item in Input.Works)
+            foreach (var item in Input.Order.Estimate.Works)
             {
                 if (Input.UniqueWorks.Any(w => w.WorkType.Id == item.WorkType.Id))
                 {
@@ -327,12 +276,12 @@ namespace BathDream.Pages.Account
 
             if (order != null)
             {
-                Input.OrderDate = order.Date.ToShortDateString();
-                Input.OrderNumber = order.Id;
-                Input.OrderAddress = order.ObjectAdress;
                 order.Signed = true;
-                Input.SignText = "Подписан";
-                Input.Signed = order.Signed;
+                if (order.OrderType != Order.Type.AllInclusive)
+                {
+                    order.Status |= Order.Statuses.ToExecute;
+                }
+                Input.Order = order;
                 await _db.SaveChangesAsync();
             }
 
@@ -341,8 +290,6 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetDeleteOrderAsync()
         {
-            Input.ContentView = "./Views/CustomerEstimatePartialView";
-
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
 
@@ -361,18 +308,11 @@ namespace BathDream.Pages.Account
             if (await _db.Orders.Where(o => o.Id == user.Profile.CurrentOrderId).FirstOrDefaultAsync() is Order order
                && order.Signed)
             {
-                Input.UserName = user.UName;
-                Input.UserFamaly = user.UFamaly;
+                Input.User = user;
                 Input.FileItems = await _db.FileItems.Include(o => o.Order).Where(f => f.Order.Id == order.Id).ToListAsync();
-                Input.CurrentOrder = order;
+                Input.Order = order;
                 if ((order.Status & Order.Statuses.Brief) == 0)
                     return RedirectToPage("/Brief", new { id = order.Id });
-                else
-                {
-                    Input.Flag = 1;
-                    Input.ContentView = "./Views/ChatPartialView";
-                    return Page();
-                }
             }
 
             return RedirectToPage();
@@ -380,7 +320,7 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetMaterialAsync(int id)
         {
-            Input.CurrentOrder = new Order() { Id = id };
+            Input.Order = new Order() { Id = id };
             Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == id && i.Type == 2).Include(i => i.Materials).ToListAsync();
 
             Input.PaymentHandler = new PaymentHandler();
@@ -447,7 +387,6 @@ namespace BathDream.Pages.Account
 
         public IActionResult OnGetDocuments()
         {
-            //Input.ContentView = "./Views/DocumentsPartialView";
             return new PartialViewResult
             {
                 ViewName = "./Views/DocumentsPartialView",
@@ -457,7 +396,7 @@ namespace BathDream.Pages.Account
 
         public async Task<IActionResult> OnGetAdditionalWorksAsync(int id)
         {
-            Input.CurrentOrder = new Order() { Id = id };
+            Input.Order = new Order() { Id = id };
             Input.Invoices = await _db.Invoices.Where(i => i.Order.Id == id && i.Type == 3).Include(i => i.AdditionalWorks).ToListAsync();
 
             Input.PaymentHandler = new PaymentHandler();
@@ -522,14 +461,12 @@ namespace BathDream.Pages.Account
             return Redirect(paymentUrl);
         }
 
-        /// <summary>
-        /// ???????
-        /// </summary>
-        /// <param name="orderId"></param>
-        public void OnGetChat(Order orderId)
+        public async Task<IActionResult> OnGetChat(int orderId)
         {
             Input.ContentView = "./Views/ChatPartialView";
-            Input.CurrentOrder = orderId;
+            Input.Order = await _db.Orders.FindAsync(orderId);
+            Input.Flag = 1;   
+            return Page();
         }
 
         public async Task<IActionResult> OnGetLogoutAsync()
@@ -547,11 +484,10 @@ namespace BathDream.Pages.Account
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
 
-            Input.UserName = user.UName;
-            Input.UserFamaly = user.UFamaly;
+            Input.User = user;
 
             Input.Orders = await _db.Orders.Where(o => o.Customer.Id == user.Profile.Id).ToListAsync();
-            Input.CurrentOrder = Input.Orders.FirstOrDefault(o => o.Id == user.Profile.CurrentOrderId);
+            Input.Order = Input.Orders.FirstOrDefault(o => o.Id == user.Profile.CurrentOrderId);
 
             return Page();
         }
@@ -559,7 +495,7 @@ namespace BathDream.Pages.Account
         {
             Order order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id);
 
-            Input.CurrentOrder = order;
+            Input.Order = order;
 
             User user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _db.Entry(user).Reference(u => u.Profile).LoadAsync();
@@ -635,8 +571,8 @@ namespace BathDream.Pages.Account
         public async Task<IActionResult> OnGetPaymentAsync(int orderId)
         {
             Order order = await _db.Orders.Include(o => o.Estimate).ThenInclude(e => e.Works).FirstOrDefaultAsync(o => o.Id == orderId);
-            Input.Works = order.Estimate.Works.OrderBy(w => w.Position).ToList();
-            Input.Total = Input.Works.Sum(w => w.Total);
+
+            double total = order.Estimate.Total();
 
             Invoice invoice = await _db.Invoices.FirstOrDefaultAsync(i => i.Order.Id == orderId && i.Type == 1);
             if (invoice == null)
@@ -656,13 +592,13 @@ namespace BathDream.Pages.Account
             Payment payment = await _db.Payments.FirstOrDefaultAsync(p => p.Invoice.Order.Id == orderId && p.Description == "Аванс" && p.PaymentStatus == "2");
             if (payment != null)
             {
-                amount = Convert.ToInt32(Input.Total * 100) - payment.Amount;
+                amount = Convert.ToInt32(total * 100) - payment.Amount;
 
                 description = "Остаток";
             }
             else
             {
-                int amountBuffer = Convert.ToInt32(Input.Total * 100);
+                int amountBuffer = Convert.ToInt32(total * 100);
                 amount = Convert.ToInt32(Math.Round((double)(amountBuffer / 10)));
 
                 description = "Аванс";
@@ -737,6 +673,7 @@ namespace BathDream.Pages.Account
             Input.Flag = 2;
             return RedirectToPage();
         }
+
         public async Task<IActionResult> OnPostDeleteWorkAsync(int workId)
         {
             Work work = await _db.Works.Where(w => w.Id == workId).Include(w => w.Estimate).FirstOrDefaultAsync();
@@ -767,7 +704,6 @@ namespace BathDream.Pages.Account
                 totalAll = totalAll
             });
         }
-
 
         public async Task<IActionResult> OnPostEditWorkAsync(int workId, string volume)
         {

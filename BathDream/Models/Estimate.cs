@@ -12,5 +12,10 @@ namespace BathDream.Models
         public Order Order { get; set; }
         public List<Room> Rooms { get; set; }
         public List<Work> Works { get; set; }
+
+        public double Total()
+        {
+            return Works.Sum(w => w.Total);
+        }
     }
 }

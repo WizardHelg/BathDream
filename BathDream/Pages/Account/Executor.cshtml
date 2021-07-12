@@ -10,8 +10,10 @@
 }
 
 <div class="container-scroller">
-    <div class="page-wrapper chiller-theme ">
-        @* class="page-wrapper chiller-theme toggled" для открытого по умолчанию sidebar *@
+
+    <!--
+    @*<div class="page-wrapper chiller-theme ">
+        @* class="page-wrapper chiller-theme toggled" для открытого по умолчанию sidebar
         <a id="show-sidebar" class="btn btn-sm btn-dark" style="color: #333;" href="#">
             <i class="fas fa-bars"></i>
         </a>
@@ -38,118 +40,124 @@
                         </span>
                         <span class="user-role">Исполнитель</span>
                         <span class="user-status">
-                            <!--<i class="fa fa-circle"></i>-->
-                            <span>Online</span>
-                        </span>
-                    </div>
+    <span>Online</span>
+    </span>
+</div>
                 </div>
 
-                <!-- sidebar-search  -->
-                <div class="sidebar-menu">
-                    <ul>
-                        <li class="header-menu" id="close-sidebar">
-                            <span>Доступные действия</span>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a asp-page-handler="ShowAvailableOrders">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Доступные заказы</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a asp-page-handler="ShowAcceptedOrders">
-                                <i class="fa fa-shopping-cart"></i>
-                                <span>Принятые заказы</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- sidebar-menu  -->
+<div class="sidebar-menu">
+    <ul>
+        <li class="header-menu" id="close-sidebar">
+            <span>Доступные действия</span>
+        </li>
+        <li class="sidebar-dropdown">
+            <a asp-page-handler="ShowAvailableOrders">
+                <i class="fa fa-tachometer"></i>
+                <span>Доступные заказы</span>
+            </a>
+        </li>
+        <li class="sidebar-dropdown">
+            <a asp-page-handler="ShowAcceptedOrders">
+                <i class="fa fa-shopping-cart"></i>
+                <span>Принятые заказы</span>
+            </a>
+        </li>
+    </ul>
+</div>
             </div>
         </nav>
-        <!-- sidebar-wrapper  -->
-        <main class="page-content">
-            <div class="container-fluid">
-                @switch (Model.sw)
-                {
-                    case 1:
-                        <div class="container-scroller" style="margin-top: 50px">
-                            <h1>Доступные заказы</h1>
-                        </div>
-                        <table class="table table-bordered table-hover">
-                            <tr class="success">
-                                <th style="text-align:center">Клиент</th>
-                                <th style="text-align:center">№ заказа</th>
-                                <th style="text-align:center">Адрес</th>
-                                <th style="text-align:center">Смета</th>
-                                <th style="text-align:center">Дизайн</th>
-                                <th></th>
-                            </tr>
-                            @foreach (var order_info in @Model.Data)
-                            {
-                                <tr>
-                                    <td style="text-align: center;">
-                                        @if (order_info.Status == Models.Order.Statuses.New)
-                                        {
-                                            <a>New!</a>
-                                        }
-                                        @order_info.Customer.User.FullName
-                                    </td>
-                                    <td style="text-align: center;">@order_info.Id</td>
-                                    <td style="text-align: center;">@order_info.ObjectAdress</td>
-                                    <td style="text-align: center;">
-                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
-                                    </td>
-                                    <td style="text-align: center;">
-                                    </td>
-                                    <td style="text-align: center;">
-                                        @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
-                                        {
-                                            <a class="btn btn-success" asp-page-handler="Executing" asp-route-id="@order_info.Id">Принять</a>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                            @foreach (var order_info in @Model.ExecutingOrders)
-                            {
-                                <tr>
-                                    <td style="text-align: center;">@order_info.Customer.User.FullName</td>
-                                    <td style="text-align: center;">@order_info.Id</td>
-                                    <td style="text-align: center;">@order_info.ObjectAdress</td>
-                                    <td style="text-align: center;">
-                                        <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        @if (order_info.SelectedItemId > 0)
-                                        {
-                                            <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image"></i></a>
-                                        }
-                                    </td>
-                                    <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
-                                </tr>
-                            }
-                        </table>
-                        break;
-                    case 2:
-                        <div class="container-scroller" style="margin-top: 50px">
-                            <h1>Принятые заказы</h1>
-                        </div>
-                        <table class="table table-bordered table-hover">
-                            <tr class="success">
-                                <th style="text-align:center">Клиент</th>
-                                <th style="text-align:center">№ заказа</th>
-                                <th style="text-align:center">Адрес</th>
-                                <th style="text-align:center">Чат</th>
-                                <th style="text-align:center">Смета</th>
-                                <th style="text-align:center">Дизайн</th>
-                                <th style="text-align:center">Материалы</th>
-                                <th style="text-align:center">Доп.Работы</th>
-                            </tr>
-                            @foreach (var order_info in @Model.ExecutingOrders)
-                            {
+<main class="page-content">
+</main>
+    </div>
+*@
+    -->
+
+    <div class="container-fluid">
+        @switch (Model.sw)
+        {
+            case 1:
+                <div class="container-scroller" style="margin-top: 50px">
+                    <h1>Доступные заказы</h1>
+                </div>
+                <table class="table table-bordered table-hover">
+                    <tr class="success">
+                        <th style="text-align:center">Клиент</th>
+                        <th style="text-align:center">№ заказа</th>
+                        <th style="text-align:center">Тип заказа</th>
+                        <th style="text-align:center">Адрес</th>
+                        <th style="text-align:center">Смета</th>
+                        <th style="text-align:center">Дизайн</th>
+                        <th></th>
+                    </tr>
+                    @foreach (var order_info in @Model.Data)
+                    {
+                        <tr>
+                            <td style="text-align: center;">
+                                @if (order_info.Status == Models.Order.Statuses.New)
+                                {
+                                    <a>New!</a>
+                                }
+                                @order_info.Customer.User.FullName
+                            </td>
+                            <td style="text-align: center;">@order_info.Id</td>
+                            <td style="text-align: center;">@order_info.OrderType</td>
+                            <td style="text-align: center;">@order_info.ObjectAdress</td>
+                            <td style="text-align: center;">
+                                <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
+                            </td>
+                            <td style="text-align: center;">
+                            </td>
+                            <td style="text-align: center;">
+                                @if ((order_info.Status & Models.Order.Statuses.Executing) == 0)
+                                {
+                                    <a class="btn btn-success" asp-page-handler="Executing" asp-route-id="@order_info.Id">Принять</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var order_info in @Model.ExecutingOrders)
+                    {
                         <tr>
                             <td style="text-align: center;">@order_info.Customer.User.FullName</td>
                             <td style="text-align: center;">@order_info.Id</td>
+                            <td style="text-align: center;">@order_info.OrderType</td>
+                            <td style="text-align: center;">@order_info.ObjectAdress</td>
+                            <td style="text-align: center;">
+                                <a target="_blank" asp-page-handler="ShowEstimate" asp-route-id="@order_info.Id">Посмотреть</a>
+                            </td>
+                            <td style="text-align: center;">
+                                @if (order_info.SelectedItemId > 0)
+                                {
+                                    <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image"></i></a>
+                                }
+                            </td>
+                            <td style="text-align: center;"><a class="btn btn-success disabled">Принято</a></td>
+                        </tr>
+                    }
+                </table>
+                break;
+            case 2:
+                <div class="container-scroller" style="margin-top: 50px">
+                    <h1>Принятые заказы</h1>
+                </div>
+                <table class="table table-bordered table-hover">
+                    <tr class="success">
+                        <th style="text-align:center">Клиент</th>
+                        <th style="text-align:center">№ заказа</th>
+                        <th style="text-align:center">Тип заказа</th>
+                        <th style="text-align:center">Адрес</th>
+                        <th style="text-align:center">Чат</th>
+                        <th style="text-align:center">Смета</th>
+                        <th style="text-align:center">Дизайн</th>
+                        <th style="text-align:center">Материалы</th>
+                        <th style="text-align:center">Доп.Работы</th>
+                    </tr>
+                    @foreach (var order_info in @Model.ExecutingOrders)
+                    {
+                        <tr>
+                            <td style="text-align: center;">@order_info.Customer.User.FullName</td>
+                            <td style="text-align: center;">@order_info.Id</td>
+                            <td style="text-align: center;">@order_info.OrderType</td>
                             <td style="text-align: center;">@order_info.ObjectAdress</td>
                             <td style="text-align: center;"><a asp-page="/Account/ExecutorChat" asp-route-userId="@order_info.Customer.User.Id" asp-route-orderId="@order_info.Id">Открыть чат</a></td>
                             <td style="text-align: center;">
@@ -161,44 +169,51 @@
                                     <a asp-page-handler="DownloadFile" asp-route-id="@order_info.Id"><i class="far fa-file-image">Скачать</i></a>
                                 }
                             </td>
-                            <td style="text-align: center;">
-                                <a class="btn btn-success" name="SelectMaterial" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Материалы</a>
-                            </td>
-                            <td style="text-align: center;">
-                                <a class="btn btn-success" name="SelectAdditionalWork" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Дополнительные работы</a>
-                            </td>
-                        </tr>
+                            @if (order_info.OrderType != Models.Order.Type.NoGuarantee)
+                            {
+                                <td style="text-align: center;">
+                                    <a class="btn btn-success" name="SelectMaterial" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Материалы</a>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a class="btn btn-success" name="SelectAdditionalWork" id="@order_info.Id" data-toggle="modal" data-target="#modal-order" onclick="LoadPartialView(this)">Дополнительные работы</a>
+                                </td>
                             }
-                        </table>
-                        <div aria-hidden="true" class="modal fade" id="modal-order" role="dialog">
-                            <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
-                                        <div id="partial"></div>
-                                    </div>
-                                </div>
+                            else
+                            {
+                                <td></td>
+                                <td></td>
+                            }
+
+                        </tr>
+                    }
+                </table>
+                <div aria-hidden="true" class="modal fade" id="modal-order" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+                                <div id="partial"></div>
                             </div>
                         </div>
-                        break;
-                }
-            </div>
-        </main>
+                    </div>
+                </div>
+                break;
+        }
     </div>
-    <!-- partial -->
-</div>
+
+    </div>
 
 
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="~/js/off-canvas.js"></script>
-<script src="~/js/hoverable-collapse.js"></script>
-<script src="~/js/misc.js"></script>
-<script src="~/js/settings.js"></script>
-<script src="~/js/todolist.js"></script>
-<script src="~/js/dashboard.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="~/js/off-canvas.js"></script>
+    <script src="~/js/hoverable-collapse.js"></script>
+    <script src="~/js/misc.js"></script>
+    <script src="~/js/settings.js"></script>
+    <script src="~/js/todolist.js"></script>
+    <script src="~/js/dashboard.js"></script>
 
-<script>
-    function LoadPartialView(e) {
-        $("#partial").load("/Account/Executor?id=" + e.id + "&handler=" + e.name + "&");
-    }
-</script>
+    <script>
+        function LoadPartialView(e) {
+            $("#partial").load("/Account/Executor?id=" + e.id + "&handler=" + e.name + "&");
+        }
+    </script>

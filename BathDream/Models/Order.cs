@@ -16,7 +16,15 @@ namespace BathDream.Models
             Executing = 8
         }
 
+        public enum Type
+        {
+            AllInclusive = 1,
+            Standard = 2,
+            NoGuarantee = 3
+        }
+
         public int Id { get; set; }
+        public Type OrderType { get; set; }
         public Statuses Status { get; set; }
         public string StatusName()
         {
@@ -32,6 +40,16 @@ namespace BathDream.Models
             //if (Status == (Statuses.Brief | Statuses.New)) statusName = "Brief";
             //else if (Status == Statuses.ToExecute) statusName = "ToExecute";
             //else if (Status == Statuses.Executing) statusName = "Executing";
+        }
+        public string TypeName()
+        {
+            return OrderType switch
+            {
+                Type.AllInclusive => "Все включено",
+                Type.Standard => "Стандарт",
+                Type.NoGuarantee => "Без гарантии",
+                _ => ""
+            };
         }
         public DateTime Date { get; set; }
         public DateTime? StartDate { get; set; }

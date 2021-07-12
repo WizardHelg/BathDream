@@ -336,12 +336,12 @@ namespace BathDream.Pages.Account
 
             if (await _userManager.FindByNameAsync(userId) is User user)
             {
-                User arch = _db.Users.FirstOrDefault(u => u.PhoneNumber == "70000000000");
+                User customer = await _userManager.FindByNameAsync(User.Identity.Name);
                 Message temp_message = new Message
                 {
                     DateTime = cur_time,
                     Text = message,
-                    Sender = arch,
+                    Sender = customer,
                     Recipient = user,
                     Order = order
                 };
@@ -350,7 +350,7 @@ namespace BathDream.Pages.Account
                 _db.SaveChanges();
 
                 await _hub.Clients.User(user.Id).SendAsync("Send", new { IsMe = 0, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
-                await _hub.Clients.User(arch.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
+                await _hub.Clients.User(customer.Id).SendAsync("Send", new { IsMe = 1, Name = user.UName, Message = temp_message.Text, When = temp_message.DateTime });
             }
         }
 

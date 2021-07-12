@@ -14,6 +14,11 @@ namespace BathDream.Models
     {
         #region BathRoomParametres
         /// <summary>
+        /// Тип заказа
+        /// </summary>
+        public string OrderType { get; set; }
+
+        /// <summary>
         /// Тип объекта
         /// </summary>
         public string ObjectType { get; set; }

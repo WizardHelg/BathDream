@@ -25,11 +25,13 @@
         }
         else if (User.IsInRole("customer"))
         {
+            <li><a asp-page="/Account/Customer" asp-page-handler="ShowOrders">Мои заказы</a></li>
             <li><a asp-page="/Account/Customer">Профиль</a></li>
         }
         else if (User.IsInRole("executor"))
         {
-            <li><a asp-page="/Account/Executor">Профиль</a></li>
+            <li><a asp-page="/Account/Executor">Доступные заказы</a></li>
+            <li><a asp-page="/Account/Executor" asp-page-handler="ShowAcceptedOrders">Принятые заказы</a></li>
         }
         else
         {

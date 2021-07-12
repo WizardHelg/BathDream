@@ -99,9 +99,9 @@
 
 <div class="order">
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <h1>Калькулятор стоимости ремонта</h1>
-        <h2>Пройди всего 5 шагов и выбери свой подарок до 30 000 р.</h2>
+        <h2 id="gift">Пройди всего 5 шагов и выбери свой подарок до 30 000 р.</h2>
         <hr />
 
         <div id="page0" style="display: block;">
@@ -109,12 +109,17 @@
 
             <div class="container-fluid">
 
+                <div>
+                    <input id="type1" type="radio" asp-for="Order.OrderType" value="1" hidden />
+                    <input id="type2" type="radio" asp-for="Order.OrderType" value="2" hidden />
+                    <input id="type3" type="radio" asp-for="Order.OrderType" value="3" hidden />
+                </div>
 
-                <div class="col-xs-12">
-                    <div class="row" style="background-color: #FAFAFA; padding: 5px">
-                        <div class="col-sm-6 col-xs-12 ">
+                <div class="col-xs-12 col-lg-3">
+                    <div class="row" style="background-color: #FAFAFA; padding: 5px; margin-right: 10px">
+                        <div>
                             <h4><b>Все включено</b></h4>
-                            <ul style="text-align: left">
+                            <ul style="text-align: left; margin-left: -30px">
                                 <li>
                                     Три уникальных дизайн проекта на выбор
                                 </li>
@@ -129,76 +134,111 @@
 
                             </ul>
                             <a class="btn btn-success" name="Estimate" onclick="
-                document.getElementById('page0').style.display = 'none';
-                document.getElementById('page1').style.display = 'block';
-                window.scrollTo(0, 0);
-            ">Выбрать</a>
+                                document.getElementById('page0').style.display = 'none';
+                                document.getElementById('page1').style.display = 'block';
+                                window.scrollTo(0, 0);
+                                document.getElementById('type1').checked = true;
+                                ">
+                                Выбрать
+                            </a>
                         </div>
-
-                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                        @*<div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>*@
                     </div>
                 </div>
 
-                <div class="col-xs-12">
-                    <div class="row" style="padding: 5px">
-                        <div class="col-sm-6 col-xs-12 ">
+
+                <div class="col-xs-12 col-lg-3">
+                    <div class="row" style="background-color: #FAFAFA; padding: 5px; margin-right: 10px">
+                        <div>
                             <h4><b>Стандарт</b></h4>
-                            <ul style="text-align: left">
+                            <ul style="text-align: left; margin-left: -30px">
                                 <li>Закупка чернового материала согласно ремонтно-монтажных работам</li>
                                 <li>Выполнение ремонтно-монтажных работ согласно проектной документации</li>
                                 <li>Вывоз мусора</li>
                             </ul>
                             <a class="btn btn-success" name="Estimate" onclick="
-                document.getElementById('page0').style.display = 'none';
-                document.getElementById('page1').style.display = 'block';
-                window.scrollTo(0, 0);
-            ">Выбрать</a>
+                                document.getElementById('page0').style.display = 'none';
+                                document.getElementById('page1').style.display = 'block';
+                                window.scrollTo(0, 0);
+                                document.getElementById('type2').checked = true;
+                                document.getElementById('gift').hidden = true;
+                                ">
+                                Выбрать
+                            </a>
                         </div>
-
-                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                        @*<div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>*@
                     </div>
                 </div>
 
-                <div class="col-xs-12">
-                    <div class="row" style="background-color: #FAFAFA; padding: 5px">
-                        <div class="col-sm-6 col-xs-12 ">
+                <div class="col-xs-12 col-lg-3">
+                    <div class="row" style="background-color: #FAFAFA; padding: 5px; margin-right: 10px">
+                        <div>
                             <h4><b>Без гарантии</b></h4>
-                            <ul style="text-align: left">
+                            <ul style="text-align: left; margin-left: -30px">
                                 <li>
                                     Выполнение ремонтно-монтажных работ согласно проектной документации.
                                     Вы закупаете весь материал сами, мы не гарантируем гарантию качества материала. Гарантия будет ограниченна
                                 </li>
                             </ul>
                             <a class="btn btn-success" name="Estimate" onclick="
-                document.getElementById('page0').style.display = 'none';
-                document.getElementById('page1').style.display = 'block';
-                window.scrollTo(0, 0);
-            ">Выбрать</a>
+                                document.getElementById('page0').style.display = 'none';
+                                document.getElementById('page1').style.display = 'block';
+                                window.scrollTo(0, 0);
+                                document.getElementById('type3').checked = true;
+                                document.getElementById('gift').hidden = true;
+                                ">
+                                Выбрать
+                            </a>
                         </div>
-
-                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                        @*<div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>*@
                     </div>
                 </div>
 
-                <div class="col-xs-12">
-                    <div class="row" style="padding: 5px">
-                        <div class="col-sm-6 col-xs-12 ">
+                <div class="col-xs-12 col-lg-3">
+                    <div class="row" style="padding: 5px; margin-right: 10px">
+                        <div>
                             <h4><b>Сервис</b></h4>
-                            <ul style="text-align: left">
+                            <ul style="text-align: left; margin-left: -30px">
                                 <li>Опишите задачу ремонта для составления сметной документации</li>
                                 <li>При возможности приложите фотографии.</li>
                             </ul>
-                            <a class="btn btn-success" name="Estimate">Выбрать</a>
+                            <a class="btn btn-success" name="Estimate" data-toggle="modal" data-target="#Service">Выбрать</a>
                         </div>
+                        @*<div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>*@
 
-                        <div class="col-sm-6 col-xs-12 "><img src="/img/type1.jpg" style="width: 100%; " /></div>
+                        <div class="modal fade" id="Service" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document" style="width:350px">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel">Напишите нам!</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div style="padding: 5px">
+                                            <input asp-for="Input.Sender" type="text" placeholder="Ваш e-mail или номер телефона" style="width: 230px" />
+                                        </div>
+                                        <div style="padding: 5px">
+                                            <textarea asp-for="Input.Message" placeholder="Опишите вашу проблему, если необходимо прикрепите файлы" rows="10" cols="40" style="resize: vertical"></textarea>
+                                        </div>
+                                        <div></div>
+                                        <input name="formFiles" type="file" class="btn" />
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                        <button type="submit" class="btn btn-primary" asp-page-handler="SendRequest">Оставить заявку</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
             <hr />
-            
+
         </div>
 
         <div id="page1" style="display: none;">
@@ -253,6 +293,7 @@
                             document.getElementById('page0').style.display = 'block';
                             document.getElementById('page1').style.display = 'none';
                             window.scrollTo(0, 0);
+                            document.getElementById('gift').hidden = false;
                             ">
                             Назад
                         </button>
@@ -469,6 +510,7 @@
             <hr />
             <button class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету</button>
         </div>
+
         @*<button type="submit" class="btn btn-success btn-lg btn-block" asp-page-handler="submit">Расчитать смету1</button>*@
         @*<button type="button" class="btn btn-success btn-lg btn-block" formaction="/?handler=submit" data-target="#modal-order" data-toggle="modal">Расчитать смету</button>*@
 
@@ -506,7 +548,18 @@
             </div>*@
     </form>
 
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script type="text/javascript">
+
+        $(document.body).on('change', 'form input[type="file"]', function () {
+            $this = $(this);
+            if ($this.is(':last-of-type')) {
+                $this.after($('<input name="formFiles" type="file" class="btn">'));
+            }
+        });
 
         rooms.addEventListener('click', function (evt) {
             if (evt.target.closest('.deleteRow')) {

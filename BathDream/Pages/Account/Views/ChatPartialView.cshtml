@@ -3,10 +3,18 @@
 *@
 @using BathDream.Models
 @model BathDream.Pages.Account.CustomerModel.InputModel
-@{
+@{;
+    string temp = "";
 }
-
-<h3>Обсуждение проекта с архитектором</h3>
+@if ((Model.Order.Status & Order.Statuses.Executing) != 0)
+{
+    temp = "Обсуждение проекта с исполнителем";
+}
+else
+{
+    temp = "Обсуждение проекта с архитектором";
+}
+<h3>@temp</h3>
 <form method="post" id="selectForm">
     <div class="messaging">
         <div class="inbox_msg">
@@ -103,12 +111,12 @@
 
     document.getElementById("sendBtn").addEventListener("click", function (e) {
         let message = document.getElementById("message").value;
-        connection.invoke("Send", message, "@(Model.CurrentOrder.Id)");
+        connection.invoke("Send", message, "@(Model.Order.Id)");
         document.getElementById("message").value = "";
     });
 
     connection.on("GetItCustomer", function (data) {
-        connection.send("GetMessagesForCustomer", "@(Model.CurrentOrder.Id)");
+        connection.send("GetMessagesForCustomer", "@(Model.Order.Id)");
     });
 </script>
 
