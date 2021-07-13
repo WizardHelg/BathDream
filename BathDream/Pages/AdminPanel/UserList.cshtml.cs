@@ -52,7 +52,7 @@ namespace BathDream.Pages.AdminPanel
                 Input.Users.Add(new UserAndRole
                 {
                     User = user,
-                    Role = role[0]
+                    Role = role.Count == 0 ? "empty" : role[0] 
                 });
             }
            

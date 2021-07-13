@@ -7,35 +7,49 @@
 <br />
 <p><a asp-page="/AdminPanel/Index">На главную</a></p>
 <br />
-@if (Model.Input.UserProfile == null)
-{
-    <h3>Все заказы</h3>
-}
-else
-{
-    <h3>Все заказы пользователя №@Model.Input.UserProfile.Id - @Model.Input.UserProfile.User.FullName</h3>
-    <a class="btn btn-success" asp-page-handler="SeeAll" asp-route-userId="@Model.Input.UserProfile.User.Id">Посмотреть все</a>
-}
-<table class="table table-bordered table-hover">
-    <tr>
-        <th>Номер</th>
-        <th>Дата</th>
-        <th>Адрес</th>
-        <th>Исполнитель</th>
-        <th>Сумма</th>
-        <th>Смета</th>
-        <th>Договор</th>
-    </tr>
-    @foreach (var order in Model.Input.Orders)
+<div>
+    @if (Model.Input.UserProfile == null)
     {
-        <tr>
-            <td>@order.Id</td>
-            <td>@order.Date.ToShortDateString()</td>
-            <td>@order.ObjectAdress</td>
-            <td>@order.Executor</td>
-            <td>@order.Estimate.Works.Sum(w => w.Total).ToString("# ##0.00")</td>
-            <td><a asp-page-handler="Details" asp-route-orderId="@order.Id">Подробнее</a></td>
-            <td><a asp-page-handler="Contract" asp-route-orderId="@order.Id">Скачать</a></td>
-        </tr>
+        <h3>Все заказы</h3>
     }
-</table>
+    else
+    {
+        <h3>Все заказы пользователя №@Model.Input.UserProfile.Id - @Model.Input.UserProfile.User.FullName</h3>
+        <a class="btn btn-success" asp-page-handler="SeeAll" asp-route-userId="@Model.Input.UserProfile.User.Id">Посмотреть все</a>
+    }
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Номер</th>
+            <th>Дата</th>
+            <th>Адрес</th>
+            <th>Исполнитель</th>
+            <th>Сумма</th>
+            <th>Смета</th>
+            <th>Договор</th>
+        </tr>
+        @foreach (var order in Model.Input.Orders)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.Date.ToShortDateString()</td>
+                <td>@order.ObjectAdress</td>
+                <td>@order.Executor</td>
+                <td>@order.Estimate.Works.Sum(w => w.Total).ToString("# ##0.00")</td>
+                @if (order.Customer == null)
+                    {
+                        <td></td>
+                        <td></td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a asp-page-handler="Details" asp-route-orderId="@order.Id">Подробнее</a>
+                        </td>
+                        <td>
+                            <a asp-page-handler="Contract" asp-route-orderId="@order.Id">Скачать</a>
+                        </td>
+                    }
+            </tr>
+        }
+    </table>
+</div>

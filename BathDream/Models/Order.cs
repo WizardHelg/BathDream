@@ -26,6 +26,17 @@ namespace BathDream.Models
         public int Id { get; set; }
         public Type OrderType { get; set; }
         public Statuses Status { get; set; }
+        public DateTime Date { get; set; }
+        public DateTime? StartDate { get; set; }
+        public UserProfile Customer { get; set; }
+        public ExecutorProfile Executor { get; set; }
+        public Estimate Estimate { get; set; }
+        public string Contract { get; set; }
+        public string ObjectAdress { get; set; }
+        public bool Signed { get; set; }
+        public int SelectedItemId { get; set; }
+        public List<Invoice> Invoices { get; set; }
+
         public string StatusName()
         {
             if ((Status & Statuses.ToExecute) > 0)
@@ -51,15 +62,5 @@ namespace BathDream.Models
                 _ => ""
             };
         }
-        public DateTime Date { get; set; }
-        public DateTime? StartDate { get; set; }
-        public UserProfile Customer { get; set; }
-        public ExecutorProfile Executor { get; set; }
-        public Estimate Estimate { get; set; }
-        public string Contract { get; set; }
-        public string ObjectAdress { get; set; }
-        public bool Signed { get; set; }
-        public int SelectedItemId { get; set; }
-        public List<Invoice> Invoices { get; set; }
     }
 }

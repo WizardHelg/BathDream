@@ -205,6 +205,7 @@ namespace BathDream.Pages
         [BindProperty]
         public Customer Customer { get; set; }
 
+        [Required]
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -217,6 +218,7 @@ namespace BathDream.Pages
 
         public class InputModel
         {
+            [Required(ErrorMessage = "Укажите ваши контакты")]
             public string Sender { get; set; }
             [Required (ErrorMessage = "Опишите проблему")]
             public string Message { get; set; }
@@ -504,6 +506,11 @@ namespace BathDream.Pages
 
         public async Task<IActionResult> OnPostSendRequest(List<IFormFile> formFiles)
         {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             List<string> attachments = new List<string>();
             string webRootPath = _webHostEnvironment.WebRootPath;
             string directoryPath = webRootPath + @"\temp\";

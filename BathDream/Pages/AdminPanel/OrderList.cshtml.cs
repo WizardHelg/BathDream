@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using BathDream.Data;
 using BathDream.Models;
 using BathDream.Pages.Account;
-using jsreport.AspNetCore;
-using jsreport.Types;
+using BathDream.Services;
+//using jsreport.AspNetCore;
+//using jsreport.Types;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SelectPdf;
 
 namespace BathDream.Pages.AdminPanel
 {
@@ -20,10 +22,12 @@ namespace BathDream.Pages.AdminPanel
     {
         private readonly UserManager<User> _user_manager;
         private readonly DBApplicationaContext _db;
-        public OrderListModel(UserManager<User> userManager, DBApplicationaContext db)
+        private readonly PDFConverter _PDFConverter;
+        public OrderListModel(UserManager<User> userManager, DBApplicationaContext db, PDFConverter PDFConverter)
         {
             _user_manager = userManager;
             _db = db;
+            _PDFConverter = PDFConverter;
         }
 
         [BindProperty]
@@ -33,7 +37,6 @@ namespace BathDream.Pages.AdminPanel
             public UserProfile UserProfile { get; set; }
             public List<Order> Orders { get; set; }
             public List<Work> Works { get; set; }
-            public User User { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(string userId = "")
@@ -41,6 +44,9 @@ namespace BathDream.Pages.AdminPanel
             if (userId == "")
             {
                 Input.Orders = await _db.Orders.Include(o => o.Customer).Include(o => o.Estimate).ThenInclude(e => e.Works).ToListAsync();
+
+                Input.Orders = Input.Orders.OrderByDescending(o => o.Id).ToList();
+
                 return Page();
             }
 
@@ -51,7 +57,8 @@ namespace BathDream.Pages.AdminPanel
                                                 .ThenInclude(e => e.Works)
                                          .FirstOrDefaultAsync(u => u.UserId == userId);
 
-            Input.Orders = Input.UserProfile.Orders;
+            Input.Orders = Input.UserProfile.Orders.OrderByDescending(o => o.Id).ToList();
+
             return Page();
         }
 
@@ -71,17 +78,11 @@ namespace BathDream.Pages.AdminPanel
             });
         }
 
-        [MiddlewareFilter(typeof(JsReportPipeline))]
-        public IActionResult OnGetContract()
+        public IActionResult OnGetContract(int orderId)
         {
-            //HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
-
-            return Page();
-            //return new PartialViewResult
-            //{
-            //    ViewName = "./Account/Views/CustomerContractPartialView",
-            //    ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<InputModel>(ViewData, )
-            //};
+            string url = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/AdminPanel/Contract?orderId={orderId}";
+            PdfDocument pdfDocument = _PDFConverter.Convert(url);
+            return _PDFConverter.DownloadPDF(pdfDocument, $"Договор №{orderId}");
         }
     }
 }

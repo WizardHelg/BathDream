@@ -38,6 +38,7 @@ namespace BathDream
             services.AddSingleton<SMSConfirmator>();
             services.AddTransient<EmailSender>();
             services.AddTransient<SMSSender>();
+            services.AddTransient<PDFConverter>();
 
             services.AddJsReport(new LocalReporting()
                 .UseBinary(JsReportBinary.GetBinary())

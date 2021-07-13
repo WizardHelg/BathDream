@@ -217,9 +217,11 @@
                                     </div>
                                     <div class="modal-body">
                                         <div style="padding: 5px">
+                                            <b><span asp-validation-for="Input.Sender" class="text-danger"></span></b>
                                             <input asp-for="Input.Sender" type="text" placeholder="Ваш e-mail или номер телефона" style="width: 230px" />
                                         </div>
                                         <div style="padding: 5px">
+                                            <b><span asp-validation-for="Input.Message" class="text-danger"></span></b>
                                             <textarea asp-for="Input.Message" placeholder="Опишите вашу проблему, если необходимо прикрепите файлы" rows="10" cols="40" style="resize: vertical"></textarea>
                                         </div>
                                         <div></div>

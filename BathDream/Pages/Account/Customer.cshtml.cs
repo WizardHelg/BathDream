@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using BathDream.Acquiring;
 using BathDream.Services;
+using BathDream.Interfaces;
 
 namespace BathDream.Pages.Account
 {
@@ -29,7 +30,7 @@ namespace BathDream.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; } = new InputModel();
-        public class InputModel
+        public class InputModel : IContract
         {
             public User User { get; set; }
             public Order Order { get; set; }
@@ -232,8 +233,6 @@ namespace BathDream.Pages.Account
                 }
                 Input.UniqueWorks.Add(item);
             }
-            Input.UniqueWorks = Input.UniqueWorks.OrderBy(w => w.WorkType.Priority).ToList();
-
 
             return new PartialViewResult
             {
