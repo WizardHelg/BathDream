@@ -15,10 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using jsreport.AspNetCore;
-using jsreport.Local;
-using jsreport.Binary;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using System.IO;
 
 namespace BathDream
 {
@@ -40,10 +39,11 @@ namespace BathDream
             services.AddTransient<SMSSender>();
             services.AddTransient<PDFConverter>();
 
-            services.AddJsReport(new LocalReporting()
-                .UseBinary(JsReportBinary.GetBinary())
-                .AsUtility()
-                .Create());
+            var context = new CustomAssemblyLoadContext();
+            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
 
             services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(serv => new CustomPasswordValidator()
             {

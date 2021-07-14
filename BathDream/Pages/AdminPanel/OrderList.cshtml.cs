@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BathDream.Data;
 using BathDream.Models;
 using BathDream.Pages.Account;
 using BathDream.Services;
-//using jsreport.AspNetCore;
-//using jsreport.Types;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +24,16 @@ namespace BathDream.Pages.AdminPanel
         private readonly UserManager<User> _user_manager;
         private readonly DBApplicationaContext _db;
         private readonly PDFConverter _PDFConverter;
-        public OrderListModel(UserManager<User> userManager, DBApplicationaContext db, PDFConverter PDFConverter)
+
+        private IConverter _converter;
+
+
+        public OrderListModel(UserManager<User> userManager, DBApplicationaContext db, PDFConverter PDFConverter, IConverter converter)
         {
             _user_manager = userManager;
             _db = db;
             _PDFConverter = PDFConverter;
+            _converter = converter;
         }
 
         [BindProperty]
@@ -81,8 +87,53 @@ namespace BathDream.Pages.AdminPanel
         public IActionResult OnGetContract(int orderId)
         {
             string url = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/AdminPanel/Contract?orderId={orderId}";
-            PdfDocument pdfDocument = _PDFConverter.Convert(url);
-            return _PDFConverter.DownloadPDF(pdfDocument, $"Договор №{orderId}");
+
+
+            //PdfDocument pdfDocument = _PDFConverter.Convert(url);
+            //pdfDocument.Close();
+            //return _PDFConverter.DownloadPDF(pdfDocument, $"Договор №{orderId}");
+
+            //return _PDFConverter.Test(url);
+
+
+
+
+            //var rs = new LocalReporting().UseBinary(JsReportBinary.GetBinary()).AsUtility().Create();
+
+            //var report = await rs.RenderAsync(new RenderRequest()
+            //{
+            //    Template = new Template()
+            //    {
+            //        Recipe = Recipe.PhantomPdf,
+            //        Engine = Engine.None,
+            //        Content = "The html you get from the razor page"
+            //    }
+            //});
+
+
+            var globalSettings = new GlobalSettings
+            {
+                ColorMode = ColorMode.Color,
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4,
+                Margins = new MarginSettings { Top = 10 },
+                DocumentTitle = $"Договор №{orderId}",
+            };
+            var objectSettings = new ObjectSettings
+            {
+                Page = url,
+                WebSettings = { DefaultEncoding = "", UserStyleSheet = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "css", "main.css") },
+            };
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = globalSettings,
+                Objects = { objectSettings }
+            };
+
+            var file = _converter.Convert(pdf);
+
+            return File(file, "application/pdf", $"Договор №{orderId}.pdf");
+
         }
     }
 }

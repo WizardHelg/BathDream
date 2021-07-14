@@ -3,15 +3,13 @@
 @{
 }
 
-<div>
-    <partial name="./Account/Views/_ContractPartialView" model="Model.Input" />
+@{ 
+    Layout = "_ContractLayout";
+}
+
+<div id="ContractString">
+        <partial name="./Account/Views/_ContractPartialView" model="Model.Input" />
 </div>
 
 <br />
 <br />
-
-<script>
-    $(document).ready(function () {
-        document.getElementById('navBar').hidden = true;
-    });
-</script>
