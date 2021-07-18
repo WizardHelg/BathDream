@@ -96,12 +96,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="libwkhtmltox.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.95.4" />
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="MailKit" Version="2.10.1" />

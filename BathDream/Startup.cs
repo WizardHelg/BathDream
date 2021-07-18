@@ -37,13 +37,19 @@ namespace BathDream
             services.AddSingleton<SMSConfirmator>();
             services.AddTransient<EmailSender>();
             services.AddTransient<SMSSender>();
-            services.AddTransient<PDFConverter>();
+            services.AddSingleton<PDFConverter>();
 
             var context = new CustomAssemblyLoadContext();
-            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
+            string libwkhtmlPath;
+#if DEBUG
+            libwkhtmlPath = "x64";
+#else
+            libwkhtmlPath = "x32";
+#endif
+            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "lib", libwkhtmlPath, "libwkhtmltox.dll"));
 
-            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-
+            //services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            //services.AddSingleton(PDFConverter);
 
             services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(serv => new CustomPasswordValidator()
             {

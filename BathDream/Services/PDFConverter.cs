@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SelectPdf;
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,108 +11,39 @@ namespace BathDream.Services
 {
     public class PDFConverter
     {
+        readonly IConverter converter;
+        public PDFConverter()
+        {
+            converter = new SynchronizedConverter(new PdfTools()); 
+        }
+
         /// <summary>
         /// Преобразует страницу в PDF файл
         /// </summary>
         /// <param name="link">Ссылка на страницу</param>
-        public PdfDocument Convert(string link)
+        public byte[] Convert(string link, string name)
         {
-            PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize), "A4", true);
-
-            PdfPageOrientation pdfOrientation = (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation), "Portrait", true);
-
-            int webPageWidth = 1024;
-            try
+            var globalSettings = new GlobalSettings
             {
-                webPageWidth = System.Convert.ToInt32("1024");
-            }
-            catch { }
-
-            int webPageHeight = 0;
-            try
+                ColorMode = ColorMode.Color,
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4,
+                Margins = new MarginSettings { Top = 10 },
+                DocumentTitle = name,
+            };
+            var objectSettings = new ObjectSettings
             {
-                webPageHeight = System.Convert.ToInt32("0");
-            }
-            catch { }
-
-            // instantiate a html to pdf converter object
-            HtmlToPdf converter = new HtmlToPdf();
-
-            // set converter options
-            converter.Options.PdfPageSize = pageSize;
-            converter.Options.PdfPageOrientation = pdfOrientation;
-            converter.Options.WebPageWidth = webPageWidth;
-            converter.Options.WebPageHeight = webPageHeight;
-
-            // create a new pdf document converting an url
-            PdfDocument doc = converter.ConvertUrl(link);
-
-            return doc;
-        }
-
-        /// <summary>
-        /// Скачивает PDF файл
-        /// </summary>
-        /// <param name="doc">PDF файл</param>
-        /// <returns></returns>
-        public IActionResult DownloadPDF(PdfDocument doc, string fileDownloadName)
-        {
-            // save pdf document
-            byte[] pdf = doc.Save();
-
-            // close pdf document
-            doc.Close();
-
-            // return resulted pdf document
-            FileResult fileResult = new FileContentResult(pdf, "application/pdf");
-            fileResult.FileDownloadName = $"{fileDownloadName}.pdf";
-            return fileResult;
-        }
-
-
-        public IActionResult Test(string link)
-        {
-
-            PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize), "A4", true);
-
-            PdfPageOrientation pdfOrientation = (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation), "Portrait", true);
-
-            int webPageWidth = 1024;
-            try
+                Page = link,
+                WebSettings = { DefaultEncoding = "", UserStyleSheet = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "css", "main.css") },
+            };
+            var pdf = new HtmlToPdfDocument()
             {
-                webPageWidth = System.Convert.ToInt32("1024");
-            }
-            catch { }
+                GlobalSettings = globalSettings,
+                Objects = { objectSettings }
+            };
 
-            int webPageHeight = 0;
-            try
-            {
-                webPageHeight = System.Convert.ToInt32("0");
-            }
-            catch { }
-
-            // instantiate a html to pdf converter object
-            HtmlToPdf converter = new HtmlToPdf();
-
-            // set converter options
-            converter.Options.PdfPageSize = pageSize;
-            converter.Options.PdfPageOrientation = pdfOrientation;
-            converter.Options.WebPageWidth = webPageWidth;
-            converter.Options.WebPageHeight = webPageHeight;
-
-            // create a new pdf document converting an url
-            PdfDocument doc = converter.ConvertUrl(link);
-
-            // save pdf document
-            byte[] pdf = doc.Save();
-
-            // close pdf document
-            doc.Close();
-
-            // return resulted pdf document
-            FileResult fileResult = new FileContentResult(pdf, "application/pdf");
-            fileResult.FileDownloadName = "Document.pdf";
-            return fileResult;
-        }
+            var file = converter.Convert(pdf);
+            return file;
+        } 
     }
 }
